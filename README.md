@@ -85,34 +85,34 @@ graph TD
 #### 유저 토큰 발급
 ```mermaid
 sequenceDiagram
-    participant User
+    actor  User
     participant 유저토큰발급API
-    participant UserService
-    participant Queue Table
-    participant User Table
-    participant UserToken Table
+    participant Service
+    participant DB
 
     %% 대기열 등록
     User->>유저토큰발급API: 유저 토큰 발급 요청
-    유저토큰발급API->>UserService: 사용자 정보 조회
-    UserService->>User Table: 사용자 정보 요청
-    User Table-->>UserService: 사용자 정보 반환
-    UserService-->>유저토큰발급API: 사용자 정보 반환
-    유저토큰발급API->>Queue Table: 대기열 등록
-    Queue Table-->>유저토큰발급API: 대기열 등록 완료
+    유저토큰발급API->>Service: 사용자 정보 조회
+    Service->>DB: 사용자 정보 조회
+    DB-->>Service: 사용자 정보 반환
+    Service-->>유저토큰발급API: 사용자 정보 반환
+    유저토큰발급API->>Service:대기열 생성
+    Service->>DB:대기열 생성
+    DB-->>Service:대기열 순서 반환
+    Service-->>유저토큰발급API:대기열 순서 반환
 
-    %% 대기열 순서 확인 및 유저 토큰 발급
-    유저토큰발급API->>Queue Table: 대기열 순서 확인 요청
-    Queue Table-->>유저토큰발급API: 대기열 순서 정보 반환
-    유저토큰발급API -->> User: 대기 순서 반환
+    유저토큰발급API-)Service: 대기열 순서 조회
+    Service-)DB: 대기열 순서 조회
+    DB--)Service: 대기열 순서 정보 반환
+    Service--)유저토큰발급API: 대기열 순서 정보 반환
     
     alt 대기가 종료됨
-        유저토큰발급API->>UserToken Table: 유저 토큰 생성
-        UserToken Table-->>유저토큰발급API: 유저 토큰 발급 완료
+        유저토큰발급API->>Service: 유저 토큰 생성
+        Service->>DB: 유저 토큰 생성
+        DB-->>Service: 유저 토큰 발급 완료
+        Service-->>유저토큰발급API: 유저 토큰 반환
         유저토큰발급API-->>User: 유저 토큰 반환
     end
-
-
 ```
 
 #### 예약 가능 날짜 및 선택 가능 좌석 조회
@@ -158,15 +158,154 @@ sequenceDiagram
     participant User
     participant 잔액 조회 API
     participant UserService
-    participant User Table
+    participant DB
 
     %% 잔액 조회
     User->>잔액 조회 API: 결제 가능 금액 조회 요청
     잔액 조회 API->>UserService: 사용자 잔액 조회
-    UserService->>User Table: 잔액 정보 요청
-    User Table-->>UserService: 잔액 정보 반환
+    UserService->>DB: 잔액 정보 요청
+    DB-->>UserService: 잔액 정보 반환
     UserService-->>잔액 조회 API: 잔액 정보 반환
     잔액 조회 API-->>User: 결제 가능 금액 반환
 
 ```
+
+#### 잔액 충전
+```mermaid
+sequenceDiagram
+    participant 사용자
+    participant 잔액충전API
+    participant DB
+
+    사용자->>잔액충전API: 잔액 충전 요청
+    잔액충전API->>DB: 사용자 잔액 업데이트
+    DB-->>잔액충전API: 충전 확인
+    잔액충전API-->>사용자: 충전 확인
+
+```
+#### 결제
+```mermaid
+sequenceDiagram
+    participant 사용자
+    participant 결제API
+    participant DB
+
+    사용자->>결제API: 결제 처리 요청
+    결제API->>DB: 결제 정보 저장
+    DB-->>결제API: 결제 확인
+    결제API-->>사용자: 결제 확인
+
+```
+#### 예약 확인
+```mermaid
+sequenceDiagram
+    participant 사용자
+    participant 예약확인API
+    participant DB
+
+    사용자->>예약확인API: 예약 확인 요청
+    예약확인API->>DB: 예약 정보 조회
+    DB-->>예약확인API: 예약 정보 반환
+    예약확인API-->>사용자: 예약 확인 정보 반환
+
+```
+
 </details>
+
+### ERD
+```mermaid
+erDiagram
+    User {
+        INT user_id PK
+        STRING username
+        STRING password
+        STRING email
+        DECIMAL charge_amount
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    UserToken {
+        INT token_id PK
+        INT user_id FK
+        STRING token_uuid
+        BOOLEAN is_active
+        DATETIME token_expiry
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Concert {
+        INT concert_id PK
+        STRING concert_name
+        STRING location
+        INT total_seats
+        INT run_time
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    ConcertDate {
+        INT concert_date_id PK
+        INT concert_id FK
+        DATETIME concert_date
+        INT available_seats
+    }
+
+    Seat {
+        INT seat_id PK 
+        INT concert__id FK 
+        INT concert_date_id FK
+        STRING seat_number
+        STRING status
+        DECIMAL ticket_price  
+        DATETIME reservated_date
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Queue {
+        INT queue_id PK
+        INT user_id FK
+        STRING status
+        DATETIME created_at
+        DATETIME deleted_at
+    }
+    
+    Reservation {
+        INT reservation_id PK
+        INT user_id FK
+        INT concert_id FK
+        INT seat_id FK
+        STRING reservation_status
+        DATETIME reservation_date
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Payment {
+        INT payment_id PK
+        INT user_id FK
+        INT concert_id FK
+        DECIMAL amount
+        DATETIME payment_date
+        STRING payment_status
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+
+    User ||--o| UserToken : ""
+    User ||--o{ Payment : ""
+    User ||--o| Queue : ""
+    User ||--o{ Reservation : ""
+    Concert ||--o{ ConcertDate : ""
+    Concert ||--o{ Seat : ""
+    Concert ||--o{ Reservation : ""
+    Seat ||--o{ Reservation : ""
+    ConcertDate ||--o{ Seat : "" 
+    Concert ||--o{ Payment : ""
+
+```
+
+
