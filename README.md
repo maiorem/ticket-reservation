@@ -233,9 +233,8 @@ sequenceDiagram
 erDiagram
     User {
         INT user_id PK
+        STRING uuid
         STRING username
-        STRING password
-        STRING email
         DECIMAL charge_amount
         DATETIME created_at
         DATETIME updated_at
@@ -244,7 +243,7 @@ erDiagram
     UserToken {
         INT token_id PK
         INT user_id FK
-        STRING token_uuid
+        STRING uuid
         BOOLEAN is_active
         DATETIME token_expiry
         DATETIME created_at
@@ -283,6 +282,7 @@ erDiagram
     Queue {
         INT queue_id PK
         INT user_id FK
+        INT sequence
         STRING status
         DATETIME created_at
         DATETIME deleted_at
@@ -322,6 +322,47 @@ erDiagram
     ConcertDate ||--o{ Seat : "" 
     Concert ||--o{ Payment : ""
 
-```
+``` 
+
+#### User : 사용자 테이블
+- uuid 사용자 식별키
+- username 사용자 이름
+- charge_amount 잔액
+
+#### UserToken : 유저 토큰 테이블
+- uuid 사용자 식별키
+- is_active 토큰 활성화 여부
+- token_expiry 토큰 만료 시간
+
+#### Concert : 콘서트 테이블
+- concert_name 공연명
+- location 공연장소
+- total_seat 전체 좌석 수
+- run_time 런타임
+
+#### ConcertDate : 콘서트날짜 테이블
+- concert_date 날짜
+- available_seats 남은 좌석 수
+
+#### Seat : 좌석 테이블
+- seat_number 좌석번호
+- status 좌석 예약 상태
+- ticket_price 티켓 가격
+- reservated_date 예약일시
+
+#### Queue : 대기열 테이블
+- sequence 순서
+- status 상태
+
+#### Reservation : 예약 테이블
+- reservation_status 예약 상태
+- reservation_date 예약일시
+
+#### Payment : 결제 테이블
+- amount 결제금액
+- payment_status 결제 상태
+- payment_date 결제일시
+
+
 </details>
 
