@@ -180,3 +180,43 @@ sequenceDiagram
 
 ```
 </details>
+
+<details>
+  <summary>잔액 충전</summary>
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant 잔액충전API
+    participant Service
+    participant DB
+
+    User->>잔액충전API: 잔액 충전 요청
+    잔액충전API->>Service: 사용자 잔액 업데이트
+    Service->>DB: 사용자 잔액 업데이트
+    DB-->>Service: 업데이트 내역 반환
+    Service-->>잔액충전API: 충전 내역 확인
+    잔액충전API-->>User: 충전 내역 확인
+
+```
+</details>
+
+<details>
+  <summary>예매확정</summary>
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant 예매확정API
+    participant Service
+    participant DB
+
+    User->>예매확정API: 예매확정 처리 요청
+    예매확정API->>Service: 예매 확정 정보 생성
+    Service->>DB: 예매 확정 정보 생성
+    DB-->>Service: 예매 정보 반환
+    Service-->>예매확정API: 예매 정보 반환
+    예매확정API-->>User: 예매 정보 반환
+
+```
+</details>
