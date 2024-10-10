@@ -215,8 +215,11 @@ sequenceDiagram
     예매확정API->>Service: 예매 확정 정보 생성
     Service->>DB: 예매 확정 정보 생성
     DB-->>Service: 예매 정보 반환
+    Service->>DB: 토큰 만료 업데이트 요청
+    DB-->>Service: 토큰 상태 반환
     Service-->>예매확정API: 예매 정보 반환
     예매확정API-->>User: 예매 정보 반환
 
 ```
 </details>
+
