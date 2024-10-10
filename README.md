@@ -376,6 +376,40 @@ erDiagram
 </details>
 
 ### 패키지 구조 설계
-<details>
-  <summary>데이터베이스 설계</summary>
-</details>
+```
+└─src
+    ├─main
+    │  ├─java
+    │  │  └─com
+    │  │      └─hhplus
+    │  │          └─io
+    │  │              ├─common
+    │  │              │  └─config
+    │  │              ├─concert
+    │  │              │  ├─application
+    │  │              │  ├─domain
+    │  │              │  ├─persistence
+    │  │              │  └─web
+    │  │              ├─payment
+    │  │              │  ├─application
+    │  │              │  ├─domain
+    │  │              │  ├─persistence
+    │  │              │  └─web
+    │  │              ├─reservation
+    │  │              │  ├─application
+    │  │              │  ├─domain
+    │  │              │  ├─persistence
+    │  │              │  └─web
+    │  │              └─user
+    │  │                  ├─application
+    │  │                  ├─domain
+    │  │                  ├─persistence
+    │  │                  └─web
+    │  └─resources
+    └─test
+        └─java
+            └─com
+                └─hhplus
+                    └─io
+```
+
