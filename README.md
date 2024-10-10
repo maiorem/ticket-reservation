@@ -392,11 +392,7 @@ erDiagram
     │  │              │  ├─domain
     │  │              │  ├─persistence
     │  │              │  └─web
-    │  │              ├─payment
-    │  │              │  ├─application
-    │  │              │  ├─domain
-    │  │              │  ├─persistence
-    │  │              │  └─web
+    │  │              │      └─response
     │  │              ├─reservation
     │  │              │  ├─application
     │  │              │  ├─domain
@@ -407,11 +403,14 @@ erDiagram
     │  │                  ├─domain
     │  │                  ├─persistence
     │  │                  └─web
+    │  │                      ├─request
+    │  │                      └─response
     │  └─resources
     └─test
         └─java
             └─com
                 └─hhplus
                     └─io
+
 ```
 
