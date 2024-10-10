@@ -1,6 +1,15 @@
 # ticket-reservation
  콘서트 티켓 예약 시스템
 
+### 개발 기술 스택
+- **Language** : Java17
+- **Framework** : Spring Boot 3.3.4
+- **Database** : MySQL
+- **ORM** : JPA + QueryDSL
+- **API docs** : Swagger
+- **TEST** : Junit5
+
+
 ### 시스템 요구사항
 <details>
   <summary>API 요구 스펙</summary>
