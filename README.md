@@ -52,8 +52,8 @@
 
 ### [개발 마일스톤](https://github.com/users/maiorem/projects/2)
 
-### API 명세서
-[Postman API document](https://documenter.getpostman.com/view/16242103/2sAXxQfYAB)
+### API 
+[API 명세서](https://docs.google.com/spreadsheets/d/1ClRDu49AR7M-U53IVL--cpwFlNVCGPH9BHyfGmiLfE0/edit?usp=sharing)
 
 
 ### 콘서트 티켓예매 시스템 플로우 차트
