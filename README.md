@@ -56,7 +56,6 @@
 [API 명세서](https://docs.google.com/spreadsheets/d/1ClRDu49AR7M-U53IVL--cpwFlNVCGPH9BHyfGmiLfE0/edit?usp=sharing)
 
 
-
 ### 콘서트 티켓예매 시스템 플로우 차트
 ```mermaid
 graph TD
