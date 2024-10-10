@@ -80,9 +80,8 @@ graph TD
 ### 시퀀스 다이어그램 
 
 <details>
-  <summary>콘서트 예매 시스템 각 API 시퀀스 다이어그램</summary>
+  <summary>유저 토큰 발급</summary>
 
-#### 유저 토큰 발급
 ```mermaid
 sequenceDiagram
     actor  User
@@ -95,16 +94,16 @@ sequenceDiagram
     유저토큰발급API->>Service: 사용자 정보 조회
     Service->>DB: 사용자 정보 조회
     DB-->>Service: 사용자 정보 반환
-    Service-->>유저토큰발급API: 사용자 정보 반환
-    유저토큰발급API->>Service:대기열 생성
-    Service->>DB:대기열 생성
-    DB-->>Service:대기열 순서 반환
-    Service-->>유저토큰발급API:대기열 순서 반환
-
-    유저토큰발급API-)Service: 대기열 순서 조회
-    Service-)DB: 대기열 순서 조회
-    DB--)Service: 대기열 순서 정보 반환
-    Service--)유저토큰발급API: 대기열 순서 정보 반환
+    
+    Service->>DB: 토큰 및 대기열 순서 조회
+    DB-->>Service: 토큰 및 대기열 순서 정보 반환
+    Service-->>유저토큰발급API: 토큰 및 대기열 순서 정보 반환
+    alt 기존토큰 존재하지 않으면
+        유저토큰발급API->>Service:토큰 및 대기열 생성
+        Service->>DB:토큰 및 대기열 생성
+        DB-->>Service:토큰 및 대기열 순서 반환
+        Service-->>유저토큰발급API:토큰 및 대기열 순서 반환
+    end
     
     alt 대기가 종료됨
         유저토큰발급API->>Service: 유저 토큰 생성
@@ -114,101 +113,70 @@ sequenceDiagram
         유저토큰발급API-->>User: 유저 토큰 반환
     end
 ```
+</details>
 
-#### 예약 가능 날짜 및 선택 가능 좌석 조회
+<details>
+  <summary>예약 가능 날짜 및 선택 가능 좌석 조회</summary>
+
 ```mermaid
 sequenceDiagram
-    participant 사용자
+    actor User
     participant 예약가능날짜조회 API
-    participant Concert Table
-    participant ConcertDate Table
-    participant Seat Table
+    participant Service
+    participant DB
 
+    User->>예약가능날짜조회 API: 예약 가능 날짜 및 좌석 요청
+    예약가능날짜조회 API->>Service: 콘서트 정보 조회
+    Service->>DB: 콘서트 정보 조회 요청
+    DB -->> Service:콘서트 정보 반환
 
-    사용자->>예약가능날짜조회 API: 예약 가능 날짜 및 좌석 요청
-    예약가능날짜조회 API->>Concert Table: 콘서트 정보 조회
-    Concert Table->>예약가능날짜조회 API: 콘서트 정보 반환
-    예약가능날짜조회 API->>ConcertDate Table: 예약 가능 날짜 조회
-    ConcertDate Table-->>예약가능날짜조회 API: 예약 가능 날짜 반환
-    예약가능날짜조회 API->>Seat Table: 예약 가능 좌석 조회
-    Seat Table->>예약가능날짜조회 API: 예약 가능 좌석 반환
-    예약가능날짜조회 API-->>사용자: 예약 가능 날짜 및 좌석 수 반환
+    Service->>DB: 예약 가능 날짜 조회
+    DB-->>Service: 예약 가능 날짜 반환
+    Service->>DB: 날짜에 해당하는 예약가능좌석 요청
+    DB-->>Service: 예약 가능 좌석 반환
+    Service-->예약가능날짜조회 API:예약가능 날짜 및 좌석 정보 반환
+    예약가능날짜조회 API-->>User: 예약 가능 날짜 및 좌석 정보 반환
 
 ```
+</details>
 
-#### 좌석 예약 요청
+<details>
+  <summary>좌석 예약 요청</summary>
+
 ```mermaid
 sequenceDiagram
-    participant User
+    actor User
     participant 좌석예약API
-    participant Seat Table
+    participant Service
+    participant DB
 
-
-    %% 좌석 선택 및 임시 예약
     User->>좌석예약API: 선택한 날짜 및 좌석으로 예약 요청
-    좌석예약API->>Seat Table: 임시 예약 시간 및 상태 생성
-    Seat Table-->>좌석예약API: 임시 예약 완료
-    좌석예약API->>User: 임시예약완료 응답
+    좌석예약API->>Service:예약 요청
+    Service->>DB: 예약 시간 및 좌석 상태 업데이트
+    DB-->>Service: 예약 시간 및 좌석 상태 반환
+    Service-->>좌석예약API: 임시 예약 완료
+    좌석예약API->>User: 임시 예약 완료 응답
 
 ```
+</details>
 
-#### 잔액 조회
+<details>
+  <summary>잔액 조회</summary>
+
 ```mermaid
 sequenceDiagram
-    participant User
+    actor User
     participant 잔액 조회 API
-    participant UserService
+    participant Service
     participant DB
 
     %% 잔액 조회
     User->>잔액 조회 API: 결제 가능 금액 조회 요청
-    잔액 조회 API->>UserService: 사용자 잔액 조회
-    UserService->>DB: 잔액 정보 요청
-    DB-->>UserService: 잔액 정보 반환
-    UserService-->>잔액 조회 API: 잔액 정보 반환
+    잔액 조회 API->>Service: 사용자 잔액 조회
+    Service->>DB: 잔액 정보 요청
+    DB-->>Service: 잔액 정보 반환
+    Service-->>잔액 조회 API: 잔액 정보 반환
     잔액 조회 API-->>User: 결제 가능 금액 반환
 
 ```
-
-#### 잔액 충전
-```mermaid
-sequenceDiagram
-    participant 사용자
-    participant 잔액충전API
-    participant DB
-
-    사용자->>잔액충전API: 잔액 충전 요청
-    잔액충전API->>DB: 사용자 잔액 업데이트
-    DB-->>잔액충전API: 충전 확인
-    잔액충전API-->>사용자: 충전 확인
-
-```
-#### 결제
-```mermaid
-sequenceDiagram
-    participant 사용자
-    participant 결제API
-    participant DB
-
-    사용자->>결제API: 결제 처리 요청
-    결제API->>DB: 결제 정보 저장
-    DB-->>결제API: 결제 확인
-    결제API-->>사용자: 결제 확인
-
-```
-#### 예약 확인
-```mermaid
-sequenceDiagram
-    participant 사용자
-    participant 예약확인API
-    participant DB
-
-    사용자->>예약확인API: 예약 확인 요청
-    예약확인API->>DB: 예약 정보 조회
-    DB-->>예약확인API: 예약 정보 반환
-    예약확인API-->>사용자: 예약 확인 정보 반환
-
-```
-
 </details>
-
