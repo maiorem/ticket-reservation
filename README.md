@@ -384,7 +384,9 @@ erDiagram
     │  │      └─hhplus
     │  │          └─io
     │  │              ├─common
-    │  │              │  └─config
+    │  │              │  ├─config
+    │  │              │  ├─exception
+    │  │              │  └─response
     │  │              ├─concert
     │  │              │  ├─application
     │  │              │  ├─domain
