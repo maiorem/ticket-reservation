@@ -1,6 +1,15 @@
 # ticket-reservation
  콘서트 티켓 예약 시스템
 
+### 개발 기술 스택
+- **Language** : Java17
+- **Framework** : Spring Boot 3.3.4
+- **Database** : MySQL
+- **ORM** : JPA + QueryDSL
+- **API docs** : Swagger
+- **TEST** : Junit5
+
+
 ### 시스템 요구사항
 <details>
   <summary>API 요구 스펙</summary>
@@ -42,6 +51,10 @@
 </details>
 
 ### [개발 마일스톤](https://github.com/users/maiorem/projects/2)
+
+### API 명세서
+[Postman API document](https://documenter.getpostman.com/view/16242103/2sAXxQfYAB)
+
 
 ### 콘서트 티켓예매 시스템 플로우 차트
 ```mermaid
@@ -222,4 +235,186 @@ sequenceDiagram
 
 ```
 </details>
+
+
+
+### ERD
+<details>
+  <summary>데이터베이스 설계</summary>
+
+```mermaid
+erDiagram
+    User {
+        INT user_id PK
+        STRING uuid
+        STRING username
+        DECIMAL charge_amount
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    UserToken {
+        INT token_id PK
+        INT user_id FK
+        STRING uuid
+        BOOLEAN is_active
+        DATETIME token_expiry
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Concert {
+        INT concert_id PK
+        STRING concert_name
+        STRING location
+        INT total_seats
+        INT run_time
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    ConcertDate {
+        INT concert_date_id PK
+        INT concert_id FK
+        DATETIME concert_date
+        INT available_seats
+    }
+
+    Seat {
+        INT seat_id PK 
+        INT concert__id FK 
+        INT concert_date_id FK
+        STRING seat_number
+        STRING status
+        DECIMAL ticket_price  
+        DATETIME reservated_date
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Queue {
+        INT queue_id PK
+        INT user_id FK
+        INT sequence
+        STRING status
+        DATETIME created_at
+        DATETIME deleted_at
+    }
+    
+    Reservation {
+        INT reservation_id PK
+        INT user_id FK
+        INT concert_id FK
+        INT seat_id FK
+        STRING reservation_status
+        DATETIME reservation_date
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    Payment {
+        INT payment_id PK
+        INT user_id FK
+        INT concert_id FK
+        DECIMAL amount
+        DATETIME payment_date
+        STRING payment_status
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+
+    User ||--o| UserToken : ""
+    User ||--o{ Payment : ""
+    User ||--o| Queue : ""
+    User ||--o{ Reservation : ""
+    Concert ||--o{ ConcertDate : ""
+    Concert ||--o{ Seat : ""
+    Concert ||--o{ Reservation : ""
+    Seat ||--o{ Reservation : ""
+    ConcertDate ||--o{ Seat : "" 
+    Concert ||--o{ Payment : ""
+
+``` 
+
+#### User : 사용자 테이블
+- uuid 사용자 식별키
+- username 사용자 이름
+- charge_amount 잔액
+
+#### UserToken : 유저 토큰 테이블
+- uuid 사용자 식별키
+- is_active 토큰 활성화 여부
+- token_expiry 토큰 만료 시간
+
+#### Concert : 콘서트 테이블
+- concert_name 공연명
+- location 공연장소
+- total_seat 전체 좌석 수
+- run_time 런타임
+
+#### ConcertDate : 콘서트날짜 테이블
+- concert_date 날짜
+- available_seats 남은 좌석 수
+
+#### Seat : 좌석 테이블
+- seat_number 좌석번호
+- status 좌석 예약 상태
+- ticket_price 티켓 가격
+- reservated_date 예약일시
+
+#### Queue : 대기열 테이블
+- sequence 순서
+- status 상태
+
+#### Reservation : 예약 테이블
+- reservation_status 예약 상태
+- reservation_date 예약일시
+
+#### Payment : 결제 테이블
+- amount 결제금액
+- payment_status 결제 상태
+- payment_date 결제일시
+
+
+</details>
+
+### 패키지 구조 설계
+```
+└─src
+    ├─main
+    │  ├─java
+    │  │  └─com
+    │  │      └─hhplus
+    │  │          └─io
+    │  │              ├─common
+    │  │              │  ├─config
+    │  │              │  ├─exception
+    │  │              │  └─response
+    │  │              ├─concert
+    │  │              │  ├─application
+    │  │              │  ├─domain
+    │  │              │  ├─persistence
+    │  │              │  └─web
+    │  │              │      └─response
+    │  │              ├─reservation
+    │  │              │  ├─application
+    │  │              │  ├─domain
+    │  │              │  ├─persistence
+    │  │              │  └─web
+    │  │              └─user
+    │  │                  ├─application
+    │  │                  ├─domain
+    │  │                  ├─persistence
+    │  │                  └─web
+    │  │                      ├─request
+    │  │                      └─response
+    │  └─resources
+    └─test
+        └─java
+            └─com
+                └─hhplus
+                    └─io
+
+```
 

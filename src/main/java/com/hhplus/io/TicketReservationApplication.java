@@ -1,4 +1,4 @@
-package com.hhplus.ticket;
+package com.hhplus.io;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
