@@ -226,6 +226,9 @@ sequenceDiagram
 
 
 ### ERD
+<details>
+  <summary>데이터베이스 설계</summary>
+
 ```mermaid
 erDiagram
     User {
@@ -320,5 +323,5 @@ erDiagram
     Concert ||--o{ Payment : ""
 
 ```
-
+</details>
 
