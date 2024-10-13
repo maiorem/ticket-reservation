@@ -20,6 +20,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserByUuid(String uuid) {
         Optional<User> optionalUser = userJpaRepository.findByUuid(uuid);
-        return optionalUser.orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+        return optionalUser.orElse(null);
+    }
+
+    @Override
+    public User generateUser(User user) {
+        return userJpaRepository.save(user);
     }
 }
