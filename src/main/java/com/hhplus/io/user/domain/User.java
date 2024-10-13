@@ -1,4 +1,30 @@
 package com.hhplus.io.user.domain;
 
-public class User {
+import com.hhplus.io.common.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@Getter @Setter
+@RequiredArgsConstructor
+@Entity
+public class User extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+
+    private String username;
+
+    private String uuid;
+
+    private int chargeAmount;
+
+
 }
