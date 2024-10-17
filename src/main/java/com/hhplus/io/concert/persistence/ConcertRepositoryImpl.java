@@ -19,4 +19,9 @@ public class ConcertRepositoryImpl implements ConcertRepository {
         Optional<Concert> optionalConcert = jpaRepository.findByConcertId(concertId);
         return optionalConcert.orElse(null);
     }
+
+    @Override
+    public Concert save(Concert concert) {
+        return jpaRepository.save(concert);
+    }
 }

@@ -25,7 +25,7 @@ public class SeatInfo {
     }
 
     public void updateStatusAndReservationTime(Long seatId, SeatStatus seatStatus, LocalDateTime updateTime) {
-        Seat seat = seatRepository.getSeat(seatId);
+        Seat seat = seatRepository.getSeatByStatusWithLock(seatId, String.valueOf(SeatStatus.AVAILABLE));
         seat.updateSeatStatus(String.valueOf(seatStatus));
         seat.updateReservationTime(updateTime);
     }

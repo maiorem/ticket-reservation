@@ -23,4 +23,9 @@ public class AmountRepositoryImpl implements AmountRepository {
         Optional<Amount> optionalAmount = jpaRepository.findByUserId(userId);
         return optionalAmount.orElse(null);
     }
+
+    @Override
+    public Amount save(Amount amount) {
+        return jpaRepository.save(amount);
+    }
 }

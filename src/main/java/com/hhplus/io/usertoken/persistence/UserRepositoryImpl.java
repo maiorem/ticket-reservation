@@ -21,4 +21,9 @@ public class UserRepositoryImpl implements UserRepository {
         return optionalUser.orElse(null);
     }
 
+    @Override
+    public User saveUser(User user) {
+        return userJpaRepository.save(user);
+    }
+
 }

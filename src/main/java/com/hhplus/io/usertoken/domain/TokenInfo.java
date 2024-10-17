@@ -58,7 +58,7 @@ public class TokenInfo {
                 .userId(user.getUserId())
                 .token(token)
                 .isActive(true)
-                .tokenExpire(LocalDateTime.now())
+                .tokenExpire(LocalDateTime.now().plusHours(1))
                 .build();
         return userTokenRepository.generateToken(builder);
     }
