@@ -1,4 +1,4 @@
-package com.hhplus.io.user.web.response;
+package com.hhplus.io.usertoken.web.response;
 
 
 public record RetrieveChargeAmountResponse(int chartAmount) {

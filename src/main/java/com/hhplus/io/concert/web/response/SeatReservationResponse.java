@@ -1,4 +1,4 @@
-package com.hhplus.io.reservation.web.response;
+package com.hhplus.io.concert.web.response;
 
 import com.hhplus.io.concert.domain.SeatStatus;
 

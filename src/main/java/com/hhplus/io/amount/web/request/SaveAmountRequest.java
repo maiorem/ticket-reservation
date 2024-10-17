@@ -1,4 +1,4 @@
-package com.hhplus.io.user.web.request;
+package com.hhplus.io.amount.web.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

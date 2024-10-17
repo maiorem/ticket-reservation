@@ -1,4 +1,4 @@
-package com.hhplus.io.reservation.web.request;
+package com.hhplus.io.concert.web.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
