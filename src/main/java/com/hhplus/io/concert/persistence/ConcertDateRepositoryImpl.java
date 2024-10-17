@@ -1,7 +1,6 @@
 package com.hhplus.io.concert.persistence;
 
 import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +24,11 @@ public class ConcertDateRepositoryImpl implements ConcertDateRepository {
     public ConcertDate getConcertDate(Long concertDateId) {
         Optional<ConcertDate> concertDate = jpaRepository.findByConcertDateId(concertDateId);
         return concertDate.orElse(null);
+    }
+
+    @Override
+    public ConcertDate save(ConcertDate date) {
+        return jpaRepository.save(date);
     }
 
 }

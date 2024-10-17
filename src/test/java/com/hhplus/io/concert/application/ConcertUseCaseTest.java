@@ -2,11 +2,8 @@ package com.hhplus.io.concert.application;
 
 import com.hhplus.io.concert.domain.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.persistence.ConcertDateRepository;
-import com.hhplus.io.concert.persistence.ConcertRepository;
 import com.hhplus.io.concert.persistence.SeatRepository;
-import com.hhplus.io.usertoken.persistence.UserRepository;
-import com.hhplus.io.usertoken.persistence.UserTokenRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ConcertUseCaseTest {
 
     @Autowired
@@ -121,20 +119,17 @@ class ConcertUseCaseTest {
 
             List<Long> seatIdList = List.of(1L); // 동일한 좌석에 대해 동시에 예약
 
-            Runnable reserveTask = () -> {
-                try {
-                    latch.await(); // 모든 스레드가 동시에 시작되도록 대기
-                    concertUseCase.tempReserveSeat(seatIdList); // 좌석 예약 시도
-                    successCount.incrementAndGet();
-                } catch (RuntimeException | InterruptedException e) {
-                    // 예외 발생 시 처리
-                    failureCount.incrementAndGet();
-                    System.out.println("Reservation failed: " + e.getMessage());
-                }
-            };
-
-            for (int i = 0; i < threadCount; i++) {
-                executorService.submit(reserveTask); // 세 개의 스레드 실행
+            for (int i = 0; i < 3; i++) {
+                executorService.submit(() -> {
+                    try {
+                        latch.await(); // 모든 스레드가 동시에 시작되도록 대기
+                        concertUseCase.tempReserveSeat(seatIdList); // 예약 시도
+                        successCount.incrementAndGet();
+                    } catch (Exception e) {
+                        failureCount.incrementAndGet();
+                        System.out.println("Reservation failed: " + e.getMessage());
+                    }
+                });
                 latch.countDown(); // 모든 스레드가 시작을 기다림
             }
 

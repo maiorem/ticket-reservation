@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 public interface AmountRepository {
 
     Amount getAmountByUser(Long userId);
+
+    Amount save(Amount amount);
 }

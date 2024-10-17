@@ -11,4 +11,5 @@ public interface ConcertDateRepository {
 
     ConcertDate getConcertDate(Long concertDateId);
 
+    ConcertDate save(ConcertDate date);
 }
