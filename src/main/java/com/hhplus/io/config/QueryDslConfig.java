@@ -1,4 +1,4 @@
-package com.hhplus.io.common.config;
+package com.hhplus.io.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

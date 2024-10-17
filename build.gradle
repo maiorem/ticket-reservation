@@ -71,8 +71,3 @@ sourceSets {
     main.java.srcDirs += [ generated ]
 }
 
-
-clean {
-    delete file(generated)
-}
-
