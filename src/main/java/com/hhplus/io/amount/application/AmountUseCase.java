@@ -5,10 +5,10 @@ import com.hhplus.io.amount.domain.service.AmountService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AmountUserCase {
+public class AmountUseCase {
 
     private final AmountService amountService;
-    public AmountUserCase(AmountService amountService) {
+    public AmountUseCase(AmountService amountService) {
         this.amountService = amountService;
     }
 
