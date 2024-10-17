@@ -1,5 +1,6 @@
 package com.hhplus.io.concert.persistence;
 
+import com.hhplus.io.concert.domain.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Seat;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,8 @@ public interface SeatRepository {
     List<Seat> getAllSeatByDate(Long concertDateId, String status);
 
     Seat getSeat(Long seatId);
+
+    Seat getSeatByStatusWithLock(Long seatId, String status);
+
+    Seat saveSeat(Seat seat1);
 }
