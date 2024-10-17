@@ -1,4 +1,12 @@
 package com.hhplus.io.concert.persistence;
 
-public interface ConcertJpaRepository {
+import com.hhplus.io.concert.domain.entity.Concert;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface ConcertJpaRepository extends JpaRepository<Concert, Long> {
+    Optional<Concert> findByConcertId(Long concertId);
 }

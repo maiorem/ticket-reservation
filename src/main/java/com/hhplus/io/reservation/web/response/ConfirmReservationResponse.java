@@ -2,14 +2,16 @@ package com.hhplus.io.reservation.web.response;
 
 import com.hhplus.io.concert.web.response.SeatDTO;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ConfirmReservationResponse(
         String userName,
         String concertName,
-        LocalDate reserveDate,
+        LocalDateTime reserveDate,
+        LocalDateTime confirmDate,
         int reservePeople,
+        int payment,
         List<SeatDTO> seatList
 ) {
 }
