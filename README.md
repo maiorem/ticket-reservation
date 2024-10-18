@@ -347,43 +347,43 @@ erDiagram
 
 ``` 
 
-#### User : 사용자 테이블
-- uuid 사용자 식별키
+#### user : 사용자 테이블
 - username 사용자 이름
-- charge_amount 잔액
 
-#### UserToken : 유저 토큰 테이블
-- uuid 사용자 식별키
+#### usertoken : 유저 토큰 테이블
+- token 사용자 식별키
 - is_active 토큰 활성화 여부
 - token_expiry 토큰 만료 시간
 
-#### Concert : 콘서트 테이블
+#### concert : 콘서트 테이블
 - concert_name 공연명
-- location 공연장소
+- theater 극장
 - total_seat 전체 좌석 수
-- run_time 런타임
+- start_at 시작날짜
+- end_at 종료날짜
 
-#### ConcertDate : 콘서트날짜 테이블
+#### concert_date : 콘서트날짜 테이블
 - concert_date 날짜
 - available_seats 남은 좌석 수
 
-#### Seat : 좌석 테이블
+#### seat : 좌석 테이블
 - seat_number 좌석번호
 - status 좌석 예약 상태
 - ticket_price 티켓 가격
 - reservated_date 예약일시
 
-#### Queue : 대기열 테이블
+#### waitiing_queue : 대기열 테이블
 - sequence 순서
 - status 상태
 
-#### Reservation : 예약 테이블
+#### reservation : 예약 테이블
 - reservation_status 예약 상태
 - reservation_date 예약일시
 
-#### Payment : 결제 테이블
+#### reservation_seat : 예약좌석 테이블
+
+#### amount : 잔액 테이블
 - amount 결제금액
-- payment_status 결제 상태
 - payment_date 결제일시
 
 
