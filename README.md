@@ -392,39 +392,52 @@ erDiagram
 ### 패키지 구조 설계
 ```
 └─src
-    ├─main
-    │  ├─java
-    │  │  └─com
-    │  │      └─hhplus
-    │  │          └─io
-    │  │              ├─common
-    │  │              │  ├─config
-    │  │              │  ├─exception
-    │  │              │  └─response
-    │  │              ├─concert
-    │  │              │  ├─application
-    │  │              │  ├─domain
-    │  │              │  ├─persistence
-    │  │              │  └─web
-    │  │              │      └─response
-    │  │              ├─reservation
-    │  │              │  ├─application
-    │  │              │  ├─domain
-    │  │              │  ├─persistence
-    │  │              │  └─web
-    │  │              └─user
-    │  │                  ├─application
-    │  │                  ├─domain
-    │  │                  ├─persistence
-    │  │                  └─web
-    │  │                      ├─request
-    │  │                      └─response
-    │  └─resources
-    └─test
-        └─java
-            └─com
-                └─hhplus
-                    └─io
+    └─main
+       └─java
+          └─com
+              └─hhplus
+                  └─io
+                      ├─amount
+                      │  ├─application
+                      │  ├─domain
+                      │  │  ├─entity
+                      │  │  └─service
+                      │  ├─persistence
+                      │  └─web
+                      │      ├─request
+                      │      └─response
+                      ├─common
+                      │  ├─exception
+                      │  └─response
+                      ├─concert
+                      │  ├─application
+                      │  ├─domain
+                      │  │  ├─entity
+                      │  │  └─service
+                      │  ├─persistence
+                      │  └─web
+                      │      ├─request
+                      │      └─response
+                      ├─config
+                      ├─reservation
+                      │  ├─application
+                      │  ├─domain
+                      │  │  ├─entity
+                      │  │  └─service
+                      │  ├─persistence
+                      │  └─web
+                      │      ├─request
+                      │      └─response
+                      └─usertoken
+                          ├─application
+                          ├─domain
+                          │  ├─entity
+                          │  └─service
+                          ├─persistence
+                          └─web
+                              ├─request
+                              └─response
+
 
 ```
 
