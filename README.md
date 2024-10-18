@@ -245,96 +245,105 @@ sequenceDiagram
 
 ```mermaid
 erDiagram
-    User {
-        INT user_id PK
-        STRING uuid
-        STRING username
-        DECIMAL charge_amount
+    user {
+        BIGINT user_id PK
+        VARCHAR username
         DATETIME created_at
         DATETIME updated_at
     }
 
-    UserToken {
-        INT token_id PK
-        INT user_id FK
-        STRING uuid
+    usertoken {
+        BIGINT token_id PK
+        BIGINT user_id FK
+        VARCHAR token
         BOOLEAN is_active
         DATETIME token_expiry
         DATETIME created_at
         DATETIME updated_at
     }
 
-    Concert {
-        INT concert_id PK
-        STRING concert_name
-        STRING location
+    concert {
+        BIGINT concert_id PK
+        VARCHAR concert_name
+        VARCHAR theater
         INT total_seats
         INT run_time
         DATETIME created_at
         DATETIME updated_at
     }
 
-    ConcertDate {
-        INT concert_date_id PK
-        INT concert_id FK
+    concert_date {
+        BIGINT concert_date_id PK
+        BIGINT concert_id FK
         DATETIME concert_date
         INT available_seats
     }
 
-    Seat {
-        INT seat_id PK 
-        INT concert__id FK 
-        INT concert_date_id FK
-        STRING seat_number
-        STRING status
-        DECIMAL ticket_price  
+    seat {
+        BIGINT seat_id PK 
+        BIGINT concert__id FK 
+        BIGINT concert_date_id FK
+        VARCHAR seat_number
+        VARCHAR status
+        INT ticket_price  
         DATETIME reservated_date
         DATETIME created_at
         DATETIME updated_at
     }
 
-    Queue {
-        INT queue_id PK
-        INT user_id FK
+    waiting_queue {
+        BIGINT queue_id PK
+        BIGINT user_id FK
         INT sequence
-        STRING status
+        VARCHAR status
         DATETIME created_at
         DATETIME deleted_at
     }
     
-    Reservation {
-        INT reservation_id PK
-        INT user_id FK
-        INT concert_id FK
-        INT seat_id FK
-        STRING reservation_status
+    reservation {
+        BIGINT reservation_id PK
+        BIGINT user_id FK
+        BIGINT concert_id FK
+        BIGINT seat_id FK
         DATETIME reservation_date
         DATETIME created_at
         DATETIME updated_at
     }
 
-    Payment {
-        INT payment_id PK
-        INT user_id FK
-        INT concert_id FK
-        DECIMAL amount
+    reservation_seat {
+        BIGINT reservation_seat_id PK
+        BIGINT reservation_id FK
+        BIGINT user_id FK
+        BIGINT seat_id FK
+        DATETIME reservation_date
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    amount {
+        BIGINT amount_id PK
+        BIGINT user_id FK
+        BIGINT concert_id FK
+        INT amount
         DATETIME payment_date
-        STRING payment_status
         DATETIME created_at
         DATETIME updated_at
     }
 
 
-    User ||--o| UserToken : ""
-    User ||--o{ Payment : ""
-    User ||--o| Queue : ""
-    User ||--o{ Reservation : ""
-    Concert ||--o{ ConcertDate : ""
-    Concert ||--o{ Seat : ""
-    Concert ||--o{ Reservation : ""
-    Seat ||--o{ Reservation : ""
-    ConcertDate ||--o{ Seat : "" 
-    Concert ||--o{ Payment : ""
+    user ||--o| usertoken : ""
+    user ||--o{ amount : ""
+    user ||--o| waiting_queue : ""
+    user ||--o{ reservation : ""
+    user ||--o{ reservation_seat : ""
+    concert ||--o{ concert_date : ""
+    concert ||--o{ seat : ""
+    concert ||--o{ reservation : ""
+    seat ||--o{ reservation : ""
+    seat ||--o{ reservation_seat : ""
+    concertDate ||--o{ seat : "" 
+    concert ||--o{ amount : ""
+    reservation ||--o{ reservation_seat : ""
 
 ``` 
 
