@@ -1,4 +1,4 @@
-package com.hhplus.io.usertoken.domain.service;
+package com.hhplus.io.usertoken.service;
 
 import com.hhplus.io.usertoken.domain.TokenInfo;
 import com.hhplus.io.usertoken.domain.entity.User;
@@ -29,5 +29,9 @@ public class UserTokenService {
     public boolean isExpireToken(String token) {
         return tokenInfo.isExpireToken(token);
 
+    }
+
+    public void expireToken(UserToken userToken) {
+        tokenInfo.expireToken(userToken);
     }
 }

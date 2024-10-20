@@ -1,4 +1,4 @@
-package com.hhplus.io.concert.domain.service;
+package com.hhplus.io.concert.service;
 
 import com.hhplus.io.concert.domain.ConcertInfo;
 import com.hhplus.io.concert.domain.entity.Concert;

@@ -1,4 +1,4 @@
-package com.hhplus.io.amount.persistence;
+package com.hhplus.io.amount.domain.repository;
 
 import com.hhplus.io.amount.domain.entity.Amount;
 import org.springframework.stereotype.Repository;

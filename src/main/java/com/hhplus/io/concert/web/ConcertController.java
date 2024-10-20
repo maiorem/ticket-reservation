@@ -1,16 +1,15 @@
 package com.hhplus.io.concert.web;
 
-import com.hhplus.io.common.exception.TokenExpireException;
 import com.hhplus.io.common.response.ApiResponse;
 import com.hhplus.io.concert.application.ConcertUseCase;
-import com.hhplus.io.concert.domain.SeatStatus;
+import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.web.request.AvailableDateRequest;
 import com.hhplus.io.concert.web.response.AvailableDateDTO;
 import com.hhplus.io.concert.web.response.AvailableDateResponse;
 import com.hhplus.io.concert.web.response.SeatDTO;
 import com.hhplus.io.concert.web.request.SeatReservationRequest;
 import com.hhplus.io.concert.web.response.SeatReservationResponse;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.usertoken.service.UserTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 

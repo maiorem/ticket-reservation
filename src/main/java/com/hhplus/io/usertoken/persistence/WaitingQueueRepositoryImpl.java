@@ -1,6 +1,7 @@
 package com.hhplus.io.usertoken.persistence;
 
-import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
+import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;

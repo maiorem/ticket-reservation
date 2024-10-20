@@ -1,7 +1,7 @@
 package com.hhplus.io.amount.domain;
 
 import com.hhplus.io.amount.domain.entity.Amount;
-import com.hhplus.io.amount.persistence.AmountRepository;
+import com.hhplus.io.amount.domain.repository.AmountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;

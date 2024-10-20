@@ -2,8 +2,9 @@ package com.hhplus.io.usertoken.domain;
 
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.persistence.UserRepository;
-import com.hhplus.io.usertoken.persistence.WaitingQueueRepository;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.usertoken.domain.repository.UserRepository;
+import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.hhplus.io.reservation.domain.service;
+package com.hhplus.io.reservation.service;
 
 import com.hhplus.io.reservation.domain.ReservationInfo;
 import com.hhplus.io.reservation.domain.ReservationSeatInfo;

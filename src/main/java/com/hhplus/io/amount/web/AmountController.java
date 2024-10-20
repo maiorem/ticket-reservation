@@ -1,11 +1,10 @@
 package com.hhplus.io.amount.web;
 
-import com.hhplus.io.common.exception.TokenExpireException;
 import com.hhplus.io.common.response.ApiResponse;
 import com.hhplus.io.amount.application.AmountUseCase;
 import com.hhplus.io.amount.web.request.SaveAmountRequest;
 import com.hhplus.io.amount.web.response.SaveAmountResponse;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.usertoken.service.UserTokenService;
 import com.hhplus.io.usertoken.web.request.TokenRequest;
 import com.hhplus.io.usertoken.web.response.RetrieveChargeAmountResponse;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,4 +1,4 @@
-package com.hhplus.io.usertoken.domain.service;
+package com.hhplus.io.usertoken.service;
 
 import com.hhplus.io.usertoken.domain.UserInfo;
 import com.hhplus.io.usertoken.domain.entity.User;

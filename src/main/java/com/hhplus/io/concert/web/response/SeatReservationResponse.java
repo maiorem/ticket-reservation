@@ -1,6 +1,6 @@
 package com.hhplus.io.concert.web.response;
 
-import com.hhplus.io.concert.domain.SeatStatus;
+import com.hhplus.io.concert.domain.entity.SeatStatus;
 
 import java.time.LocalDateTime;
 

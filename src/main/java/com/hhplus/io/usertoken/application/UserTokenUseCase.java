@@ -1,17 +1,20 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.common.exception.TokenExpireException;
-import com.hhplus.io.common.exception.TokenNotVaildationException;
-import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
+import com.hhplus.io.common.exception.error.TokenExpireException;
+import com.hhplus.io.common.exception.error.TokenNotVaildationException;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.domain.service.UserService;
+import com.hhplus.io.usertoken.service.UserService;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
-import com.hhplus.io.usertoken.domain.service.WaitingQueueService;
+import com.hhplus.io.usertoken.service.UserTokenService;
+import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 @Service
@@ -21,8 +24,10 @@ public class UserTokenUseCase {
     private final UserTokenService userTokenService;
     private final WaitingQueueService waitingQueueService;
 
-    //서비스 수용 인원 관리
-    private final long MAX_PROCESSING_VOLUME = 50;
+    //서비스 수용 인원 관리 (1000명으로 임시 설정)
+    private final long MAX_PROCESSING_VOLUME = 1000;
+    //서비스 이용 만료 시간 (한시간으로 임시 설정)
+    private final int MAX_SERVICE_USABLE_TIME = 1;
 
     public UserTokenUseCase(UserService userService, UserTokenService userTokenService, WaitingQueueService waitingQueueService) {
         this.userService = userService;
@@ -55,7 +60,7 @@ public class UserTokenUseCase {
     }
 
     /**
-     * 대기열 수동 업데이트 (순서가 밀리거나 이상 발생 시 실행)
+     * 대기열 순서 업데이트 (순서가 밀리거나 이상 발생 시 실행)
      * - 서비스 수용인원 max 체크하여 현재 서비스 진행 중인(status = PROCESS) 대기열 갯수 유지
      * - 갯수가 변경되면 빠진 수만큼 대기 중인(status = WAITING) 대기열 PROCESS로 변경 후 순서 업데이트
      */
@@ -67,6 +72,19 @@ public class UserTokenUseCase {
             waitingQueueService.updateAllWaitingQueue(updateProcess);
         }
     }
+
+    /**
+     * 만료 대기열 삭제
+     * - 전체 대기열을 조회하여 일정 시간이 지나도 프로세스 진행이 되지 않는 대기열 자동 삭제
+     * (일정시간 : 1시간으로 임시 설정)
+     */
+    @Transactional
+    public void deleteExpiryWaitingQueue(){
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        //최대 대기 1시간
+        waitingQueueService.updateAllQueueStatusByTime(now, MAX_SERVICE_USABLE_TIME, WaitingQueueStatus.CANCEL);
+    }
+
 
     /**
      * 사용자 대기열 순서 조회
