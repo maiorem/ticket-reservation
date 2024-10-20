@@ -13,10 +13,12 @@ import com.hhplus.io.concert.service.SeatService;
 import com.hhplus.io.reservation.domain.entity.Reservation;
 import com.hhplus.io.reservation.domain.entity.ReservationSeat;
 import com.hhplus.io.reservation.service.ReservationService;
+import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import com.hhplus.io.usertoken.service.UserService;
+import com.hhplus.io.usertoken.service.UserTokenService;
 import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -38,8 +40,9 @@ public class ReservationUseCase {
     private final ConcertService concertService;
     private final ConcertDateService concertDateService;
     private final AmountService amountService;
+    private final UserTokenService userTokenService;
 
-    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService) {
+    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService, UserTokenService userTokenService) {
         this.reservationService = reservationService;
         this.seatService = seatService;
         this.waitingQueueService = waitingQueueService;
@@ -47,6 +50,7 @@ public class ReservationUseCase {
         this.concertService = concertService;
         this.concertDateService = concertDateService;
         this.amountService = amountService;
+        this.userTokenService = userTokenService;
     }
 
     /**
@@ -89,7 +93,7 @@ public class ReservationUseCase {
      * 예약확정 내역 저장
      */
     @Transactional
-    public ConfirmReservationCommand confirmReservation(Long userId, Long concertId, Long concertDateId, int people, List<Long> seatList, int payment) {
+    public ConfirmReservationCommand confirmReservation(String token, Long userId, Long concertId, Long concertDateId, int people, List<Long> seatList, int payment) {
         //사용자 조회
         User user = userService.getUser(userId);
 
@@ -125,10 +129,9 @@ public class ReservationUseCase {
         WaitingQueue queue = waitingQueueService.getWaitingQueueByUser(userId, WaitingQueueStatus.PROCESS);
         waitingQueueService.updateStatus(queue, WaitingQueueStatus.FINISHED);
 
-        //대기 순서 전체 업데이트
-        Long count = waitingQueueService.countWaitingQueueByStatus(WaitingQueueStatus.PROCESS);
-        long updateProcess = MAX_PROCESSING_VOLUME - count;
-        waitingQueueService.updateAllWaitingQueue(updateProcess);
+        //토큰 만료
+        UserToken userToken = userTokenService.getUserByToken(token);
+        userTokenService.expireToken(userToken);
 
         return ConfirmReservationCommand.of(
                 user.getUsername(),

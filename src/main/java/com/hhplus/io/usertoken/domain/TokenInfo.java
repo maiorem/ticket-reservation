@@ -62,4 +62,8 @@ public class TokenInfo {
                 .build();
         return userTokenRepository.generateToken(builder);
     }
+
+    public void expireToken(UserToken userToken) {
+        userToken.updateIsActive(false);
+    }
 }

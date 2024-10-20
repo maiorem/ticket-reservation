@@ -30,4 +30,8 @@ public class UserTokenService {
         return tokenInfo.isExpireToken(token);
 
     }
+
+    public void expireToken(UserToken userToken) {
+        tokenInfo.expireToken(userToken);
+    }
 }

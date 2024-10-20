@@ -6,6 +6,7 @@ import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -55,4 +56,13 @@ public class WaitingQueueInfo {
 
     }
 
+    public void updateQueueStatusByTime(LocalDateTime now, int plustime, WaitingQueueStatus status) {
+        List<WaitingQueue> queueList = waitingQueueRepository.getAllQueueByStatus(WaitingQueueStatus.WAITING);
+        for (WaitingQueue queue : queueList) {
+            if(now.isAfter(queue.getCreatedAt().plusHours(plustime))) {
+                queue.udpateStatus(String.valueOf(status));
+            }
+        }
+
+    }
 }

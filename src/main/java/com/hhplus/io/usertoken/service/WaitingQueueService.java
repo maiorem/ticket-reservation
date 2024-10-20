@@ -6,6 +6,8 @@ import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class WaitingQueueService {
 
@@ -41,4 +43,7 @@ public class WaitingQueueService {
         waitingQueueInfo.updateAllWaitingQueue(updateProcess);
     }
 
+    public void updateAllQueueStatusByTime(LocalDateTime now, int plustime, WaitingQueueStatus status) {
+        waitingQueueInfo.updateQueueStatusByTime(now, plustime, status);
+    }
 }
