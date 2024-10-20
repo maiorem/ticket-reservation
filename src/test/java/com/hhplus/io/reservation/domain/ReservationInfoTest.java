@@ -1,14 +1,12 @@
 package com.hhplus.io.reservation.domain;
 
 import com.hhplus.io.concert.domain.ConcertDateStatus;
-import com.hhplus.io.concert.domain.entity.Concert;
-import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.hhplus.io.concert.persistence.ConcertDateRepository;
-import com.hhplus.io.concert.persistence.ConcertRepository;
-import com.hhplus.io.reservation.domain.entity.Reservation;
-import com.hhplus.io.reservation.persistence.ReservationRepository;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.persistence.UserRepository;
+import com.hhplus.io.concert.domain.Concert;
+import com.hhplus.io.concert.domain.ConcertDate;
+import com.hhplus.io.concert.domain.ConcertDateRepository;
+import com.hhplus.io.concert.domain.ConcertRepository;
+import com.hhplus.io.usertoken.domain.User;
+import com.hhplus.io.usertoken.domain.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

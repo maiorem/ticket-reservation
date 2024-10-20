@@ -1,7 +1,5 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.persistence.SeatRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

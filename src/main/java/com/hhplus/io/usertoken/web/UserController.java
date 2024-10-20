@@ -1,10 +1,9 @@
 package com.hhplus.io.usertoken.web;
 
 
-import com.hhplus.io.common.exception.TokenExpireException;
 import com.hhplus.io.common.response.ApiResponse;
 import com.hhplus.io.usertoken.application.UserTokenUseCase;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.usertoken.service.UserTokenService;
 import com.hhplus.io.usertoken.web.request.TokenRequest;
 import com.hhplus.io.usertoken.web.response.UserTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;

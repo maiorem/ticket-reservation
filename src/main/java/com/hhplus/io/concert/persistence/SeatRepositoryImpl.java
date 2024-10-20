@@ -1,7 +1,7 @@
 package com.hhplus.io.concert.persistence;
 
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.hhplus.io.concert.domain.Seat;
+import com.hhplus.io.concert.domain.SeatRepository;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;

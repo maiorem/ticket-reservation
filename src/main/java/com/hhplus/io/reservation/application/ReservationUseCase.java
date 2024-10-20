@@ -1,23 +1,23 @@
 package com.hhplus.io.reservation.application;
 
-import com.hhplus.io.amount.domain.service.AmountService;
+import com.hhplus.io.amount.service.AmountService;
 import com.hhplus.io.concert.application.SeatUseCaseDTO;
 import com.hhplus.io.concert.domain.ConcertDateStatus;
 import com.hhplus.io.concert.domain.SeatStatus;
-import com.hhplus.io.concert.domain.entity.Concert;
-import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.domain.service.ConcertDateService;
-import com.hhplus.io.concert.domain.service.ConcertService;
-import com.hhplus.io.concert.domain.service.SeatService;
-import com.hhplus.io.reservation.domain.entity.Reservation;
-import com.hhplus.io.reservation.domain.entity.ReservationSeat;
-import com.hhplus.io.reservation.domain.service.ReservationService;
+import com.hhplus.io.concert.domain.Concert;
+import com.hhplus.io.concert.domain.ConcertDate;
+import com.hhplus.io.concert.domain.Seat;
+import com.hhplus.io.concert.service.ConcertDateService;
+import com.hhplus.io.concert.service.ConcertService;
+import com.hhplus.io.concert.service.SeatService;
+import com.hhplus.io.reservation.domain.Reservation;
+import com.hhplus.io.reservation.domain.ReservationSeat;
+import com.hhplus.io.reservation.service.ReservationService;
 import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.domain.service.UserService;
-import com.hhplus.io.usertoken.domain.service.WaitingQueueService;
+import com.hhplus.io.usertoken.domain.User;
+import com.hhplus.io.usertoken.domain.WaitingQueue;
+import com.hhplus.io.usertoken.service.UserService;
+import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

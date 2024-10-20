@@ -3,12 +3,12 @@ package com.hhplus.io.usertoken.application;
 import com.hhplus.io.common.exception.TokenExpireException;
 import com.hhplus.io.common.exception.TokenNotVaildationException;
 import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.domain.service.UserService;
-import com.hhplus.io.usertoken.domain.entity.UserToken;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
-import com.hhplus.io.usertoken.domain.service.WaitingQueueService;
+import com.hhplus.io.usertoken.domain.User;
+import com.hhplus.io.usertoken.domain.WaitingQueue;
+import com.hhplus.io.usertoken.service.UserService;
+import com.hhplus.io.usertoken.domain.UserToken;
+import com.hhplus.io.usertoken.service.UserTokenService;
+import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

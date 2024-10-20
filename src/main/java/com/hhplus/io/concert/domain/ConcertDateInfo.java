@@ -1,7 +1,5 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.hhplus.io.concert.persistence.ConcertDateRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

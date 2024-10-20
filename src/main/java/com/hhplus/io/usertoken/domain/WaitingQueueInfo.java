@@ -1,8 +1,5 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.persistence.WaitingQueueRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

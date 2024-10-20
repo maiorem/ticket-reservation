@@ -1,7 +1,5 @@
 package com.hhplus.io.reservation.domain;
 
-import com.hhplus.io.reservation.domain.entity.ReservationSeat;
-import com.hhplus.io.reservation.persistence.ReservationSeatRepository;
 import org.springframework.stereotype.Component;
 
 @Component

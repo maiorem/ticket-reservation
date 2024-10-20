@@ -1,8 +1,8 @@
 package com.hhplus.io.concert.application;
 
 import com.hhplus.io.concert.domain.SeatStatus;
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.persistence.SeatRepository;
+import com.hhplus.io.concert.domain.Seat;
+import com.hhplus.io.concert.domain.SeatRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

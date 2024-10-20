@@ -1,10 +1,8 @@
 package com.hhplus.io.reservation.domain;
 
 import com.hhplus.io.concert.domain.SeatStatus;
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.persistence.SeatRepository;
-import com.hhplus.io.reservation.domain.entity.ReservationSeat;
-import com.hhplus.io.reservation.persistence.ReservationSeatRepository;
+import com.hhplus.io.concert.domain.Seat;
+import com.hhplus.io.concert.domain.SeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

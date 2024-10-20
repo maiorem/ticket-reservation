@@ -1,7 +1,5 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.concert.domain.entity.Concert;
-import com.hhplus.io.concert.persistence.ConcertRepository;
 import org.springframework.stereotype.Component;
 
 @Component

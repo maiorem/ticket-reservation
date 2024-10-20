@@ -1,6 +1,7 @@
 package com.hhplus.io.amount.persistence;
 
-import com.hhplus.io.amount.domain.entity.Amount;
+import com.hhplus.io.amount.domain.AmountRepository;
+import com.hhplus.io.amount.domain.Amount;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 

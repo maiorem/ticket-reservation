@@ -5,7 +5,7 @@ import com.hhplus.io.concert.web.response.SeatDTO;
 import com.hhplus.io.reservation.application.ReservationUseCase;
 import com.hhplus.io.reservation.web.request.ConfirmReservationRequest;
 import com.hhplus.io.reservation.web.response.ConfirmReservationResponse;
-import com.hhplus.io.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.usertoken.service.UserTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

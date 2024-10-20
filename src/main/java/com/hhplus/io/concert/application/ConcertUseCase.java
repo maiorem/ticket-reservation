@@ -2,10 +2,10 @@ package com.hhplus.io.concert.application;
 
 import com.hhplus.io.concert.domain.ConcertDateStatus;
 import com.hhplus.io.concert.domain.SeatStatus;
-import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.domain.service.ConcertDateService;
-import com.hhplus.io.concert.domain.service.SeatService;
+import com.hhplus.io.concert.domain.ConcertDate;
+import com.hhplus.io.concert.domain.Seat;
+import com.hhplus.io.concert.service.ConcertDateService;
+import com.hhplus.io.concert.service.SeatService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
