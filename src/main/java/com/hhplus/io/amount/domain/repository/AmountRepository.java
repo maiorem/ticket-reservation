@@ -1,5 +1,6 @@
-package com.hhplus.io.amount.domain;
+package com.hhplus.io.amount.domain.repository;
 
+import com.hhplus.io.amount.domain.entity.Amount;
 import org.springframework.stereotype.Repository;
 
 @Repository

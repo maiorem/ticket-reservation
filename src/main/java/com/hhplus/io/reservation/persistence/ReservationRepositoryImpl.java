@@ -1,7 +1,7 @@
 package com.hhplus.io.reservation.persistence;
 
-import com.hhplus.io.reservation.domain.Reservation;
-import com.hhplus.io.reservation.domain.ReservationRepository;
+import com.hhplus.io.reservation.domain.entity.Reservation;
+import com.hhplus.io.reservation.domain.repository.ReservationRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 

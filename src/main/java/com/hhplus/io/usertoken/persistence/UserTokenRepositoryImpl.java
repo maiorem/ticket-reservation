@@ -1,7 +1,7 @@
 package com.hhplus.io.usertoken.persistence;
 
-import com.hhplus.io.usertoken.domain.UserToken;
-import com.hhplus.io.usertoken.domain.UserTokenRepository;
+import com.hhplus.io.usertoken.domain.entity.UserToken;
+import com.hhplus.io.usertoken.domain.repository.UserTokenRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

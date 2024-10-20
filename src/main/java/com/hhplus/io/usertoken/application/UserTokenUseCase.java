@@ -1,15 +1,16 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.common.exception.TokenExpireException;
-import com.hhplus.io.common.exception.TokenNotVaildationException;
-import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.User;
-import com.hhplus.io.usertoken.domain.WaitingQueue;
+import com.hhplus.io.common.exception.error.TokenExpireException;
+import com.hhplus.io.common.exception.error.TokenNotVaildationException;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.usertoken.domain.entity.User;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import com.hhplus.io.usertoken.service.UserService;
-import com.hhplus.io.usertoken.domain.UserToken;
+import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.service.UserTokenService;
 import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
@@ -55,10 +56,11 @@ public class UserTokenUseCase {
     }
 
     /**
-     * 대기열 수동 업데이트 (순서가 밀리거나 이상 발생 시 실행)
+     * 대기열 순서 업데이트 (순서가 밀리거나 이상 발생 시 실행)
      * - 서비스 수용인원 max 체크하여 현재 서비스 진행 중인(status = PROCESS) 대기열 갯수 유지
      * - 갯수가 변경되면 빠진 수만큼 대기 중인(status = WAITING) 대기열 PROCESS로 변경 후 순서 업데이트
      */
+    @Scheduled(fixedRate = 6000)
     @Transactional
     public void updateWaitingQueue(){
         Long count = waitingQueueService.countWaitingQueueByStatus(WaitingQueueStatus.PROCESS);

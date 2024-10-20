@@ -1,8 +1,8 @@
 package com.hhplus.io.concert.service;
 
 import com.hhplus.io.concert.domain.ConcertDateInfo;
-import com.hhplus.io.concert.domain.ConcertDateStatus;
-import com.hhplus.io.concert.domain.ConcertDate;
+import com.hhplus.io.concert.domain.entity.ConcertDateStatus;
+import com.hhplus.io.concert.domain.entity.ConcertDate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

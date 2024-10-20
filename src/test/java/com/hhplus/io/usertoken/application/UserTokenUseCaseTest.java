@@ -1,15 +1,15 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.common.exception.TokenExpireException;
-import com.hhplus.io.common.exception.TokenNotVaildationException;
-import com.hhplus.io.common.response.ErrorCode;
-import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.User;
-import com.hhplus.io.usertoken.domain.UserToken;
-import com.hhplus.io.usertoken.domain.WaitingQueue;
-import com.hhplus.io.usertoken.domain.UserRepository;
-import com.hhplus.io.usertoken.domain.UserTokenRepository;
-import com.hhplus.io.usertoken.domain.WaitingQueueRepository;
+import com.hhplus.io.common.exception.error.TokenExpireException;
+import com.hhplus.io.common.exception.error.TokenNotVaildationException;
+import com.hhplus.io.common.exception.error.ErrorCode;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.usertoken.domain.entity.User;
+import com.hhplus.io.usertoken.domain.entity.UserToken;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
+import com.hhplus.io.usertoken.domain.repository.UserRepository;
+import com.hhplus.io.usertoken.domain.repository.UserTokenRepository;
+import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

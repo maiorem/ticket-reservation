@@ -1,9 +1,9 @@
 package com.hhplus.io.usertoken.service;
 
 import com.hhplus.io.usertoken.domain.WaitingQueueInfo;
-import com.hhplus.io.usertoken.domain.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.User;
-import com.hhplus.io.usertoken.domain.WaitingQueue;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.usertoken.domain.entity.User;
+import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import org.springframework.stereotype.Service;
 
 @Service

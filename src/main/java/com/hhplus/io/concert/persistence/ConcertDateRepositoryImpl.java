@@ -1,7 +1,7 @@
 package com.hhplus.io.concert.persistence;
 
-import com.hhplus.io.concert.domain.ConcertDate;
-import com.hhplus.io.concert.domain.ConcertDateRepository;
+import com.hhplus.io.concert.domain.entity.ConcertDate;
+import com.hhplus.io.concert.domain.repository.ConcertDateRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

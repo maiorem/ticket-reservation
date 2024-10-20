@@ -1,6 +1,6 @@
 package com.hhplus.io.amount.service;
 
-import com.hhplus.io.amount.domain.Amount;
+import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.domain.AmountInfo;
 import org.springframework.stereotype.Service;
 

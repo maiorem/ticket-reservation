@@ -2,7 +2,7 @@ package com.hhplus.io.concert.web;
 
 import com.hhplus.io.common.response.ApiResponse;
 import com.hhplus.io.concert.application.ConcertUseCase;
-import com.hhplus.io.concert.domain.SeatStatus;
+import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.web.request.AvailableDateRequest;
 import com.hhplus.io.concert.web.response.AvailableDateDTO;
 import com.hhplus.io.concert.web.response.AvailableDateResponse;

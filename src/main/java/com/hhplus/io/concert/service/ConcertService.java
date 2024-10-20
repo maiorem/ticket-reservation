@@ -1,7 +1,7 @@
 package com.hhplus.io.concert.service;
 
 import com.hhplus.io.concert.domain.ConcertInfo;
-import com.hhplus.io.concert.domain.Concert;
+import com.hhplus.io.concert.domain.entity.Concert;
 import org.springframework.stereotype.Service;
 
 @Service

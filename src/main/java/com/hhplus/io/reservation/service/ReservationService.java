@@ -2,8 +2,8 @@ package com.hhplus.io.reservation.service;
 
 import com.hhplus.io.reservation.domain.ReservationInfo;
 import com.hhplus.io.reservation.domain.ReservationSeatInfo;
-import com.hhplus.io.reservation.domain.Reservation;
-import com.hhplus.io.reservation.domain.ReservationSeat;
+import com.hhplus.io.reservation.domain.entity.Reservation;
+import com.hhplus.io.reservation.domain.entity.ReservationSeat;
 import org.springframework.stereotype.Service;
 
 @Service

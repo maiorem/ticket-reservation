@@ -1,4 +1,4 @@
-package com.hhplus.io.amount.domain;
+package com.hhplus.io.amount.domain.entity;
 
 import com.hhplus.io.common.BaseEntity;
 import jakarta.persistence.*;

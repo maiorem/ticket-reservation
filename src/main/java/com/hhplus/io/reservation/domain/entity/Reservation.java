@@ -1,4 +1,4 @@
-package com.hhplus.io.reservation.domain;
+package com.hhplus.io.reservation.domain.entity;
 
 import com.hhplus.io.common.BaseEntity;
 import jakarta.persistence.*;
