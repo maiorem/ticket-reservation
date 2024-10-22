@@ -1,4 +1,4 @@
-package com.hhplus.io.common.response;
+package com.hhplus.io.common.interfaces;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

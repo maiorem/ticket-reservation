@@ -1,8 +1,6 @@
-package com.hhplus.io.common.exception;
+package com.hhplus.io.support.domain;
 
-import com.hhplus.io.common.response.ErrorCode;
-
-public class UserNotFoundException extends RuntimeException implements ExceptionIf{
+public class UserNotFoundException extends RuntimeException implements ExceptionIf {
 
     private String statusMessage;
 

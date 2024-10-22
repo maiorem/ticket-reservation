@@ -1,6 +1,6 @@
-package com.hhplus.io.common.exception.handler;
+package com.hhplus.io.support.api;
 
-import com.hhplus.io.common.response.ApiResponse;
+import com.hhplus.io.common.interfaces.ApiResponse;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

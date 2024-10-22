@@ -1,4 +1,4 @@
-package com.hhplus.io.common.response;
+package com.hhplus.io.support.domain;
 
 import lombok.Getter;
 

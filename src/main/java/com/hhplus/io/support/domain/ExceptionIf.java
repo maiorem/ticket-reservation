@@ -1,4 +1,4 @@
-package com.hhplus.io.common.exception;
+package com.hhplus.io.support.domain;
 
 public interface ExceptionIf {
     Integer getStatusCode();
