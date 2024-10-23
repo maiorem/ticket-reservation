@@ -28,4 +28,5 @@ public class SeatService {
     public void updateStatusAndReservationTime(Long seatId, SeatStatus seatStatus, LocalDateTime time) {
         seatInfo.updateStatusAndReservationTime(seatId, seatStatus, time);
     }
+
 }

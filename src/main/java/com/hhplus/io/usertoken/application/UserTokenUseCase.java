@@ -1,7 +1,5 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.common.exception.error.TokenExpireException;
-import com.hhplus.io.common.exception.error.TokenNotVaildationException;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
@@ -10,7 +8,6 @@ import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.service.UserTokenService;
 import com.hhplus.io.usertoken.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -90,19 +87,7 @@ public class UserTokenUseCase {
      * 사용자 대기열 순서 조회
      * - 사용자 현재 대기 순서 조회
      */
-    public Long getSequence(Long userId, String token) {
-        //사용자 조회
-        User user = userService.getUser(userId);
-
-        //사용자와 토큰 validation 체크 (fail시 exception)
-        if (!userTokenService.validate(user, token)){
-            throw new TokenNotVaildationException("토큰이 사용자와 일치하지 않습니다.");
-        }
-
-        //토큰 잔여시간 검사 (만료 시 exception)
-        if(userTokenService.isExpireToken(token)) {
-            throw new TokenExpireException("토큰 만료시간을 초과하였습니다.");
-        }
+    public Long getSequence(Long userId) {
         //사용자 현재 대기열 순서 조회
         return waitingQueueService.getSequence(userId);
     }

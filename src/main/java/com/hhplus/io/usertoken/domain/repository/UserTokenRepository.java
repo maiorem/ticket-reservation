@@ -1,5 +1,6 @@
 package com.hhplus.io.usertoken.domain.repository;
 
+import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,7 @@ public interface UserTokenRepository {
 
     UserToken generateToken(UserToken userToken);
 
-    UserToken getUserByToken(String token);
+    User getUserByToken(String token);
+
+    UserToken getUserTokenByToken(String token);
 }

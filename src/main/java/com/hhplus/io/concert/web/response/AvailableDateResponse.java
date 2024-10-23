@@ -1,7 +1,9 @@
 package com.hhplus.io.concert.web.response;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-public record AvailableDateResponse(int availableSeats, List<AvailableDateDTO> dateList, List<SeatDTO> avalilableSeats) {
+public record AvailableDateResponse(Long concertId, List<AvailableDateDTO> dateList) {
+    public static AvailableDateResponse of(Long concertId, List<AvailableDateDTO> dateList) {
+        return new AvailableDateResponse(concertId, dateList);
+    }
 }

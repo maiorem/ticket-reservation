@@ -31,3 +31,4 @@ public class SeatInfo {
         seat.updateReservationTime(updateTime);
     }
 }
+

@@ -1,6 +1,7 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.common.exception.error.UserNotFoundException;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorType;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.repository.UserRepository;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class UserInfo {
     public User getUser(Long userId) {
         User user = userRepository.getUser(userId);
         if(user == null){
-            throw new UserNotFoundException("해당 사용자를 찾을 수 없습니다.");
+            throw new CoreException(ErrorType.USER_NOT_FOUND);
         }
         return user;
     }

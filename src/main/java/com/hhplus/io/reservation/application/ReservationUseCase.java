@@ -74,7 +74,7 @@ public class ReservationUseCase {
         //좌석 번호 조회 및 좌석 별 금액 계산
         for (Long seatId : seatList) {
             Seat seat = seatService.getSeat(seatId);
-            SeatUseCaseDTO dto = new SeatUseCaseDTO(seat.getSeatId(), seat.getSeatNumber());
+            SeatUseCaseDTO dto = new SeatUseCaseDTO(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             payment += seat.getTicketPrice();
             list.add(dto);
         }
@@ -109,7 +109,7 @@ public class ReservationUseCase {
             Seat seat = seatService.getSeat(seatId);
             seatService.updateStatusAndReservationTime(seat.getSeatId(), SeatStatus.CONFIRMED, null);
             ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, reservation.getReservationId(), seatId);
-            SeatUseCaseDTO dto = new SeatUseCaseDTO(reservationSeat.getSeatId(), seat.getSeatNumber());
+            SeatUseCaseDTO dto = new SeatUseCaseDTO(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             seatUseCaseDTOList.add(dto);
         }
 
@@ -130,7 +130,7 @@ public class ReservationUseCase {
         waitingQueueService.updateStatus(queue, WaitingQueueStatus.FINISHED);
 
         //토큰 만료
-        UserToken userToken = userTokenService.getUserByToken(token);
+        UserToken userToken = userTokenService.getUserTokenByToken(token);
         userTokenService.expireToken(userToken);
 
         return ConfirmReservationCommand.of(
