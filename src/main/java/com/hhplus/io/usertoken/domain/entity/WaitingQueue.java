@@ -1,7 +1,7 @@
 package com.hhplus.io.usertoken.domain.entity;
 
 
-import com.hhplus.io.common.BaseEntity;
+import com.hhplus.io.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;

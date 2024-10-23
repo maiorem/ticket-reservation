@@ -1,4 +1,4 @@
-package com.hhplus.io.common;
+package com.hhplus.io.support.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

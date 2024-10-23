@@ -1,7 +1,7 @@
 package com.hhplus.io.concert.domain.entity;
 
 
-import com.hhplus.io.common.BaseEntity;
+import com.hhplus.io.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

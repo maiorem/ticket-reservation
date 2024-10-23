@@ -1,6 +1,6 @@
 package com.hhplus.io.amount.domain.entity;
 
-import com.hhplus.io.common.BaseEntity;
+import com.hhplus.io.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
