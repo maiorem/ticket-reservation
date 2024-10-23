@@ -1,5 +1,6 @@
 package com.hhplus.io.common.interfaces;
 
+import com.hhplus.io.support.domain.error.CoreException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +31,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), map);
     }
 
-    public static <T> ApiResponse<T> serverFail(Exception exception) {
+    public static <T> ApiResponse<T> serverFail(CoreException exception) {
         Map<String, String> map = new HashMap<>();
         log.error("서버 에러 발생", exception);
         map.put("서버 오류 메세지", "서버 로그 요청 필요");
