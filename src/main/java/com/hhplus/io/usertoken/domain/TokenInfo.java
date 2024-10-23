@@ -1,6 +1,7 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.common.exception.error.UserNotFoundException;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorType;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.repository.UserRepository;
@@ -27,7 +28,7 @@ public class TokenInfo {
     public UserToken getUserToken(Long userId) {
         User user = userRepository.getUser(userId);
         if (user == null) {
-            throw new UserNotFoundException("해당 사용자를 찾을 수 없습니다.");
+            throw new CoreException(ErrorType.USER_NOT_FOUND);
         }
         return userTokenRepository.getToken(user.getUserId());
     }
@@ -41,14 +42,16 @@ public class TokenInfo {
         return result;
     }
 
-    public UserToken getUserByToken(String token) {
+    public User getUserByToken(String token) {
         return userTokenRepository.getUserByToken(token);
     }
 
     public boolean isExpireToken(String token) {
-        UserToken resultToken = userTokenRepository.getUserByToken(token);
+        UserToken resultToken = userTokenRepository.getUserTokenByToken(token);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        return now.isAfter(resultToken.getTokenExpire());
+        if (now.isAfter(resultToken.getTokenExpire())) return true;
+        if (!resultToken.isActive()) return true;
+        return false;
     }
 
     public UserToken generator(User user) {
@@ -64,6 +67,10 @@ public class TokenInfo {
     }
 
     public void expireToken(UserToken userToken) {
-        userToken.updateIsActive(false);
+        userToken.deleteToken();
+    }
+
+    public UserToken getUserTokenByToken(String token) {
+        return userTokenRepository.getUserTokenByToken(token);
     }
 }

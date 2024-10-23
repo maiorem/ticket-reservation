@@ -1,7 +1,8 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.common.exception.error.UserNotFoundException;
-import com.hhplus.io.common.exception.error.ErrorCode;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorCode;
+import com.hhplus.io.support.domain.error.ErrorType;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.repository.UserRepository;
@@ -68,10 +69,10 @@ class TokenInfoTest {
         Long userId = 1L;
 
         //when
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> tokenInfo.getUserToken(userId));
+        CoreException exception = assertThrows(CoreException.class, () -> tokenInfo.getUserToken(userId));
 
         //then
-        assertEquals(ErrorCode.NOT_FOUND.getStatusCode(), exception.getStatusCode());
+        assertEquals(ErrorType.USER_NOT_FOUND, exception.getErrorType());
 
     }
 
