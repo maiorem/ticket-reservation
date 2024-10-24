@@ -1,16 +1,14 @@
 package com.hhplus.io.usertoken.application;
 
+import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.domain.repository.UserRepository;
-import com.hhplus.io.usertoken.domain.repository.UserTokenRepository;
-import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
+import com.hhplus.io.usertoken.persistence.UserJpaRepository;
+import com.hhplus.io.usertoken.persistence.UserTokenJpaRepository;
+import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,11 +24,29 @@ class UserTokenUseCaseTest {
     @Autowired
     private UserTokenUseCase userTokenUseCase;
     @Autowired
-    private UserTokenRepository userTokenRepository;
+    private UserTokenJpaRepository userTokenRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userRepository;
     @Autowired
-    private WaitingQueueRepository waitingQueueRepository;
+    private WaitingQueueJpaRepository waitingQueueRepository;
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
+
+    @BeforeEach
+    void setUp() {
+        User user1 = User.builder()
+                .userId(1L).username("예이츠")
+                .build();
+        User user2 = User.builder()
+                .userId(2L).username("워드워스")
+                .build();
+        User user3 = User.builder()
+                .userId(3L).username("카프카")
+                .build();
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+    }
 
     @Nested
     @DisplayName("유저 토큰 발급 시")
@@ -40,39 +56,24 @@ class UserTokenUseCaseTest {
         void 토큰_발급_성공() {
             //given
             Long userId = 1L;
-            User user = User.builder()
-                    .userId(userId).username("홍세영")
-                    .build();
-            userRepository.saveUser(user);
 
             //when
             UserTokenCommand result = userTokenUseCase.issueUserToken(userId);
 
             //then
-            UserToken token = userTokenRepository.getToken(userId);
+            userTokenRepository.findByUserId(userId).ifPresent(token -> {
+                assertEquals(1, result.sequence());
+                assertEquals(token.getToken(), result.token());
+                assertEquals(token.getTokenExpire(), result.expiresAt());
+            });
 
-            assertEquals(1, result.sequence());
-            assertEquals(token.getToken(), result.token());
-            assertEquals(token.getTokenExpire(), result.expiresAt());
+
         }
 
         @Test
         void 이미_해당_아이디로_대기가_존재하면_취소하고_다시_맨끝줄에_선다() {
             //given
             Long userId = 1L;
-            User user1 = User.builder()
-                    .userId(userId).username("홍길동")
-                    .build();
-            User user2 = User.builder()
-                    .userId(2L).username("홍길동")
-                    .build();
-            User user3 = User.builder()
-                    .userId(3L).username("홍길동")
-                    .build();
-
-            userRepository.saveUser(user1);
-            userRepository.saveUser(user2);
-            userRepository.saveUser(user3);
 
             WaitingQueue queue1 = WaitingQueue.builder()
                     .queueId(2L)
@@ -92,9 +93,9 @@ class UserTokenUseCaseTest {
                     .sequence(3L)
                     .status(String.valueOf(WaitingQueueStatus.WAITING))
                     .build();
-            waitingQueueRepository.generateQueue(queue1);
-            waitingQueueRepository.generateQueue(queue2);
-            waitingQueueRepository.generateQueue(queue3);
+            waitingQueueRepository.save(queue1);
+            waitingQueueRepository.save(queue2);
+            waitingQueueRepository.save(queue3);
 
             //when
             UserTokenCommand result = userTokenUseCase.issueUserToken(userId);
@@ -113,30 +114,21 @@ class UserTokenUseCaseTest {
         void 사용자_대기_순서_조회에_성공한다(){
             //given
             Long userId = 1L;
-            User user1 = User.builder()
-                    .userId(userId).username("홍길동")
-                    .build();
-            User user2 = User.builder()
-                    .userId(2L).username("홍길동")
-                    .build();
-            User user3 = User.builder()
-                    .userId(3L).username("홍길동")
-                    .build();
-            userRepository.saveUser(user1);
-            userRepository.saveUser(user2);
-            userRepository.saveUser(user3);
-
             userTokenUseCase.issueUserToken(2L);
             userTokenUseCase.issueUserToken(3L);
             userTokenUseCase.issueUserToken(userId);
 
             //when
-            UserToken token = userTokenRepository.getToken(userId);
             Long sequence = userTokenUseCase.getSequence(userId);
 
             //then
             assertEquals(3, sequence);
         }
 
+    }
+
+    @AfterEach
+    void cleanUp(){
+        databaseCleanUp.execute();
     }
 }
