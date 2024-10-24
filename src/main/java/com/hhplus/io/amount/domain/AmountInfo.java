@@ -21,13 +21,13 @@ public class AmountInfo {
     }
 
     public int updateAmount(Long userId, int updateAmount) {
-        Amount amount = getAmountByUser(userId);
+        Amount amount = amountRepository.getAmountByUserWithLock(userId);
         amount.saveAmount(updateAmount);
         return amount.getAmount();
     }
 
     public void payAmount(Long userId, int payment) {
-        Amount amount = getAmountByUser(userId);
+        Amount amount = amountRepository.getAmountByUserWithLock(userId);
         amount.payAmount(payment);
         amount.updatePaymentDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
 
