@@ -17,7 +17,7 @@ public class ReservationSeat extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reserve_seat_id")
+    @Column(name = "reservation_seat_id")
     private Long reserveSeatId;
 
     @Column(name = "reservation_id")
