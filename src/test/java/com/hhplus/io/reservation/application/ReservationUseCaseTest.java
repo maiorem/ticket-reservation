@@ -1,29 +1,33 @@
 package com.hhplus.io.reservation.application;
 
 import com.hhplus.io.amount.domain.entity.Amount;
-import com.hhplus.io.amount.domain.repository.AmountRepository;
+import com.hhplus.io.amount.persistence.AmountJpaRepository;
 import com.hhplus.io.concert.domain.entity.ConcertDateStatus;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Concert;
 import com.hhplus.io.concert.domain.entity.ConcertDate;
 import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.domain.repository.ConcertDateRepository;
-import com.hhplus.io.concert.domain.repository.ConcertRepository;
-import com.hhplus.io.concert.domain.repository.SeatRepository;
+import com.hhplus.io.concert.persistence.ConcertDateJpaRepository;
+import com.hhplus.io.concert.persistence.ConcertJpaRepository;
+import com.hhplus.io.concert.persistence.SeatJpaRepository;
+import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.domain.repository.UserRepository;
-import com.hhplus.io.usertoken.domain.repository.WaitingQueueRepository;
+import com.hhplus.io.usertoken.persistence.UserJpaRepository;
+import com.hhplus.io.usertoken.persistence.UserTokenJpaRepository;
+import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,37 +36,48 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class ReservationUseCaseTest {
 
     @Autowired
     private ReservationUseCase reservationUseCase;
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userRepository;
     @Autowired
-    private AmountRepository amountRepository;
+    private UserTokenJpaRepository userTokenRepository;
     @Autowired
-    private ConcertRepository concertRepository;
+    private AmountJpaRepository amountRepository;
     @Autowired
-    private SeatRepository seatRepository;
+    private ConcertJpaRepository concertRepository;
     @Autowired
-    private ConcertDateRepository concertDateRepository;
+    private SeatJpaRepository seatRepository;
     @Autowired
-    private WaitingQueueRepository waitingQueueRepository;
+    private ConcertDateJpaRepository concertDateRepository;
+    @Autowired
+    private WaitingQueueJpaRepository waitingQueueRepository;
 
     @BeforeEach
     void setUp() throws Exception {
         User user = User.builder()
                 .userId(1L).username("홍세영")
                 .build();
-        userRepository.saveUser(user);
+        userRepository.save(user);
+        UserToken userToken = UserToken.builder()
+                .userId(1L)
+                .tokenId(1L)
+                .token("aaaa")
+                .isActive(true)
+                .tokenExpire(LocalDateTime.now())
+                .build();
+        userTokenRepository.save(userToken);
         WaitingQueue queue1 = WaitingQueue.builder()
                 .queueId(2L)
                 .userId(1L)
                 .sequence(1L)
                 .status(String.valueOf(WaitingQueueStatus.PROCESS))
                 .build();
-        waitingQueueRepository.generateQueue(queue1);
+        waitingQueueRepository.save(queue1);
         Amount amount = Amount.builder()
                 .amountId(1L)
                 .userId(1L)
@@ -80,7 +95,7 @@ class ReservationUseCaseTest {
                 .concertId(1L).availableSeats(20).status(String.valueOf(ConcertDateStatus.AVAILABLE)).build();
         concertDateRepository.save(date);
         Seat seat = Seat.builder().concertId(1L).concertDateId(1L).seatId(1L).seatNumber("01").status(String.valueOf(SeatStatus.AVAILABLE)).build();
-        seatRepository.saveSeat(seat);
+        seatRepository.save(seat);
     }
 
     @Nested
@@ -91,24 +106,25 @@ class ReservationUseCaseTest {
         void 결제_성공() {
             //given
             Long userId = 1L;
-            User user = userRepository.getUser(userId);
-            Concert concert = concertRepository.getConcertById(1L);
-            ConcertDate concertDate = concertDateRepository.getConcertDate(1L);
+            String token = "aaaa";
+            Optional<User> user = userRepository.findByUserId(userId);
+            Optional<Concert> concert = concertRepository.findByConcertId(1L);
+            Optional<ConcertDate> concertDate = concertDateRepository.findByConcertDateId(1L);
 
             //when
-            ConfirmReservationCommand result = reservationUseCase.confirmReservation(userId, concert.getConcertId(), concertDate.getConcertDateId(), 1, List.of(1L), 1000);
+            ConfirmReservationCommand result = reservationUseCase.confirmReservation(token, userId, concert.get().getConcertId(), concertDate.get().getConcertDateId(), 1, List.of(1L), 1000);
 
             //then
             assertNotNull(result);
-            assertEquals(user.getUsername(), result.username());
-            assertEquals(concert.getConcertName(), result.concertName());
+            assertEquals(user.get().getUsername(), result.username());
+            assertEquals(concert.get().getConcertName(), result.concertName());
         }
         
         @Test
         @DisplayName("결제 동시성 테스트")
         void 세사람이_동시에_한_좌석_결제_시_한_사람만_성공() throws InterruptedException {
             //given
-
+            String token = "aaaa";
             User user2 = User.builder()
                     .userId(2L).username("홍길동")
                     .build();
@@ -116,8 +132,8 @@ class ReservationUseCaseTest {
                     .userId(3L).username("홍길동")
                     .build();
 
-            userRepository.saveUser(user2);
-            userRepository.saveUser(user3);
+            userRepository.save(user2);
+            userRepository.save(user3);
 
             int threadCount = 3;
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
@@ -130,26 +146,26 @@ class ReservationUseCaseTest {
             List<Long> userIdList = List.of(1L, 2L, 3L);
 
             for (int i = 0; i < 3; i++) {
-                final int index = i;  // index 값을 람다 내부에서 캡처하기 위해 final 선언
+                final int index = i;
                 executorService.submit(() -> {
                     try {
-                        latch.await(); // 모든 스레드가 동시에 시작되도록 대기
-                        Long userId = userIdList.get(index);  // 각 스레드가 다른 사용자로 예약 시도
-                        reservationUseCase.confirmReservation(userId, 1L, 1L, 1, seatList, 10000); // 예약 확정 시도
+                        latch.await();
+                        Long userId = userIdList.get(index);
+                        reservationUseCase.confirmReservation(token, userId, 1L, 1L, 1, seatList, 10000);
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failureCount.incrementAndGet();
                         System.out.println("Reservation failed: " + e.getMessage());
                     }
                 });
-                latch.countDown(); // 모든 스레드가 시작을 기다림
+                latch.countDown();
             }
 
             executorService.shutdown();
             executorService.awaitTermination(1, TimeUnit.MINUTES);
 
-            Seat seat = seatRepository.getSeat(1L);
-            assertEquals(seat.getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
+            Optional<Seat> seat = seatRepository.findBySeatId(1L);
+            assertEquals(seat.get().getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
 
             assertEquals(1, successCount.get()); // 예약 성공한 스레드는 1개
             assertEquals(2, failureCount.get()); // 예약 실패한 스레드는 2개

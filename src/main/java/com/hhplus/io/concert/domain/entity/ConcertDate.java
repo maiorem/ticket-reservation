@@ -1,6 +1,7 @@
 package com.hhplus.io.concert.domain.entity;
 
 
+import com.hhplus.io.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "concert_date")
-public class ConcertDate {
+public class ConcertDate extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

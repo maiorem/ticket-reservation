@@ -14,4 +14,7 @@ public record ConfirmReservationResponse(
         int payment,
         List<SeatDTO> seatList
 ) {
+    public static ConfirmReservationResponse of(String userName, String concertName, LocalDateTime reserveDate, LocalDateTime confirmDate, int reservePeople, int payment, List<SeatDTO> seatList) {
+        return new ConfirmReservationResponse(userName, concertName, reserveDate, confirmDate, reservePeople, payment, seatList);
+    }
 }

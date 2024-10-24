@@ -18,7 +18,7 @@ public class UserTokenService {
         return tokenInfo.generator(user);
     }
 
-    public UserToken getUserByToken(String token) {
+    public User getUserByToken(String token) {
         return tokenInfo.getUserByToken(token);
     }
 
@@ -33,5 +33,9 @@ public class UserTokenService {
 
     public void expireToken(UserToken userToken) {
         tokenInfo.expireToken(userToken);
+    }
+
+    public UserToken getUserTokenByToken(String token) {
+        return tokenInfo.getUserTokenByToken(token);
     }
 }

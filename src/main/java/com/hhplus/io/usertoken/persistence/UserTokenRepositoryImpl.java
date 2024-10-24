@@ -1,18 +1,25 @@
 package com.hhplus.io.usertoken.persistence;
 
+import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.repository.UserTokenRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+import static com.hhplus.io.usertoken.domain.entity.QUser.user;
+import static com.hhplus.io.usertoken.domain.entity.QUserToken.userToken;
 
 @Repository
 public class UserTokenRepositoryImpl implements UserTokenRepository {
 
     private final UserTokenJpaRepository jpaRepository;
+    private final JPAQueryFactory jpaQueryFactory;
 
-    public UserTokenRepositoryImpl(UserTokenJpaRepository jpaRepository) {
+    public UserTokenRepositoryImpl(UserTokenJpaRepository jpaRepository, JPAQueryFactory jpaQueryFactory) {
         this.jpaRepository = jpaRepository;
+        this.jpaQueryFactory = jpaQueryFactory;
     }
 
     @Override
@@ -27,8 +34,18 @@ public class UserTokenRepositoryImpl implements UserTokenRepository {
     }
 
     @Override
-    public UserToken getUserByToken(String token) {
-        Optional<UserToken> userToken = jpaRepository.findByToken(token);
-        return userToken.orElse(null);
+    public User getUserByToken(String token) {
+        return jpaQueryFactory
+                .selectFrom(user)
+                .join(userToken)
+                .on(user.userId.eq(userToken.userId))
+                .where(userToken.token.eq(token))
+                .fetchOne();
+    }
+
+    @Override
+    public UserToken getUserTokenByToken(String token) {
+        Optional<UserToken> optional = jpaRepository.findByToken(token);
+        return optional.orElse(null);
     }
 }

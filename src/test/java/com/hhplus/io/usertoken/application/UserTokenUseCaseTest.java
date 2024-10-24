@@ -1,8 +1,5 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.common.exception.error.TokenExpireException;
-import com.hhplus.io.common.exception.error.TokenNotVaildationException;
-import com.hhplus.io.common.exception.error.ErrorCode;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
@@ -16,11 +13,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 class UserTokenUseCaseTest {
@@ -134,57 +132,11 @@ class UserTokenUseCaseTest {
 
             //when
             UserToken token = userTokenRepository.getToken(userId);
-            Long sequence = userTokenUseCase.getSequence(userId, token.getToken());
+            Long sequence = userTokenUseCase.getSequence(userId);
 
             //then
             assertEquals(3, sequence);
         }
-
-        @Test
-        void 사용자와_토큰정보가_일치하지_않으면_exception을_반환한다() {
-            //given
-            Long testUserId = 1L;
-            User user1 = User.builder()
-                    .userId(testUserId).username("홍길동")
-                    .build();
-            User user2 = User.builder()
-                    .userId(2L).username("홍길동")
-                    .build();
-            userRepository.saveUser(user1);
-            userRepository.saveUser(user2);
-            UserToken dummyToken = UserToken.builder().userId(1L).token("2222bbbbb").isActive(true)
-                    .tokenExpire(LocalDateTime.now().plusHours(1)).build();
-            UserToken testToken = UserToken.builder().userId(2L).token("1111aaaa").isActive(true)
-                    .tokenExpire(LocalDateTime.now().plusHours(1)).build();
-            userTokenRepository.generateToken(dummyToken);
-            userTokenRepository.generateToken(testToken);
-
-            //when
-            TokenNotVaildationException exception = assertThrows(TokenNotVaildationException.class, () -> userTokenUseCase.getSequence(testUserId, testToken.getToken()));
-
-            //then
-            assertEquals(ErrorCode.TOKEN_INVALID.getStatusCode(), exception.getStatusCode());
-        }
-
-        @Test
-        void 이미_만료된_토큰이면_exception을_반환한다() {
-            //given
-            Long userId = 1L;
-            User user1 = User.builder()
-                    .userId(userId).username("홍길동")
-                    .build();
-            userRepository.saveUser(user1);
-            UserToken token = UserToken.builder().userId(1L).token("1111aaaa").isActive(true)
-                    .tokenExpire(LocalDateTime.now().minusHours(1)).build();
-            userTokenRepository.generateToken(token);
-
-            //when
-            TokenExpireException exception = assertThrows(TokenExpireException.class, () -> userTokenUseCase.getSequence(userId, token.getToken()));
-
-            //then
-            assertEquals(ErrorCode.TOKEN_EXPIRED.getStatusCode(), exception.getStatusCode());
-        }
-
 
     }
 }

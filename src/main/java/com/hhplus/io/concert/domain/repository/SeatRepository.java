@@ -14,5 +14,5 @@ public interface SeatRepository {
 
     Seat getSeatByStatusWithLock(Long seatId, String status);
 
-    Seat saveSeat(Seat seat1);
+    Seat saveSeat(Seat seat);
 }

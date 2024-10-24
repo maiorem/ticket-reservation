@@ -53,13 +53,12 @@ public class ConcertUseCase {
 
         for (Long seatId : seatIdList) {
             if(!seatService.getSeat(seatId).getStatus().equals(String.valueOf(SeatStatus.AVAILABLE))){
-                throw new RuntimeException("seat not available");
+                throw new IllegalArgumentException("seat not available");
             }
             seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, now);
             Seat seat = seatService.getSeat(seatId);
-            SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber());
+            SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             list.add(dto);
-
         }
         return SeatReserveCommand.of(list);
     }
@@ -69,7 +68,6 @@ public class ConcertUseCase {
      */
     @Transactional
     public void updateSeatStatus(Long seatId) {
-
         Seat seat = seatService.getSeat(seatId);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         if (now.isAfter(seat.getReservationTime().plusMinutes(5))) {
