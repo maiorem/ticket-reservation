@@ -1,5 +1,6 @@
 package com.hhplus.io.reservation.application;
 
+import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
 import com.hhplus.io.concert.domain.entity.ConcertDateStatus;
@@ -17,10 +18,7 @@ import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import com.hhplus.io.usertoken.persistence.UserJpaRepository;
 import com.hhplus.io.usertoken.persistence.UserTokenJpaRepository;
 import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class ReservationUseCaseTest {
+class ReservationIntegrationTest {
 
     @Autowired
     private ReservationUseCase reservationUseCase;
@@ -56,6 +54,8 @@ class ReservationUseCaseTest {
     private ConcertDateJpaRepository concertDateRepository;
     @Autowired
     private WaitingQueueJpaRepository waitingQueueRepository;
+    @Autowired
+    private DatabaseCleanUp databaseCleanUp;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -125,15 +125,6 @@ class ReservationUseCaseTest {
         void 세사람이_동시에_한_좌석_결제_시_한_사람만_성공() throws InterruptedException {
             //given
             String token = "aaaa";
-            User user2 = User.builder()
-                    .userId(2L).username("홍길동")
-                    .build();
-            User user3 = User.builder()
-                    .userId(3L).username("홍길동")
-                    .build();
-
-            userRepository.save(user2);
-            userRepository.save(user3);
 
             int threadCount = 3;
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
@@ -167,9 +158,13 @@ class ReservationUseCaseTest {
             Optional<Seat> seat = seatRepository.findBySeatId(1L);
             assertEquals(seat.get().getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
 
-            assertEquals(1, successCount.get()); // 예약 성공한 스레드는 1개
-            assertEquals(2, failureCount.get()); // 예약 실패한 스레드는 2개
+            assertEquals(1, successCount.get()); // 예약 성공 1개
+            assertEquals(2, failureCount.get()); // 예약 실패 2개
         }
 
+    }
+    @AfterEach
+    void cleanUp(){
+        databaseCleanUp.execute();
     }
 }
