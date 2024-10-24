@@ -16,7 +16,7 @@ public class UserToken extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "token_id")
+    @Column(name = "usertoken_id")
     private Long tokenId;
 
     @Column(name = "user_id")

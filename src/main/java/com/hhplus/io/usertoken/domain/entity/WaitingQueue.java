@@ -16,7 +16,7 @@ public class WaitingQueue extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "queue_id")
+    @Column(name = "waiting_queue_id")
     private Long queueId;
 
     @Column(name = "user_id")
