@@ -108,6 +108,15 @@ class ConcertIntegrationTest {
         @Test
         @DisplayName("좌석예약 동시성 테스트")
         void 한_좌석을_세명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
+            Seat seat5 = Seat.builder()
+                    .seatId(5L)
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("05")
+                    .status(String.valueOf(SeatStatus.AVAILABLE))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+            seatRepository.save(seat5);
 
             int threadCount = 3;
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
@@ -115,13 +124,14 @@ class ConcertIntegrationTest {
             AtomicInteger failureCount = new AtomicInteger(0);
             AtomicInteger successCount = new AtomicInteger(0);
 
-            List<Long> seatIdList = List.of(1L);
+            List<Long> seatIdList = List.of(5L);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < threadCount; i++) {
                 executorService.submit(() -> {
                     try {
                         latch.await();
-                        concertUseCase.tempReserveSeat(seatIdList);
+                        SeatReserveCommand result = concertUseCase.tempReserveSeat(seatIdList);
+                        System.out.println("result : " + result.toString());
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failureCount.incrementAndGet();
@@ -134,6 +144,9 @@ class ConcertIntegrationTest {
             executorService.shutdown();
             executorService.awaitTermination(1, TimeUnit.MINUTES);
 
+            seatRepository.findBySeatId(5L).ifPresent(seat -> {
+                assertEquals(seat.getStatus(), String.valueOf(SeatStatus.TEMP_RESERVED));
+            });
             assertEquals(1, successCount.get()); // 예약 성공 1개
             assertEquals(2, failureCount.get()); // 예약 실패 2개
 
