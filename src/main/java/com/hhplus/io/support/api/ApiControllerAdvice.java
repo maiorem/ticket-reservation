@@ -16,18 +16,24 @@ public class ApiControllerAdvice{
     @ExceptionHandler(value = CoreException.class)
     public ResponseEntity<?> handle(CoreException e) {
         switch (e.getErrorType().getLogLevel()) {
-            case ERROR: log.error("");
-            case WARN: log.warn("");
-            default: log.info("");
+            case ERROR: log.error("error :: {}", e.getMessage());
+            case WARN: log.warn("warn :: {}", e.getMessage());
+            default: log.info("info :: {}", e.getMessage());
         }
+        HttpStatus status;
         switch (e.getErrorType().getCode()) {
-            case DB_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR.value();
-            case NOT_FOUND -> HttpStatus.NOT_FOUND.value();
-            case CLIENT_ERROR -> HttpStatus.BAD_REQUEST.value();
-            case VALIDATION_ERROR -> HttpStatus.UNPROCESSABLE_ENTITY.value();
-            default -> HttpStatus.OK.value();
+            case DB_ERROR -> status = HttpStatus.INTERNAL_SERVER_ERROR;
+            case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
+            case CLIENT_ERROR -> status = HttpStatus.BAD_REQUEST;
+            case VALIDATION_ERROR -> status = HttpStatus.UNPROCESSABLE_ENTITY;
+            default -> status = HttpStatus.OK;
         }
-        return ResponseEntity.status(HttpStatusCode.valueOf(500)).body(ApiResponse.serverFail(e));
+        return ResponseEntity.status(status).body(ApiResponse.exceptionHandler(e));
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<?> handle(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.serverFail(e));
     }
 
 }
