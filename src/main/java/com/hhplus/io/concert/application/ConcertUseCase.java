@@ -6,6 +6,8 @@ import com.hhplus.io.concert.domain.entity.ConcertDate;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.service.ConcertDateService;
 import com.hhplus.io.concert.service.SeatService;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorType;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -52,10 +54,7 @@ public class ConcertUseCase {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         for (Long seatId : seatIdList) {
-            if(!seatService.getSeat(seatId).getStatus().equals(String.valueOf(SeatStatus.AVAILABLE))){
-                throw new IllegalArgumentException("seat not available");
-            }
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, now);
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, SeatStatus.TEMP_RESERVED, now);
             Seat seat = seatService.getSeat(seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             list.add(dto);
@@ -71,7 +70,7 @@ public class ConcertUseCase {
         Seat seat = seatService.getSeat(seatId);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         if (now.isAfter(seat.getReservationTime().plusMinutes(5))) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, null);
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE, null);
         }
 
     }

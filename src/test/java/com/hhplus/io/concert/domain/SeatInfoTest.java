@@ -75,7 +75,7 @@ class SeatInfoTest {
         Seat seat1 = Seat.builder().concertId(1L).concertDateId(1L).seatId(1L).seatNumber("01").status(String.valueOf(SeatStatus.AVAILABLE)).build();
 
         //when
-        seatInfo.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, LocalDateTime.now());
+        seatInfo.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE, LocalDateTime.now());
 
         //then
         assertEquals(String.valueOf(SeatStatus.TEMP_RESERVED), seat1.getStatus());

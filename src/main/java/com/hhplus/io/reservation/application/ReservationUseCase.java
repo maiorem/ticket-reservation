@@ -13,6 +13,8 @@ import com.hhplus.io.concert.service.SeatService;
 import com.hhplus.io.reservation.domain.entity.Reservation;
 import com.hhplus.io.reservation.domain.entity.ReservationSeat;
 import com.hhplus.io.reservation.service.ReservationService;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorType;
 import com.hhplus.io.usertoken.domain.entity.UserToken;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
@@ -106,8 +108,8 @@ public class ReservationUseCase {
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경
         for (Long seatId : seatList) {
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED, null);
             Seat seat = seatService.getSeat(seatId);
-            seatService.updateStatusAndReservationTime(seat.getSeatId(), SeatStatus.CONFIRMED, null);
             ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, reservation.getReservationId(), seatId);
             SeatUseCaseDTO dto = new SeatUseCaseDTO(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             seatUseCaseDTOList.add(dto);
