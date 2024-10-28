@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,12 +113,14 @@ class AmountUseCaseTest {
         void 동일_유저가_잔액충전을_동시에_실행할_경우() throws InterruptedException, ExecutionException {
             //given
             Long userId = 1L;
-            ExecutorService executor = Executors.newFixedThreadPool(10); // 10개의 스레드로 테스트
+            int updateAmount = 100;
+            int threadCount = 10;
+
+            ExecutorService executor = Executors.newFixedThreadPool(threadCount); // 10개의 스레드로 테스트
 
             //when
             List<Callable<SaveAmountCommand>> tasks = new ArrayList<>();
-            for (int i = 0; i < 10; i++) {
-                int updateAmount = i * 100; // 각 스레드에서 다른 금액으로 충전
+            for (int i = 0; i < threadCount; i++) {
                 tasks.add(() -> amountUseCase.saveAmount(userId, updateAmount));
             }
 
@@ -129,9 +132,16 @@ class AmountUseCaseTest {
             for (Future<SaveAmountCommand> future : futures) {
                 SaveAmountCommand result = future.get();
                 assertNotNull(result);
-                totalAmount += result.amount();
+                int saveAmount = result.amount() - 10000;
+                totalAmount += saveAmount;
             }
-            assertEquals(100+200+300+400+500+600+700+800+900, totalAmount);
+            assertEquals(100*threadCount, totalAmount); //동시 충전 시도한 충전 금액
+
+            amountRepository.findByUserId(userId).ifPresent(amount -> {
+                //실제 충전은 1회만
+                assertEquals(10000+updateAmount, amount.getAmount());
+            });
+
         }
 
     }
