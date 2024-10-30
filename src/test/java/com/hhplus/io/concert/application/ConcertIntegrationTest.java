@@ -31,6 +31,7 @@ class ConcertIntegrationTest {
     private SeatJpaRepository seatRepository;
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
+
     @BeforeEach
     void setUp() {
         Seat seat1 = Seat.builder()
@@ -54,24 +55,16 @@ class ConcertIntegrationTest {
                 .status(String.valueOf(SeatStatus.AVAILABLE))
                 .reservationTime(LocalDateTime.now())
                 .build();
-        Seat seat4 = Seat.builder()
-                .concertId(1L)
-                .concertDateId(1L)
-                .seatNumber("05")
-                .status(String.valueOf(SeatStatus.AVAILABLE))
-                .reservationTime(LocalDateTime.now())
-                .build();
+
         seatRepository.save(seat1);
         seatRepository.save(seat2);
         seatRepository.save(seat3);
-        seatRepository.save(seat4);
     }
     @Nested
     @DisplayName("좌석 임시 예약")
     class tempReserveSeat {
 
         @Test
-        @Rollback(false)
         void 좌석_예약_성공() {
             //given
             List<Long> seatList = List.of(1L, 2L, 3L);
@@ -90,8 +83,16 @@ class ConcertIntegrationTest {
 
         @Test
         void AVAILABLE상태가_아닌_좌석은_선택할_수_없음() {
+            Seat seat = Seat.builder()
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("05")
+                    .status(String.valueOf(SeatStatus.TEMP_RESERVED))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+            Seat saved = seatRepository.save(seat);
             //given
-            Long seatId = 1L;
+            Long seatId = saved.getSeatId();
 
             //when
             CoreException exception = assertThrows(CoreException.class, () -> concertUseCase.tempReserveSeat(List.of(seatId)));
@@ -103,11 +104,17 @@ class ConcertIntegrationTest {
         @Test
         @DisplayName("좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
-
+            Seat seat = Seat.builder()
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("05")
+                    .status(String.valueOf(SeatStatus.AVAILABLE))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+            Seat saved = seatRepository.save(seat);
             int threadCount = 300;
-            Long seatId = 1L;
 
-            List<Long> seatIdList = List.of(seatId);
+            List<Long> seatIdList = List.of(saved.getSeatId());
 
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
             CountDownLatch latch = new CountDownLatch(threadCount);
@@ -136,7 +143,7 @@ class ConcertIntegrationTest {
             assertEquals(1, successCount.get(), "한 명만 성공해야 한다.");
             assertEquals(threadCount - successCount.get(), failureCount.get(), "나머지는 실패해야 한다.");
 
-            Seat resultSeat = seatRepository.findBySeatId(seatId).orElseThrow();
+            Seat resultSeat = seatRepository.findBySeatId(saved.getSeatId()).orElseThrow();
             System.out.println("seat status : " + resultSeat.getStatus());
             assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED.");
 
