@@ -25,7 +25,7 @@ public class UserToken extends BaseEntity {
     @Column(name = "token")
     private String token;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", columnDefinition = "TINYINT", length = 1)
     private boolean isActive;
 
     @Column(name = "token_expire_at")
