@@ -111,7 +111,7 @@ public class ReservationUseCase {
             seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED, null);
             Seat seat = seatService.getSeat(seatId);
             ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, reservation.getReservationId(), seatId);
-            SeatUseCaseDTO dto = new SeatUseCaseDTO(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
+            SeatUseCaseDTO dto = SeatUseCaseDTO.of(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             seatUseCaseDTOList.add(dto);
         }
 

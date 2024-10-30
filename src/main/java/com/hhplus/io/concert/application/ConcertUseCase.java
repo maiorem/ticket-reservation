@@ -6,8 +6,6 @@ import com.hhplus.io.concert.domain.entity.ConcertDate;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.service.ConcertDateService;
 import com.hhplus.io.concert.service.SeatService;
-import com.hhplus.io.support.domain.error.CoreException;
-import com.hhplus.io.support.domain.error.ErrorType;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +32,12 @@ public class ConcertUseCase {
         return concertDateService.getAllDateListByConcert(concertId, ConcertDateStatus.AVAILABLE);
     }
 
-
     /**
      * 날짜에 해당하는 예약 가능 좌석 조회
      */
     public List<Seat> getSeats(Long concertDateId) {
         return seatService.getAllSeatByConcertDate(concertDateId, SeatStatus.AVAILABLE);
     }
-
 
     /**
      * 좌석 예약 (임시 선택)
@@ -50,9 +46,7 @@ public class ConcertUseCase {
     @Transactional
     public SeatReserveCommand tempReserveSeat(List<Long> seatIdList) {
         List<SeatUseCaseDTO> list = new ArrayList<>();
-
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
         for (Long seatId : seatIdList) {
             seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, SeatStatus.TEMP_RESERVED, now);
             Seat seat = seatService.getSeat(seatId);

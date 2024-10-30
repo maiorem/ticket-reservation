@@ -1,6 +1,8 @@
 package com.hhplus.io.concert.domain.repository;
 
 import com.hhplus.io.concert.domain.entity.Seat;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +14,6 @@ public interface SeatRepository {
 
     Seat getSeat(Long seatId);
 
-    Seat getSeatByStatusWithLock(Long seatId, String status);
+    Seat getSeatWithLock(Long seatId);
 
-    Seat saveSeat(Seat seat);
 }
