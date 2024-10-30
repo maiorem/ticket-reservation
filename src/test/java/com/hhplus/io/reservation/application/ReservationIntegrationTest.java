@@ -205,8 +205,8 @@ class ReservationIntegrationTest {
             executorService.shutdown();
             executorService.awaitTermination(1, TimeUnit.MINUTES);
 
-            Optional<Seat> seat = seatRepository.findBySeatId(1L);
-            assertEquals(seat.get().getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
+            Seat seat = seatRepository.findBySeatId(1L).orElse(null);
+            assertEquals(seat.getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
 
             assertEquals(1, successCount.get()); // 예약 성공 1개
             assertEquals(2, failureCount.get()); // 예약 실패 2개

@@ -10,12 +10,11 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,11 +31,9 @@ class ConcertIntegrationTest {
     private SeatJpaRepository seatRepository;
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
-
     @BeforeEach
     void setUp() {
         Seat seat1 = Seat.builder()
-                .seatId(1L)
                 .concertId(1L)
                 .concertDateId(1L)
                 .seatNumber("01")
@@ -44,7 +41,6 @@ class ConcertIntegrationTest {
                 .reservationTime(LocalDateTime.now())
                 .build();
         Seat seat2 = Seat.builder()
-                .seatId(2L)
                 .concertId(1L)
                 .concertDateId(1L)
                 .seatNumber("02")
@@ -52,15 +48,13 @@ class ConcertIntegrationTest {
                 .reservationTime(LocalDateTime.now())
                 .build();
         Seat seat3 = Seat.builder()
-                .seatId(3L)
                 .concertId(1L)
                 .concertDateId(1L)
                 .seatNumber("03")
                 .status(String.valueOf(SeatStatus.AVAILABLE))
                 .reservationTime(LocalDateTime.now())
                 .build();
-        Seat seat5 = Seat.builder()
-                .seatId(5L)
+        Seat seat4 = Seat.builder()
                 .concertId(1L)
                 .concertDateId(1L)
                 .seatNumber("05")
@@ -70,26 +64,26 @@ class ConcertIntegrationTest {
         seatRepository.save(seat1);
         seatRepository.save(seat2);
         seatRepository.save(seat3);
-        seatRepository.save(seat5);
+        seatRepository.save(seat4);
     }
-
     @Nested
     @DisplayName("좌석 임시 예약")
     class tempReserveSeat {
 
         @Test
+        @Rollback(false)
         void 좌석_예약_성공() {
             //given
-            Long seatId = 1L;
+            List<Long> seatList = List.of(1L, 2L, 3L);
 
             //when
-            SeatReserveCommand result = concertUseCase.tempReserveSeat(List.of(1L, 2L, 3L));
+            SeatReserveCommand result = concertUseCase.tempReserveSeat(seatList);
 
             //then
-            seatRepository.findBySeatId(seatId).ifPresent(seat -> {
-                assertEquals(3, result.seatList().size());
-                assertEquals(seat.getSeatNumber(), result.seatList().get(0).seatNumber());
-                assertEquals(String.valueOf(SeatStatus.TEMP_RESERVED), seat.getStatus());
+            seatRepository.findBySeatId(1L).ifPresent(seat -> {
+                assertEquals(3, result.seatList().size(), "전체 예약 성공 건수는 3임");
+                assertEquals(seat.getSeatNumber(), result.seatList().get(0).seatNumber(), "첫번째 예약 좌석번호와 1번 좌석번호는 같음");
+                assertEquals(SeatStatus.TEMP_RESERVED, result.seatList().get(0).status(), "현재 조회한 좌석의 상태는 TEMP_RESERVED임");
             });
 
         }
@@ -97,61 +91,54 @@ class ConcertIntegrationTest {
         @Test
         void AVAILABLE상태가_아닌_좌석은_선택할_수_없음() {
             //given
-            Seat seat1 = Seat.builder()
-                    .seatId(4L)
-                    .concertId(1L)
-                    .concertDateId(1L)
-                    .seatNumber("04")
-                    .status(String.valueOf(SeatStatus.TEMP_RESERVED))
-                    .reservationTime(LocalDateTime.now())
-                    .build();
-            seatRepository.save(seat1);
+            Long seatId = 1L;
 
             //when
-            CoreException exception = assertThrows(CoreException.class, () -> concertUseCase.tempReserveSeat(List.of(4L)));
+            CoreException exception = assertThrows(CoreException.class, () -> concertUseCase.tempReserveSeat(List.of(seatId)));
 
             //then
-            assertEquals(ErrorType.SEAT_NOT_FOUND, exception.getErrorType());
+            assertEquals(ErrorType.FORBIDDEN, exception.getErrorType());
         }
 
         @Test
         @DisplayName("좌석예약 동시성 테스트")
-        void 한_좌석을_세명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
-            int threadCount = 3;
+        void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
+
+            int threadCount = 300;
+            Long seatId = 1L;
+
+            List<Long> seatIdList = List.of(seatId);
+
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-            CountDownLatch latch = new CountDownLatch(1);
+            CountDownLatch latch = new CountDownLatch(threadCount);
 
-            List<Long> seatIds = new ArrayList<>();
-            seatIds.add(5L);
-
-            List<Future<Boolean>> results = new ArrayList<>();
-
-            AtomicInteger failureCount = new AtomicInteger(0);
             AtomicInteger successCount = new AtomicInteger(0);
+            AtomicInteger failureCount = new AtomicInteger(0);
 
-            // 3개의 스레드로 동시에 좌석 예약을 시도
             for (int i = 0; i < threadCount; i++) {
-                Future<Boolean> result = executorService.submit(() -> {
+                executorService.submit(() -> {
                     try {
-                        latch.await(); // 모든 스레드가 동시에 시작할 수 있도록 대기
-                        SeatReserveCommand command = concertUseCase.tempReserveSeat(seatIds);
+                        latch.await();
+                        SeatReserveCommand result = concertUseCase.tempReserveSeat(seatIdList);
                         successCount.incrementAndGet();
-                        return !(command==null); // 예약 성공 시 true 반환
+                        System.out.println("success result : " + result.toString());
                     } catch (Exception e) {
-                        System.out.println("Reservation fail : "+ e.getMessage());
+                        System.out.println("Reservation failed: " + e.getMessage());
                         failureCount.incrementAndGet();
-                        return false; // 예약 실패 시 false 반환
                     }
                 });
-                results.add(result);
+                latch.countDown();
             }
 
-            latch.countDown(); // 모든 스레드 시작
-
-            assertEquals(1, successCount);
-            assertEquals(2, failureCount);
-
             executorService.shutdown();
+            executorService.awaitTermination(30, TimeUnit.SECONDS);
+
+            assertEquals(1, successCount.get(), "한 명만 성공해야 한다.");
+            assertEquals(threadCount - successCount.get(), failureCount.get(), "나머지는 실패해야 한다.");
+
+            Seat resultSeat = seatRepository.findBySeatId(seatId).orElseThrow();
+            System.out.println("seat status : " + resultSeat.getStatus());
+            assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED이어야 합니다.");
 
         }
 
