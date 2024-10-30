@@ -1,5 +1,6 @@
 package com.hhplus.io.reservation.application;
 
+import com.hhplus.io.AcceptanceTest;
 import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
@@ -20,8 +21,7 @@ import com.hhplus.io.usertoken.persistence.UserTokenJpaRepository;
 import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,9 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class ReservationIntegrationTest {
+@Transactional
+class ReservationIntegrationTest  extends AcceptanceTest {
 
     @Autowired
     private ReservationUseCase reservationUseCase;
@@ -54,8 +53,6 @@ class ReservationIntegrationTest {
     private ConcertDateJpaRepository concertDateRepository;
     @Autowired
     private WaitingQueueJpaRepository waitingQueueRepository;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -172,7 +169,7 @@ class ReservationIntegrationTest {
         
         @Test
         @DisplayName("결제 동시성 테스트")
-        void 세사람이_동시에_한_좌석_결제_시_한_사람만_성공() throws InterruptedException {
+        void 여러사람이_동시에_한_좌석_결제_시_한_사람만_성공() throws InterruptedException {
             //given
             int threadCount = 3;
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
@@ -209,12 +206,8 @@ class ReservationIntegrationTest {
             assertEquals(seat.getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
 
             assertEquals(1, successCount.get()); // 예약 성공 1개
-            assertEquals(2, failureCount.get()); // 예약 실패 2개
+            assertEquals(threadCount - successCount.get(), failureCount.get()); // 나머지 예약 실패
         }
 
-    }
-    @AfterEach
-    void cleanUp(){
-        databaseCleanUp.execute();
     }
 }

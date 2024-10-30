@@ -1,5 +1,6 @@
 package com.hhplus.io.amount.application;
 
+import com.hhplus.io.AcceptanceTest;
 import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
@@ -19,9 +20,7 @@ import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class AmountUseCaseTest {
+class AmountUseCaseTest  extends AcceptanceTest {
 
     @Autowired
     private AmountUseCase amountUseCase;
@@ -29,8 +28,6 @@ class AmountUseCaseTest {
     private AmountJpaRepository amountRepository;
     @Autowired
     private UserJpaRepository userRepository;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     @BeforeEach
     void setUp() {
@@ -146,8 +143,4 @@ class AmountUseCaseTest {
 
     }
 
-    @AfterEach
-    void cleanUp(){
-        databaseCleanUp.execute();
-    }
 }

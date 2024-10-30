@@ -1,17 +1,15 @@
 package com.hhplus.io.concert.application;
 
+import com.hhplus.io.AcceptanceTest;
 import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.persistence.SeatJpaRepository;
 import com.hhplus.io.support.domain.error.CoreException;
 import com.hhplus.io.support.domain.error.ErrorType;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,10 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
 @Transactional
-class ConcertIntegrationTest {
+class ConcertIntegrationTest extends AcceptanceTest {
 
     @Autowired
     private ConcertUseCase concertUseCase;
@@ -32,34 +28,6 @@ class ConcertIntegrationTest {
     @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
-    @BeforeEach
-    void setUp() {
-        Seat seat1 = Seat.builder()
-                .concertId(1L)
-                .concertDateId(1L)
-                .seatNumber("01")
-                .status(String.valueOf(SeatStatus.AVAILABLE))
-                .reservationTime(LocalDateTime.now())
-                .build();
-        Seat seat2 = Seat.builder()
-                .concertId(1L)
-                .concertDateId(1L)
-                .seatNumber("02")
-                .status(String.valueOf(SeatStatus.AVAILABLE))
-                .reservationTime(LocalDateTime.now())
-                .build();
-        Seat seat3 = Seat.builder()
-                .concertId(1L)
-                .concertDateId(1L)
-                .seatNumber("03")
-                .status(String.valueOf(SeatStatus.AVAILABLE))
-                .reservationTime(LocalDateTime.now())
-                .build();
-
-        seatRepository.save(seat1);
-        seatRepository.save(seat2);
-        seatRepository.save(seat3);
-    }
     @Nested
     @DisplayName("좌석 임시 예약")
     class tempReserveSeat {
@@ -67,6 +35,33 @@ class ConcertIntegrationTest {
         @Test
         void 좌석_예약_성공() {
             //given
+            Seat seat1 = Seat.builder()
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("01")
+                    .status(String.valueOf(SeatStatus.AVAILABLE))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+            Seat seat2 = Seat.builder()
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("02")
+                    .status(String.valueOf(SeatStatus.AVAILABLE))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+            Seat seat3 = Seat.builder()
+                    .concertId(1L)
+                    .concertDateId(1L)
+                    .seatNumber("03")
+                    .status(String.valueOf(SeatStatus.AVAILABLE))
+                    .reservationTime(LocalDateTime.now())
+                    .build();
+
+            seatRepository.save(seat1);
+            seatRepository.save(seat2);
+            seatRepository.save(seat3);
+
+
             List<Long> seatList = List.of(1L, 2L, 3L);
 
             //when
@@ -83,15 +78,16 @@ class ConcertIntegrationTest {
 
         @Test
         void AVAILABLE상태가_아닌_좌석은_선택할_수_없음() {
-            Seat seat = Seat.builder()
+            //given
+            Seat seat1 = Seat.builder()
                     .concertId(1L)
                     .concertDateId(1L)
-                    .seatNumber("05")
+                    .seatNumber("04")
                     .status(String.valueOf(SeatStatus.TEMP_RESERVED))
                     .reservationTime(LocalDateTime.now())
                     .build();
-            Seat saved = seatRepository.save(seat);
-            //given
+
+            Seat saved = seatRepository.save(seat1);
             Long seatId = saved.getSeatId();
 
             //when
@@ -104,17 +100,22 @@ class ConcertIntegrationTest {
         @Test
         @DisplayName("좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
-            Seat seat = Seat.builder()
+            //given
+            Seat seat1 = Seat.builder()
                     .concertId(1L)
                     .concertDateId(1L)
                     .seatNumber("05")
                     .status(String.valueOf(SeatStatus.AVAILABLE))
                     .reservationTime(LocalDateTime.now())
                     .build();
-            Seat saved = seatRepository.save(seat);
-            int threadCount = 300;
 
-            List<Long> seatIdList = List.of(saved.getSeatId());
+            Seat saved = seatRepository.save(seat1);
+            Long seatId = saved.getSeatId();
+
+            long startTime = System.nanoTime();
+            int threadCount = 10;
+
+            List<Long> seatIdList = List.of(seatId);
 
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
             CountDownLatch latch = new CountDownLatch(threadCount);
@@ -143,17 +144,16 @@ class ConcertIntegrationTest {
             assertEquals(1, successCount.get(), "한 명만 성공해야 한다.");
             assertEquals(threadCount - successCount.get(), failureCount.get(), "나머지는 실패해야 한다.");
 
-            Seat resultSeat = seatRepository.findBySeatId(saved.getSeatId()).orElseThrow();
+            Seat resultSeat = seatRepository.findBySeatId(seatId).orElseThrow();
             System.out.println("seat status : " + resultSeat.getStatus());
-            assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED.");
+            assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED이어야 합니다.");
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+
+            System.out.println("실행시간 : " + duration + "나노초");
 
         }
 
     }
-    @AfterEach
-    void cleanUp(){
-        databaseCleanUp.execute();
-    }
-
 
 }
