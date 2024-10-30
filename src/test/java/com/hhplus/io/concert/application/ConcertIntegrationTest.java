@@ -138,7 +138,7 @@ class ConcertIntegrationTest {
 
             Seat resultSeat = seatRepository.findBySeatId(seatId).orElseThrow();
             System.out.println("seat status : " + resultSeat.getStatus());
-            assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED이어야 합니다.");
+            assertEquals(SeatStatus.TEMP_RESERVED.toString(), resultSeat.getStatus(), "좌석 상태는 TEMP_RESERVED.");
 
         }
 
