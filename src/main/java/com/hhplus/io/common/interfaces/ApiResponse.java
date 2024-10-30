@@ -31,10 +31,16 @@ public class ApiResponse<T> {
         return new ApiResponse<>(new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), map);
     }
 
-    public static <T> ApiResponse<T> serverFail(CoreException exception) {
+    public static <T> ApiResponse<T> exceptionHandler(CoreException exception) {
+        Map<String, String> map = new HashMap<>();
+        log.error("에러 발생", exception);
+        map.put("서버 오류 메세지", "서버 로그 요청 필요");
+        return new ApiResponse(new ApiResponseHeader(FAILED, FAILED_MESSAGE), map);
+    }
+
+    public static <T> ApiResponse<T> serverFail(Exception exception) {
         Map<String, String> map = new HashMap<>();
         log.error("서버 에러 발생", exception);
-        map.put("서버 오류 메세지", "서버 로그 요청 필요");
         return new ApiResponse(new ApiResponseHeader(FAILED, FAILED_MESSAGE), map);
     }
 

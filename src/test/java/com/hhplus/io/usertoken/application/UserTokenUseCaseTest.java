@@ -1,5 +1,6 @@
 package com.hhplus.io.usertoken.application;
 
+import com.hhplus.io.AcceptanceTest;
 import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
@@ -10,16 +11,11 @@ import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-@ActiveProfiles("test")
-@SpringBootTest
 @Transactional
-class UserTokenUseCaseTest {
+class UserTokenUseCaseTest extends AcceptanceTest {
 
     @Autowired
     private UserTokenUseCase userTokenUseCase;
@@ -29,8 +25,6 @@ class UserTokenUseCaseTest {
     private UserJpaRepository userRepository;
     @Autowired
     private WaitingQueueJpaRepository waitingQueueRepository;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     @BeforeEach
     void setUp() {
@@ -127,8 +121,4 @@ class UserTokenUseCaseTest {
 
     }
 
-    @AfterEach
-    void cleanUp(){
-        databaseCleanUp.execute();
-    }
 }

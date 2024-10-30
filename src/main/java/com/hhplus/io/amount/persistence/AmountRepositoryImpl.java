@@ -34,7 +34,6 @@ public class AmountRepositoryImpl implements AmountRepository {
         return jpaRepository.save(amount);
     }
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Override
     public Amount getAmountByUserWithLock(Long userId) {
         Optional<Amount> optionalAmount = jpaRepository.findByUserId(userId);

@@ -32,14 +32,12 @@ public class ConcertUseCase {
         return concertDateService.getAllDateListByConcert(concertId, ConcertDateStatus.AVAILABLE);
     }
 
-
     /**
      * 날짜에 해당하는 예약 가능 좌석 조회
      */
     public List<Seat> getSeats(Long concertDateId) {
         return seatService.getAllSeatByConcertDate(concertDateId, SeatStatus.AVAILABLE);
     }
-
 
     /**
      * 좌석 예약 (임시 선택)
@@ -48,14 +46,9 @@ public class ConcertUseCase {
     @Transactional
     public SeatReserveCommand tempReserveSeat(List<Long> seatIdList) {
         List<SeatUseCaseDTO> list = new ArrayList<>();
-
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
         for (Long seatId : seatIdList) {
-            if(!seatService.getSeat(seatId).getStatus().equals(String.valueOf(SeatStatus.AVAILABLE))){
-                throw new IllegalArgumentException("seat not available");
-            }
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, now);
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, SeatStatus.TEMP_RESERVED, now);
             Seat seat = seatService.getSeat(seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             list.add(dto);
@@ -71,7 +64,7 @@ public class ConcertUseCase {
         Seat seat = seatService.getSeat(seatId);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         if (now.isAfter(seat.getReservationTime().plusMinutes(5))) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, null);
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE, null);
         }
 
     }

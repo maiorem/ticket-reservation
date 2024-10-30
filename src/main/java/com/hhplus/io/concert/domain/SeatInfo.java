@@ -3,6 +3,8 @@ package com.hhplus.io.concert.domain;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.domain.repository.SeatRepository;
+import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.support.domain.error.ErrorType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,9 +27,15 @@ public class SeatInfo {
         return seatRepository.getSeat(seatId);
     }
 
-    public void updateStatusAndReservationTime(Long seatId, SeatStatus seatStatus, LocalDateTime updateTime) {
-        Seat seat = seatRepository.getSeatByStatusWithLock(seatId, String.valueOf(SeatStatus.AVAILABLE));
-        seat.updateSeatStatus(String.valueOf(seatStatus));
+    public void updateStatusAndReservationTime(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus, LocalDateTime updateTime) {
+        Seat seat = seatRepository.getSeatWithLock(seatId);
+        if (seat == null) {
+            throw new CoreException(ErrorType.SEAT_NOT_FOUND);
+        }
+        if (!seat.getStatus().equals(fromStatus.toString())) {
+            throw new CoreException(ErrorType.FORBIDDEN);
+        }
+        seat.updateSeatStatus(String.valueOf(updateStatus));
         seat.updateReservationTime(updateTime);
     }
 }

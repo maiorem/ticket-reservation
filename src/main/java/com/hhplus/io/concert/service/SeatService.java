@@ -25,8 +25,8 @@ public class SeatService {
         return seatInfo.getSeat(seatId);
     }
 
-    public void updateStatusAndReservationTime(Long seatId, SeatStatus seatStatus, LocalDateTime time) {
-        seatInfo.updateStatusAndReservationTime(seatId, seatStatus, time);
+    public void updateStatusAndReservationTime(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus, LocalDateTime time) {
+        seatInfo.updateStatusAndReservationTime(seatId, fromStatus, updateStatus, time);
     }
 
 }
