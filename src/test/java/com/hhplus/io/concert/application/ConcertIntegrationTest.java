@@ -98,7 +98,7 @@ class ConcertIntegrationTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("좌석예약 동시성 테스트")
+        @DisplayName("[비관적 락] 좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
             //given
             Seat seat1 = Seat.builder()
@@ -150,7 +150,7 @@ class ConcertIntegrationTest extends AcceptanceTest {
             long endTime = System.nanoTime();
             long duration = endTime - startTime;
 
-            System.out.println("실행시간 : " + duration + "나노초");
+            System.out.println("실행시간 : " + duration + " 나노초");
 
         }
 
