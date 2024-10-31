@@ -1,7 +1,6 @@
 package com.hhplus.io.concert.application;
 
 import com.hhplus.io.AcceptanceTest;
-import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.persistence.SeatJpaRepository;
@@ -25,8 +24,6 @@ class ConcertIntegrationTest extends AcceptanceTest {
     private ConcertUseCase concertUseCase;
     @Autowired
     private SeatJpaRepository seatRepository;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     @Nested
     @DisplayName("좌석 임시 예약")
@@ -98,7 +95,7 @@ class ConcertIntegrationTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("좌석예약 동시성 테스트")
+        @DisplayName("[낙관적 락] 좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
             //given
             Seat seat1 = Seat.builder()
