@@ -108,7 +108,7 @@ public class ReservationUseCase {
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경
         for (Long seatId : seatList) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED, null);
+            seatService.updateStatus(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED, null);
             Seat seat = seatService.getSeat(seatId);
             ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, reservation.getReservationId(), seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());

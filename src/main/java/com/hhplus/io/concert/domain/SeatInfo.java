@@ -38,5 +38,17 @@ public class SeatInfo {
         seat.updateSeatStatus(String.valueOf(updateStatus));
         seat.updateReservationTime(updateTime);
     }
+
+    public void updateStatus(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus, LocalDateTime updateTime) {
+        Seat seat = seatRepository.getSeat(seatId);
+        if (seat == null) {
+            throw new CoreException(ErrorType.SEAT_NOT_FOUND);
+        }
+        if (!seat.getStatus().equals(fromStatus.toString())) {
+            throw new CoreException(ErrorType.FORBIDDEN);
+        }
+        seat.updateSeatStatus(String.valueOf(updateStatus));
+        seat.updateReservationTime(updateTime);
+    }
 }
 
