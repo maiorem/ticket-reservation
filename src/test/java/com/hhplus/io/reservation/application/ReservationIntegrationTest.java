@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-class ReservationIntegrationTest  extends AcceptanceTest {
+class ReservationIntegrationTest extends AcceptanceTest{
 
     @Autowired
     private ReservationUseCase reservationUseCase;
@@ -168,9 +169,10 @@ class ReservationIntegrationTest  extends AcceptanceTest {
         }
         
         @Test
-        @DisplayName("결제 동시성 테스트")
-        void 여러사람이_동시에_한_좌석_결제_시_한_사람만_성공() throws InterruptedException {
+        @DisplayName("[비관적 락] 결제 동시성 테스트")
+        void 동일_유저가_결제를_여러번_시도() throws InterruptedException {
             //given
+            long startTime = System.nanoTime();
             int threadCount = 3;
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
             CountDownLatch latch = new CountDownLatch(threadCount);
@@ -179,17 +181,17 @@ class ReservationIntegrationTest  extends AcceptanceTest {
             AtomicInteger successCount = new AtomicInteger(0);
 
             List<Long> seatList = List.of(1L);
-            List<Long> userIdList = List.of(1L, 2L, 3L);
-            List<String> tokenList = List.of("aaaa", "bbbb", "cccc");
+            Long userId = 1L;
+            String token = "aaaa";
+            int payment = 10000;
+
+            List<ConfirmReservationCommand> commands = new ArrayList<>();
 
             for (int i = 0; i < threadCount; i++) {
-                final int index = i;
-                Long userId = userIdList.get(index);
-                String token = tokenList.get(index);
                 executorService.submit(() -> {
                     try {
-                        latch.await();
-                        reservationUseCase.confirmReservation(token, userId, 1L, 1L, 1, seatList, 10000);
+                        ConfirmReservationCommand command = reservationUseCase.confirmReservation(token, userId, 1L, 1L, 1, seatList, payment);
+                        commands.add(command);
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failureCount.incrementAndGet();
@@ -198,15 +200,24 @@ class ReservationIntegrationTest  extends AcceptanceTest {
                 });
                 latch.countDown();
             }
-
+            latch.await();
             executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.MINUTES);
 
-            Seat seat = seatRepository.findBySeatId(1L).orElse(null);
-            assertEquals(seat.getStatus(), String.valueOf(SeatStatus.CONFIRMED)); // 예약 성공
+            assertNotNull(commands);
 
-            assertEquals(1, successCount.get()); // 예약 성공 1개
-            assertEquals(threadCount - successCount.get(), failureCount.get()); // 나머지 예약 실패
+            Seat seat = seatRepository.findBySeatId(1L).orElseThrow();
+            assertEquals(SeatStatus.CONFIRMED.toString(), seat.getStatus(), "좌석 상태는 CONFIRMED 여야한다.");
+
+            assertEquals(1, successCount.get(), "결제는 한번만 성공해야 한다.");
+            assertEquals(threadCount - successCount.get(), failureCount.get(), "성공 1회 외 나머지는 실패해야 한다.");
+
+            Amount amount = amountRepository.findByUserId(userId).orElseThrow();
+            assertEquals(0, amount.getAmount(), "잔액은 한번만 지불되어야 한다.");
+
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+
+            System.out.println("실행시간 : " + duration + " 나노초");
         }
 
     }

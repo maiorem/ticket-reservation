@@ -30,9 +30,14 @@ public class Amount extends BaseEntity {
     @Comment("사용자 잔액")
     private int amount;
 
-    @Column(name = "payment_time")
-    @Comment("결제에 사용된 시간")
-    private LocalDateTime paymentTime;
+    @Version
+    @Column(name = "version")
+    @Comment("버전")
+    private int version;
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public void saveAmount(int updateAmount){
         this.amount += updateAmount;
@@ -41,10 +46,5 @@ public class Amount extends BaseEntity {
     public void payAmount(int payAmount){
         this.amount -= payAmount;
     }
-
-    public void updatePaymentDate(LocalDateTime updateTime){
-        this.paymentTime = updateTime;
-    }
-
 
 }
