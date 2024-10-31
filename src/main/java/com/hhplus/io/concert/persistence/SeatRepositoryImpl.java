@@ -42,7 +42,6 @@ public class SeatRepositoryImpl implements SeatRepository {
         return jpaQueryFactory
                 .selectFrom(seat)
                 .where(seat.seatId.eq(seatId))
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchOne();
     }
 
