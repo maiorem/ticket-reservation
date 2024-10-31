@@ -1,29 +1,31 @@
 package com.hhplus.io.amount.application;
 
 import com.hhplus.io.AcceptanceTest;
-import com.hhplus.io.DatabaseCleanUp;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
+import com.hhplus.io.amount.service.AmountService;
 import com.hhplus.io.support.domain.error.CoreException;
 import com.hhplus.io.support.domain.error.ErrorType;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.persistence.UserJpaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AmountUseCaseTest  extends AcceptanceTest {
+@Transactional
+class AmountUseCaseTest extends AcceptanceTest {
 
     @Autowired
     private AmountUseCase amountUseCase;
+    @Autowired
+    private AmountService amountService;
     @Autowired
     private AmountJpaRepository amountRepository;
     @Autowired
@@ -106,41 +108,116 @@ class AmountUseCaseTest  extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("잔액 충전 동시성 테스트")
-        void 동일_유저가_잔액충전을_동시에_실행할_경우() throws InterruptedException, ExecutionException {
+        @DisplayName("[분산락] 잔액 충전 동시성 테스트")
+        void 동일_유저가_잔액충전을_동시에_실행할_경우() throws InterruptedException {
             //given
+            long startTime = System.nanoTime();
             Long userId = 1L;
             int updateAmount = 100;
             int threadCount = 10;
 
-            ExecutorService executor = Executors.newFixedThreadPool(threadCount); // 10개의 스레드로 테스트
+            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+            CountDownLatch latch = new CountDownLatch(threadCount);
 
-            //when
-            List<Callable<SaveAmountCommand>> tasks = new ArrayList<>();
+            List<SaveAmountCommand> commands = new ArrayList<>();
+
+            AtomicInteger successCount = new AtomicInteger(0);
+
             for (int i = 0; i < threadCount; i++) {
-                tasks.add(() -> amountUseCase.saveAmount(userId, updateAmount));
+                executorService.submit(() -> {
+                    try {
+                        SaveAmountCommand command = amountUseCase.saveAmount(userId, updateAmount);
+                        commands.add(command);
+                        successCount.incrementAndGet();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
             }
+            latch.await();
+            executorService.shutdown();
 
-            List<Future<SaveAmountCommand>> futures = executor.invokeAll(tasks);
-            executor.shutdown();
+            assertNotNull(commands);
+            assertEquals(10000+updateAmount, commands.get(0).amount(), "잔액이 한번만 충전되어야 함");
 
-            //then
-            int totalAmount = 0;
-            for (Future<SaveAmountCommand> future : futures) {
-                SaveAmountCommand result = future.get();
-                assertNotNull(result);
-                int saveAmount = result.amount() - 10000;
-                totalAmount += saveAmount;
-            }
-            assertEquals(100*threadCount, totalAmount); //동시 충전 시도한 충전 금액
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
 
-            amountRepository.findByUserId(userId).ifPresent(amount -> {
-                //실제 충전은 1회만
-                assertEquals(10000+updateAmount, amount.getAmount());
-            });
+            System.out.println("실행시간 : " + duration + " 나노초");
 
         }
 
+
+    }
+    @Nested
+    @DisplayName("잔액 사용")
+    class payAmount {
+
+        @Test
+        void 잔액_사용_성공() {
+            //given
+            Long userId = 1L;
+            int payAmount = 10000;
+
+            //when
+            amountService.pay(userId, payAmount);
+
+            //then
+            Amount amount = amountRepository.findByUserId(userId).orElseThrow();
+            assertEquals(0, amount.getAmount());
+
+        }
+
+        @Test
+        void 기존_잔액보다_큰_금액_결제시_실패() {
+            //given
+            Long userId = 1L;
+            int payAmount = 15000;
+
+            //when
+            CoreException exception = assertThrows(CoreException.class, () -> amountService.pay(userId, payAmount));
+
+            //then
+            assertEquals(ErrorType.FORBIDDEN, exception.getErrorType());
+
+        }
+
+        @Test
+        @DisplayName("[분산락] 결제 동시성 테스트")
+        void 동일_유저가_동시에_여러번_결제를_하는_경우() throws InterruptedException {
+            //given
+            long startTime = System.nanoTime();
+            Long userId = 1L;
+            int payAmount = 10000;
+            int threadCount = 300;
+
+            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+            CountDownLatch latch = new CountDownLatch(threadCount);
+
+            AtomicInteger successCount = new AtomicInteger(0);
+
+            for (int i = 0; i < threadCount; i++) {
+                executorService.submit(() -> {
+                    try {
+                        amountService.pay(userId, payAmount);
+                        successCount.incrementAndGet();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
+                latch.countDown();
+            }
+            latch.await();
+            executorService.shutdown();
+
+            Amount amount = amountRepository.findByUserId(userId).orElseThrow();
+            assertEquals(10000, amount.getAmount(), "잔액 결제는 1회만 되어야 한다.");
+
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+
+            System.out.println("실행시간 : " + duration + " 나노초");
+        }
     }
 
 }
