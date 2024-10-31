@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.Lock;
 import java.util.Optional;
 
 public interface AmountJpaRepository extends JpaRepository<Amount, Long> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Amount> findByUserId(Long userId);
 }
