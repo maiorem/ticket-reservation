@@ -37,7 +37,6 @@ public class AmountUseCase {
         }
         int newAmount = amountService.updateAmount(userId, updateAmount);
         return SaveAmountCommand.of(userId, newAmount);
-
     }
 
 

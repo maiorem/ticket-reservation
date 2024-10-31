@@ -8,7 +8,5 @@ public interface AmountRepository {
 
     Amount getAmountByUser(Long userId);
 
-    Amount save(Amount amount);
-
     Amount getAmountByUserWithLock(Long userId);
 }
