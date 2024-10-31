@@ -12,7 +12,5 @@ import java.util.Optional;
 @Repository
 public interface SeatJpaRepository extends JpaRepository<Seat, Long> {
     List<Seat> findAllByConcertIdAndStatus(Long concertDateId, String status);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Seat> findBySeatId(Long seatId);
 }
