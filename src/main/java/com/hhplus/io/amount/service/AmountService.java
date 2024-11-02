@@ -2,6 +2,8 @@ package com.hhplus.io.amount.service;
 
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.domain.AmountInfo;
+import com.hhplus.io.support.domain.aop.DistributedLock;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +23,8 @@ public class AmountService {
         return amountInfo.updateAmount(userId, updateAmount);
     }
 
+    @Transactional
+    @DistributedLock(key = "#userId.concat('-').concat(#payment)")
     public void pay(Long userId, int payment) {
         amountInfo.payAmount(userId, payment);
     }

@@ -6,6 +6,7 @@ import com.hhplus.io.concert.domain.entity.ConcertDate;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.service.ConcertDateService;
 import com.hhplus.io.concert.service.SeatService;
+import com.hhplus.io.support.domain.aop.DistributedLock;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class ConcertUseCase {
      * 좌석 예약 (임시 선택)
      * - 결제까지 제한시간 5분.
      */
+    @DistributedLock(key = "#seatIdList")
     @Transactional
     public SeatReserveCommand tempReserveSeat(List<Long> seatIdList) {
         List<SeatUseCaseDTO> list = new ArrayList<>();

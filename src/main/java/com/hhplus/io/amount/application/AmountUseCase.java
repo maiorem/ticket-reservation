@@ -2,6 +2,7 @@ package com.hhplus.io.amount.application;
 
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.service.AmountService;
+import com.hhplus.io.support.domain.aop.DistributedLock;
 import com.hhplus.io.support.domain.error.CoreException;
 import com.hhplus.io.support.domain.error.ErrorType;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class AmountUseCase {
      * 잔액 충전
      */
     @Transactional
+    @DistributedLock(key = "#userId.concat('-').concat(#updateAmount)")
     public SaveAmountCommand saveAmount(Long userId, int updateAmount){
         if(updateAmount < 0) {
             throw new CoreException(ErrorType.FORBIDDEN);
