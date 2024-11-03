@@ -23,9 +23,12 @@ public class AmountInfo {
     }
 
     public int updateAmount(Long userId, int updateAmount) {
+        if (updateAmount < 0) {
+            throw new CoreException(ErrorType.FORBIDDEN);
+        }
         Amount amount = amountRepository.getAmountByUserWithLock(userId);
         if (amount == null) {
-            throw new CoreException(ErrorType.FORBIDDEN);
+            throw new CoreException(ErrorType.USER_NOT_FOUND);
         }
         amount.saveAmount(updateAmount);
         return amount.getAmount();
@@ -37,7 +40,5 @@ public class AmountInfo {
             throw new CoreException(ErrorType.FORBIDDEN);
         }
         amount.payAmount(payment);
-        amount.updatePaymentDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-
     }
 }

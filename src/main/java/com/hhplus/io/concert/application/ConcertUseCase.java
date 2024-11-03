@@ -44,7 +44,6 @@ public class ConcertUseCase {
      * 좌석 예약 (임시 선택)
      * - 결제까지 제한시간 5분.
      */
-    @DistributedLock(key = "#seatIdList")
     @Transactional
     public SeatReserveCommand tempReserveSeat(List<Long> seatIdList) {
         List<SeatUseCaseDTO> list = new ArrayList<>();

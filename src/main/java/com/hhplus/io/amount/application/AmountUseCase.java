@@ -32,11 +32,7 @@ public class AmountUseCase {
      * 잔액 충전
      */
     @Transactional
-    @DistributedLock(key = "#userId.concat('-').concat(#updateAmount)")
     public SaveAmountCommand saveAmount(Long userId, int updateAmount){
-        if(updateAmount < 0) {
-            throw new CoreException(ErrorType.FORBIDDEN);
-        }
         int newAmount = amountService.updateAmount(userId, updateAmount);
         return SaveAmountCommand.of(userId, newAmount);
 

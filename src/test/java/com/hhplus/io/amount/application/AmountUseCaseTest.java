@@ -108,26 +108,25 @@ class AmountUseCaseTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("[분산락] 잔액 충전 동시성 테스트")
+        @DisplayName("[비관적 락] 잔액 충전 동시성 테스트")
         void 동일_유저가_잔액충전을_동시에_실행할_경우() throws InterruptedException {
             //given
             long startTime = System.nanoTime();
             Long userId = 1L;
             int updateAmount = 100;
-            int threadCount = 10;
+            int threadCount = 3;
 
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
             CountDownLatch latch = new CountDownLatch(threadCount);
 
-            List<SaveAmountCommand> commands = new ArrayList<>();
-
             AtomicInteger successCount = new AtomicInteger(0);
 
             for (int i = 0; i < threadCount; i++) {
+                updateAmount = updateAmount * (i+1);
+                int finalUpdateAmount = updateAmount;
                 executorService.submit(() -> {
                     try {
-                        SaveAmountCommand command = amountUseCase.saveAmount(userId, updateAmount);
-                        commands.add(command);
+                        amountUseCase.saveAmount(userId, finalUpdateAmount);
                         successCount.incrementAndGet();
                     } finally {
                         latch.countDown();
@@ -137,8 +136,8 @@ class AmountUseCaseTest extends AcceptanceTest {
             latch.await();
             executorService.shutdown();
 
-            assertNotNull(commands);
-            assertEquals(10000+updateAmount, commands.get(0).amount(), "잔액이 한번만 충전되어야 함");
+            Amount amount = amountRepository.findByUserId(userId).orElseThrow();
+            assertEquals(10000+((updateAmount) + (updateAmount*2) + (updateAmount *3)), amount.getAmount());
 
             long endTime = System.nanoTime();
             long duration = endTime - startTime;
@@ -183,7 +182,7 @@ class AmountUseCaseTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("[분산락] 결제 동시성 테스트")
+        @DisplayName("[비관적 락] 결제 동시성 테스트")
         void 동일_유저가_동시에_여러번_결제를_하는_경우() throws InterruptedException {
             //given
             long startTime = System.nanoTime();

@@ -9,6 +9,7 @@ import com.hhplus.io.support.domain.error.CoreException;
 import com.hhplus.io.support.domain.error.ErrorType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -19,14 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-class ConcertIntegrationTest extends AcceptanceTest {
+class ConcertIntegrationTest extends AcceptanceTest{
 
     @Autowired
     private ConcertUseCase concertUseCase;
     @Autowired
     private SeatJpaRepository seatRepository;
-    @Autowired
-    private DatabaseCleanUp databaseCleanUp;
 
     @Nested
     @DisplayName("좌석 임시 예약")
@@ -98,7 +97,7 @@ class ConcertIntegrationTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("좌석예약 동시성 테스트")
+        @DisplayName("[낙관적 락] 좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
             //given
             Seat seat1 = Seat.builder()
@@ -113,7 +112,7 @@ class ConcertIntegrationTest extends AcceptanceTest {
             Long seatId = saved.getSeatId();
 
             long startTime = System.nanoTime();
-            int threadCount = 10;
+            int threadCount = 300;
 
             List<Long> seatIdList = List.of(seatId);
 
