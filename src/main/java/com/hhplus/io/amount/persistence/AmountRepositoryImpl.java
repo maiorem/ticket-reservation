@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import static com.hhplus.io.amount.domain.entity.QAmount.amount1;
+
 @Repository
 public class AmountRepositoryImpl implements AmountRepository {
 
@@ -36,7 +38,10 @@ public class AmountRepositoryImpl implements AmountRepository {
 
     @Override
     public Amount getAmountByUserWithLock(Long userId) {
-        Optional<Amount> optionalAmount = jpaRepository.findByUserId(userId);
-        return optionalAmount.orElse(null);
+        return jpaQueryFactory
+                .selectFrom(amount1)
+                .where(amount1.userId.eq(userId))
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetchOne();
     }
 }

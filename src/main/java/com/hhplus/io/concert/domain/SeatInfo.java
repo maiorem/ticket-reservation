@@ -28,7 +28,7 @@ public class SeatInfo {
     }
 
     public void updateStatusAndReservationTime(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus, LocalDateTime updateTime) {
-        Seat seat = seatRepository.getSeatWithLock(seatId);
+        Seat seat = seatRepository.getSeat(seatId);
         if (seat == null) {
             throw new CoreException(ErrorType.SEAT_NOT_FOUND);
         }

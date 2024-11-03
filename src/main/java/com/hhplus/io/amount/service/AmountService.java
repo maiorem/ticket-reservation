@@ -24,7 +24,6 @@ public class AmountService {
     }
 
     @Transactional
-    @DistributedLock(key = "#userId.concat('-').concat(#payment)")
     public void pay(Long userId, int payment) {
         amountInfo.payAmount(userId, payment);
     }
