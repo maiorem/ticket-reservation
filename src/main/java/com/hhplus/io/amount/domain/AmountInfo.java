@@ -40,7 +40,5 @@ public class AmountInfo {
             throw new CoreException(ErrorType.FORBIDDEN);
         }
         amount.payAmount(payment);
-        amount.updatePaymentDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-
     }
 }
