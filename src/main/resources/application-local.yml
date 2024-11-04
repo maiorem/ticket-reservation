@@ -19,6 +19,8 @@ spring:
     redis:
       port: 6379
       host: localhost
+  cache:
+    type: redis
 
 logging:
   level:
