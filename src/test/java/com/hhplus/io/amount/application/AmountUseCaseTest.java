@@ -1,6 +1,6 @@
 package com.hhplus.io.amount.application;
 
-import com.hhplus.io.AcceptanceTest;
+import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
 import com.hhplus.io.amount.service.AmountService;
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 

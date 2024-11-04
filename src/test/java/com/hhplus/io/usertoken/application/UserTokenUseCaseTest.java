@@ -1,7 +1,6 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.AcceptanceTest;
-import com.hhplus.io.DatabaseCleanUp;
+import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.usertoken.domain.entity.User;
 import com.hhplus.io.usertoken.domain.entity.WaitingQueue;

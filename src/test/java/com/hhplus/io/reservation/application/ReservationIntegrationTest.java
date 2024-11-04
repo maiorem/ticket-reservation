@@ -1,7 +1,6 @@
 package com.hhplus.io.reservation.application;
 
-import com.hhplus.io.AcceptanceTest;
-import com.hhplus.io.DatabaseCleanUp;
+import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.amount.domain.entity.Amount;
 import com.hhplus.io.amount.persistence.AmountJpaRepository;
 import com.hhplus.io.concert.domain.entity.ConcertDateStatus;

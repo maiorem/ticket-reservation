@@ -1,7 +1,6 @@
 package com.hhplus.io.concert.application;
 
-import com.hhplus.io.AcceptanceTest;
-import com.hhplus.io.DatabaseCleanUp;
+import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.persistence.SeatJpaRepository;
@@ -9,7 +8,6 @@ import com.hhplus.io.support.domain.error.CoreException;
 import com.hhplus.io.support.domain.error.ErrorType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
