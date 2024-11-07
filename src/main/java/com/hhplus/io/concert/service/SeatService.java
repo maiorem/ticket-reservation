@@ -25,8 +25,11 @@ public class SeatService {
         return seatInfo.getSeat(seatId);
     }
 
-    public void updateStatusAndReservationTime(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus, LocalDateTime time) {
-        seatInfo.updateStatusAndReservationTime(seatId, fromStatus, updateStatus, time);
+    public void updateStatusAndReservationTime(Long seatId, SeatStatus fromStatus, SeatStatus updateStatus) {
+        seatInfo.updateStatusAndReservationTime(seatId, fromStatus, updateStatus);
     }
 
+    public void tempReserveSeat(String token, Long userId, Long concertId, Long concertDateId, List<Long> seatList) {
+        seatInfo.tempReserveSeat(token, userId, concertId, concertDateId, seatList);
+    }
 }
