@@ -25,7 +25,7 @@ public class ConcertInfo {
         return concertRepository.getConcertList(pageable);
     }
 
-    @Cacheable(cacheNames = "concertList", value = "concertList", key = "'concertList' + ':' + #pageable.pageSize", cacheManager = "contentCacheManager")
+    @Cacheable(cacheNames = "concertList", value = "concertList", key = "'concertList' + ':' + #pageable.pageNumber", cacheManager = "contentCacheManager")
     public Page<Concert> getConcertListWithCache(Pageable pageable) {
         return concertRepository.getConcertList(pageable);
     }

@@ -75,7 +75,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
         long sequence = System.currentTimeMillis();
         String token = UUID.randomUUID().toString();
         Boolean isCreate = zsetOperations.add(WAITING_QUEUE_KEY_PREFIX + userId, token, sequence);
-        return Boolean.TRUE.equals(isCreate) ? null : token;
+        return Boolean.TRUE.equals(isCreate) ? token : null;
     }
 
 
