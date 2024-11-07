@@ -54,15 +54,10 @@ public class ReservationController {
 
     @PostMapping("/seat/confirm")
     @Operation(summary = "예약 확정 (결제)")
-    public ApiResponse<?> payment(@RequestHeader("token") String token, @RequestBody ConfirmReservationRequest request){
+    public ApiResponse<?> payment(@RequestBody ConfirmReservationRequest request){
 
         ConfirmReservationCommand command = reservationUseCase.confirmReservation(
-                token,
                 request.userId(),
-                request.concertId(),
-                request.concertDateId(),
-                request.people(),
-                request.seatList(),
                 request.payment()
         );
         List<SeatDTO> seatDTOList = new ArrayList<>();
