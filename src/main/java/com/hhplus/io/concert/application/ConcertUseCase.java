@@ -1,13 +1,12 @@
 package com.hhplus.io.concert.application;
 
-import com.hhplus.io.concert.domain.entity.ConcertDateStatus;
-import com.hhplus.io.concert.domain.entity.SeatStatus;
-import com.hhplus.io.concert.domain.entity.ConcertDate;
-import com.hhplus.io.concert.domain.entity.Seat;
+import com.hhplus.io.concert.domain.entity.*;
 import com.hhplus.io.concert.service.ConcertDateService;
+import com.hhplus.io.concert.service.ConcertService;
 import com.hhplus.io.concert.service.SeatService;
-import com.hhplus.io.support.domain.aop.DistributedLock;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,12 +17,21 @@ import java.util.List;
 @Service
 public class ConcertUseCase {
 
+    private final ConcertService concertService;
     private final SeatService seatService;
     private final ConcertDateService concertDateService;
 
-    public ConcertUseCase(SeatService seatService, ConcertDateService concertDateService) {
+    public ConcertUseCase(ConcertService concertService, SeatService seatService, ConcertDateService concertDateService) {
+        this.concertService = concertService;
         this.seatService = seatService;
         this.concertDateService = concertDateService;
+    }
+
+    /**
+     * 콘서트 목록 조회 (페이징)
+     */
+    public Page<Concert> getConcertList(Pageable pageable) {
+        return concertService.getConcertList(pageable);
     }
 
     /**
@@ -44,12 +52,13 @@ public class ConcertUseCase {
      * 좌석 예약 (임시 선택)
      * - 결제까지 제한시간 5분.
      */
-    @Transactional
-    public SeatReserveCommand tempReserveSeat(List<Long> seatIdList) {
+    public SeatReserveCommand tempReserveSeat(SeatReserveMapper mapper) {
+
+        seatService.tempReserveSeat(mapper.token(), mapper.userId(), mapper.concertId(), mapper.concertDateId(), mapper.seatList());
+
         List<SeatUseCaseDTO> list = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        for (Long seatId : seatIdList) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, SeatStatus.TEMP_RESERVED, now);
+        for (Long seatId : mapper.seatList()) {
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.AVAILABLE, SeatStatus.TEMP_RESERVED);
             Seat seat = seatService.getSeat(seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             list.add(dto);
@@ -57,17 +66,5 @@ public class ConcertUseCase {
         return SeatReserveCommand.of(list);
     }
 
-    /**
-     * 임시예약 시간 초과 후 좌석 상태 업데이트
-     */
-    @Transactional
-    public void updateSeatStatus(Long seatId) {
-        Seat seat = seatService.getSeat(seatId);
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        if (now.isAfter(seat.getReservationTime().plusMinutes(5))) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE, null);
-        }
-
-    }
 
 }
