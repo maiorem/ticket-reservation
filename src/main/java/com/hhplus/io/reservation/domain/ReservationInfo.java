@@ -10,6 +10,8 @@ import com.hhplus.io.support.domain.error.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.hhplus.io.common.constants.Constants.CacheText.RESERVE_SEAT_KEY_PREFIX;
+
 @Slf4j
 @Component
 public class ReservationInfo {
@@ -23,7 +25,7 @@ public class ReservationInfo {
     }
 
     public ReservationInfoDTO confirmReservation(Long userId) {
-        String values = redisRepository.getValues("reserveSeat:" + userId);
+        String values = redisRepository.getValues(RESERVE_SEAT_KEY_PREFIX + userId);
         if (values == null) {
             throw new CoreException(ErrorType.EXPIRE_TEMP_RESERVATION);
         }
