@@ -76,16 +76,8 @@ class ConcertIntegrationTest extends AcceptanceTest{
         @Test
         void AVAILABLE상태가_아닌_좌석은_선택할_수_없음() {
             //given
-            Seat seat1 = Seat.builder()
-                    .concertId(1L)
-                    .concertDateId(1L)
-                    .seatNumber("04")
-                    .status(String.valueOf(SeatStatus.TEMP_RESERVED))
-                    .reservationTime(LocalDateTime.now())
-                    .build();
-
-            Seat saved = seatRepository.save(seat1);
-            Long seatId = saved.getSeatId();
+            String token = "aaaa";
+            Long seatId = 1L;
 
             //when
             CoreException exception = assertThrows(CoreException.class, () -> concertUseCase.tempReserveSeat(List.of(seatId)));
@@ -98,16 +90,8 @@ class ConcertIntegrationTest extends AcceptanceTest{
         @DisplayName("[낙관적 락] 좌석예약 동시성 테스트")
         void 한_좌석을_여러명의_사용자가_선택하면_한_사람만_성공_해야함() throws InterruptedException {
             //given
-            Seat seat1 = Seat.builder()
-                    .concertId(1L)
-                    .concertDateId(1L)
-                    .seatNumber("05")
-                    .status(String.valueOf(SeatStatus.AVAILABLE))
-                    .reservationTime(LocalDateTime.now())
-                    .build();
-
-            Seat saved = seatRepository.save(seat1);
-            Long seatId = saved.getSeatId();
+            String token = "aaaa";
+            Long seatId = 1L;
 
             long startTime = System.nanoTime();
             int threadCount = 300;

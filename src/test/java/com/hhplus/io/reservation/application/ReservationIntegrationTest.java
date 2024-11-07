@@ -53,97 +53,6 @@ class ReservationIntegrationTest  extends AcceptanceTest {
     @Autowired
     private WaitingQueueJpaRepository waitingQueueRepository;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        User user1 = User.builder()
-                .userId(1L).username("예이츠")
-                .build();
-        User user2 = User.builder()
-                .userId(2L).username("워드워스")
-                .build();
-        User user3 = User.builder()
-                .userId(3L).username("카프카")
-                .build();
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
-        UserToken userToken1 = UserToken.builder()
-                .userId(1L)
-                .tokenId(1L)
-                .token("aaaa")
-                .isActive(true)
-                .tokenExpire(LocalDateTime.now())
-                .build();
-        UserToken userToken2 = UserToken.builder()
-                .userId(2L)
-                .tokenId(2L)
-                .token("bbbb")
-                .isActive(true)
-                .tokenExpire(LocalDateTime.now())
-                .build();
-        UserToken userToken3 = UserToken.builder()
-                .userId(3L)
-                .tokenId(3L)
-                .token("cccc")
-                .isActive(true)
-                .tokenExpire(LocalDateTime.now())
-                .build();
-        userTokenRepository.save(userToken1);
-        userTokenRepository.save(userToken2);
-        userTokenRepository.save(userToken3);
-        WaitingQueue queue1 = WaitingQueue.builder()
-                .queueId(1L)
-                .userId(1L)
-                .sequence(1L)
-                .status(String.valueOf(WaitingQueueStatus.PROCESS))
-                .build();
-        WaitingQueue queue2 = WaitingQueue.builder()
-                .queueId(2L)
-                .userId(2L)
-                .sequence(2L)
-                .status(String.valueOf(WaitingQueueStatus.PROCESS))
-                .build();
-        WaitingQueue queue3 = WaitingQueue.builder()
-                .queueId(3L)
-                .userId(3L)
-                .sequence(3L)
-                .status(String.valueOf(WaitingQueueStatus.PROCESS))
-                .build();
-        waitingQueueRepository.save(queue1);
-        waitingQueueRepository.save(queue2);
-        waitingQueueRepository.save(queue3);
-        Amount amount1 = Amount.builder()
-                .amountId(1L)
-                .userId(1L)
-                .amount(10000)
-                .build();
-        Amount amount2 = Amount.builder()
-                .amountId(2L)
-                .userId(2L)
-                .amount(20000)
-                .build();
-        Amount amount3 = Amount.builder()
-                .amountId(3L)
-                .userId(3L)
-                .amount(30000)
-                .build();
-        amountRepository.save(amount1);
-        amountRepository.save(amount2);
-        amountRepository.save(amount3);
-        Concert concert = Concert.builder().concertId(1L).concertName("조수미 콘서트")
-                .startAt(LocalDateTime.of(2024, 10, 20, 18, 0, 0))
-                .endAt(LocalDateTime.of(2024, 11, 30, 20, 0, 0))
-                .theater("국립극장")
-                .totalSeats(40)
-                .build();
-        concertRepository.save(concert);
-        ConcertDate date = ConcertDate.builder().concertDateId(1L).concertDate(LocalDateTime.of(2024, 10, 20, 18, 0, 0))
-                .concertId(1L).availableSeats(20).status(String.valueOf(ConcertDateStatus.AVAILABLE)).build();
-        concertDateRepository.save(date);
-        Seat seat = Seat.builder().concertId(1L).concertDateId(1L).seatId(1L).seatNumber("01").status(String.valueOf(SeatStatus.TEMP_RESERVED)).build();
-        seatRepository.save(seat);
-    }
-
     @Nested
     @DisplayName("예약 결제 확정")
     class confirmReservation {
@@ -152,10 +61,10 @@ class ReservationIntegrationTest  extends AcceptanceTest {
         void 결제_성공() {
             //given
             Long userId = 1L;
-            String token = "aaaa";
+            int payment = 10000;
 
             //when
-            ConfirmReservationCommand result = reservationUseCase.confirmReservation(token, userId, 1L, 1L, 1, List.of(1L), 1000);
+            ConfirmReservationCommand result = reservationUseCase.confirmReservation(userId, payment);
 
             //then
             Optional<User> user = userRepository.findByUserId(userId);
@@ -184,11 +93,10 @@ class ReservationIntegrationTest  extends AcceptanceTest {
             for (int i = 0; i < threadCount; i++) {
                 final int index = i;
                 Long userId = userIdList.get(index);
-                String token = tokenList.get(index);
                 executorService.submit(() -> {
                     try {
                         latch.await();
-                        reservationUseCase.confirmReservation(token, userId, 1L, 1L, 1, seatList, 10000);
+                        reservationUseCase.confirmReservation(userId, 10000);
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failureCount.incrementAndGet();
