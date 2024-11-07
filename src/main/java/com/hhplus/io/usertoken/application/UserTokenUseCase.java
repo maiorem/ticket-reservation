@@ -52,6 +52,15 @@ public class UserTokenUseCase {
     }
 
     /**
+     * 사용자 대기열 순서 조회
+     * - 사용자 현재 대기 순서 조회
+     */
+    public Long getSequence(Long userId) {
+        //사용자 현재 대기열 순서 조회
+        return waitingQueueService.getSequence(userId);
+    }
+
+    /**
      * 대기 -> 활성으로 상태 전환
      * - REDIS
      */
@@ -109,14 +118,6 @@ public class UserTokenUseCase {
 //        waitingQueueService.updateAllQueueStatusByTime(now, MAX_SERVICE_USABLE_TIME, WaitingQueueStatus.CANCEL);
 //    }
 //
-//    /**
-//     * 사용자 대기열 순서 조회
-//     * - 사용자 현재 대기 순서 조회
-//     * - RDB
-//     */
-//    public Long getSequence(Long userId) {
-//        //사용자 현재 대기열 순서 조회
-//        return waitingQueueService.getSequence(userId);
-//    }
+
 
 }
