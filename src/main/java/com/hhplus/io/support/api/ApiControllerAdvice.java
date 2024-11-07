@@ -26,6 +26,7 @@ public class ApiControllerAdvice{
             case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
             case CLIENT_ERROR -> status = HttpStatus.BAD_REQUEST;
             case VALIDATION_ERROR -> status = HttpStatus.UNPROCESSABLE_ENTITY;
+            case FORBIDDEN, EXPIRED ->  status = HttpStatus.FORBIDDEN;
             default -> status = HttpStatus.OK;
         }
         return ResponseEntity.status(status).body(ApiResponse.exceptionHandler(e));
