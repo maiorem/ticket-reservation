@@ -3,7 +3,9 @@ package com.hhplus.io.concert.web;
 import com.hhplus.io.common.interfaces.ApiResponse;
 import com.hhplus.io.concert.application.ConcertUseCase;
 import com.hhplus.io.concert.application.SeatReserveCommand;
+import com.hhplus.io.concert.application.SeatReserveMapper;
 import com.hhplus.io.concert.application.SeatUseCaseDTO;
+import com.hhplus.io.concert.domain.entity.Concert;
 import com.hhplus.io.concert.domain.entity.ConcertDate;
 import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.domain.entity.SeatStatus;
@@ -13,6 +15,10 @@ import com.hhplus.io.concert.web.request.SeatReservationRequest;
 import com.hhplus.io.usertoken.service.UserTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -30,6 +36,12 @@ public class ConcertController {
     public ConcertController(UserTokenService userTokenService, ConcertUseCase concertUseCase) {
         this.userTokenService = userTokenService;
         this.concertUseCase = concertUseCase;
+    }
+
+    @GetMapping("/list")
+    public ApiResponse<?> getConcertList(@PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Concert> result = concertUseCase.getConcertList(pageable);
+        return ApiResponse.success("data", result);
     }
 
     @PostMapping("/dates/{concertId}")
@@ -70,16 +82,14 @@ public class ConcertController {
 
     @PostMapping("/seat/apply")
     @Operation(summary = "좌석 예약 요청")
-    public ApiResponse<?> reservation(@RequestBody SeatReservationRequest request){
-        SeatReserveCommand seatReserveCommand = concertUseCase.tempReserveSeat(request.seatList());
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    public ApiResponse<?> reservation(@RequestHeader("token") String token, @RequestBody SeatReservationRequest request){
+        SeatReserveCommand seatReserveCommand = concertUseCase.tempReserveSeat(SeatReserveMapper.convert(token, request));
         List<SeatDTO> list = new ArrayList<>();
         for (SeatUseCaseDTO seatUseCaseDTO : seatReserveCommand.seatList()) {
             SeatDTO dto = SeatDTO.of(seatUseCaseDTO.seatId(), seatUseCaseDTO.seatNumber(), SeatStatus.TEMP_RESERVED, seatUseCaseDTO.ticketPrice());
             list.add(dto);
         }
-        SeatReservationResponse response = SeatReservationResponse.of(now, list);
-        return ApiResponse.success("data", response);
+        return ApiResponse.success("data", list);
     }
 
 }

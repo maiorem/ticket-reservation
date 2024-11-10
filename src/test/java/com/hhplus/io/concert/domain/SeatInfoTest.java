@@ -29,8 +29,6 @@ class SeatInfoTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        seatRepository = mock(SeatRepository.class);
-        seatInfo = new SeatInfo(seatRepository);
     }
 
     @Test
@@ -71,11 +69,12 @@ class SeatInfoTest {
     @DisplayName("좌석 상태 및 예약 날짜 업데이트")
     void updateStatusAndReservationTime() {
         //given
+        Long userId = 1L;
         Long seatId = 1L;
         Seat seat1 = Seat.builder().concertId(1L).concertDateId(1L).seatId(1L).seatNumber("01").status(String.valueOf(SeatStatus.AVAILABLE)).build();
 
         //when
-        seatInfo.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE, LocalDateTime.now());
+        seatInfo.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE);
 
         //then
         assertEquals(String.valueOf(SeatStatus.TEMP_RESERVED), seat1.getStatus());

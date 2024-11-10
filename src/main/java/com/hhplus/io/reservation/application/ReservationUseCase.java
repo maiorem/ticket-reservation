@@ -10,6 +10,8 @@ import com.hhplus.io.concert.domain.entity.Seat;
 import com.hhplus.io.concert.service.ConcertDateService;
 import com.hhplus.io.concert.service.ConcertService;
 import com.hhplus.io.concert.service.SeatService;
+import com.hhplus.io.redis.domain.UserRedisStore;
+import com.hhplus.io.reservation.domain.dto.ReservationInfoDTO;
 import com.hhplus.io.reservation.domain.entity.Reservation;
 import com.hhplus.io.reservation.domain.entity.ReservationSeat;
 import com.hhplus.io.reservation.service.ReservationService;
@@ -95,7 +97,7 @@ public class ReservationUseCase {
      * 예약확정 내역 저장
      */
     @Transactional
-    public ConfirmReservationCommand confirmReservation(String token, Long userId, Long concertId, Long concertDateId, int people, List<Long> seatList, int payment) {
+    public ConfirmReservationCommand confirmReservation(Long userId, int payment) {
         //사용자 조회
         User user = userService.getUser(userId);
 
@@ -103,24 +105,25 @@ public class ReservationUseCase {
         amountService.pay(userId, payment);
 
         //예약 내역 저장
-        Reservation reservation = reservationService.saveReservation(userId, concertId, concertDateId);
+        ReservationInfoDTO store = reservationService.saveReservation(userId);
 
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경
-        for (Long seatId : seatList) {
-            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED, null);
+        for (Long seatId : store.seatList()) {
+            seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED);
             Seat seat = seatService.getSeat(seatId);
-            ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, reservation.getReservationId(), seatId);
+            ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, store.reservationId(), seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             seatUseCaseDTOList.add(dto);
         }
 
         //예약 완료한 콘서트 조회
-        Concert concert = concertService.getConcert(reservation.getConcertId());
-        ConcertDate concertDate = concertDateService.getConcertDate(reservation.getConcertDateId());
+        Concert concert = concertService.getConcert(store.concertId());
+        ConcertDate concertDate = concertDateService.getConcertDate(store.concertDateId());
 
         //예약 날짜에서 사용 가능 좌석 수 업데이트
-        int currentSeats = concertDateService.updateAvailableSeats(concertDateId,seatList.size());
+        int currentSeats = concertDateService.updateAvailableSeats(store.concertDateId(), store.seatList().size());
+        int people = store.seatList().size();
 
         //좌석 수 0이면 예약 날짜 상태 변경
         if (currentSeats < 1) {
@@ -132,7 +135,7 @@ public class ReservationUseCase {
         waitingQueueService.updateStatus(queue, WaitingQueueStatus.FINISHED);
 
         //토큰 만료
-        UserToken userToken = userTokenService.getUserTokenByToken(token);
+        UserToken userToken = userTokenService.getUserTokenByToken(store.token());
         userTokenService.expireToken(userToken);
 
         return ConfirmReservationCommand.of(

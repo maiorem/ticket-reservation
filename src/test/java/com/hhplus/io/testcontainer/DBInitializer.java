@@ -1,4 +1,4 @@
-package com.hhplus.io;
+package com.hhplus.io.testcontainer;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

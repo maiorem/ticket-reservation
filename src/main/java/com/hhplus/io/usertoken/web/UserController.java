@@ -25,7 +25,6 @@ public class UserController {
         UserTokenResponse response = UserTokenResponse.of(
                 userTokenCommand.userId(),
                 userTokenCommand.token(),
-                userTokenCommand.expiresAt(),
                 userTokenCommand.sequence()
         );
         return ApiResponse.success("data", response);

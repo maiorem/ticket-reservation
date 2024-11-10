@@ -1,6 +1,7 @@
-package com.hhplus.io.usertoken.web.scheduler;
+package com.hhplus.io.usertoken.application.scheduler;
 
 import com.hhplus.io.usertoken.application.UserTokenUseCase;
+import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,10 @@ public class WaitingScheduler {
         this.userTokenUseCase = userTokenUseCase;
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "*/10 * * * * *")
+    @Transactional
     public void updateWaitingQueue(){
-        userTokenUseCase.updateWaitingQueue();
+        userTokenUseCase.updateActive();
     }
 
-    @Scheduled(fixedDelay = 5000)
-    public void deleteExpiryWaitingQueue(){
-        userTokenUseCase.deleteExpiryWaitingQueue();
-    }
 }

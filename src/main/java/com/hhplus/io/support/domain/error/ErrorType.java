@@ -10,7 +10,9 @@ public enum ErrorType {
     SEAT_NOT_FOUND(ErrorCode.NOT_FOUND, "해당 좌석을 찾을 수 없습니다.", LogLevel.WARN),
     RESERVATION_NOT_FOUND(ErrorCode.NOT_FOUND, "예약을 찾을 수 없습니다.", LogLevel.WARN),
     DB_ERROR(ErrorCode.DB_ERROR, "DB ERROR", LogLevel.ERROR),
-    FORBIDDEN(ErrorCode.FORBIDDEN, "해당 값을 사용할 수 없습니다.", LogLevel.WARN);
+    FORBIDDEN(ErrorCode.FORBIDDEN, "해당 값을 사용할 수 없습니다.", LogLevel.WARN),
+    EXPIRE_TEMP_RESERVATION(ErrorCode.EXPIRED, "예약시간이 만료되었습니다.", LogLevel.WARN),
+    EXPIRED_TOKEN(ErrorCode.EXPIRED, "만료된 토큰입니다.", LogLevel.WARN);
 
     private final ErrorCode code;
     private final String message;

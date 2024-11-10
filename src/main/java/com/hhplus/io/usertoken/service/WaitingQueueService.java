@@ -7,6 +7,7 @@ import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class WaitingQueueService {
@@ -26,12 +27,11 @@ public class WaitingQueueService {
     }
 
     public Long getSequence(Long userId) {
-        WaitingQueue queue = getWaitingQueueByUser(userId, WaitingQueueStatus.WAITING);
-        return queue.getSequence();
+        return waitingQueueInfo.getWaitingQueueSequence(userId);
     }
 
-    public WaitingQueue createQueue(User user) {
-        return waitingQueueInfo.createQueue(user);
+    public String createQueue(Long userId) {
+        return waitingQueueInfo.createQueue(userId);
     }
 
 
@@ -43,7 +43,35 @@ public class WaitingQueueService {
         waitingQueueInfo.updateAllWaitingQueue(updateProcess);
     }
 
-    public void updateAllQueueStatusByTime(LocalDateTime now, int plustime, WaitingQueueStatus status) {
+    public void updateAllQueueStatusByTime(LocalDateTime now, Long plustime, WaitingQueueStatus status) {
         waitingQueueInfo.updateQueueStatusByTime(now, plustime, status);
+    }
+
+    public void initQueue(Long userId, String token) {
+        waitingQueueInfo.initQueue(userId, token);
+    }
+
+    public String getWaitingQueue(Long userId) {
+        return waitingQueueInfo.getWaitingQueue(userId);
+    }
+
+    public List<String> getWaitingQueueList(long maxProcessingVolume) {
+        return waitingQueueInfo.getWaitingQueueList(maxProcessingVolume);
+    }
+
+    public void activateAll(List<String> tokenList) {
+        waitingQueueInfo.activateAll(tokenList);
+    }
+
+    public boolean isActive(String token) {
+        return waitingQueueInfo.isActive(token);
+    }
+
+    public void refreshToken(String token) {
+        waitingQueueInfo.refreshToken(token);
+    }
+
+    public void expireToken(String token) {
+        waitingQueueInfo.expireToken(token);
     }
 }

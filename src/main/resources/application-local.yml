@@ -10,15 +10,22 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
+
+  sql:
+    init:
+      mode: always
+      encoding: utf-8
 
   data:
     redis:
       port: 6379
       host: localhost
+  cache:
+    type: redis
 
 logging:
   level:

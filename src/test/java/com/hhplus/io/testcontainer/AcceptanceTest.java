@@ -1,4 +1,4 @@
-package com.hhplus.io;
+package com.hhplus.io.testcontainer;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;

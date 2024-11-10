@@ -41,10 +41,6 @@ public class Seat extends BaseEntity {
     @Comment("좌석별 티켓 가격")
     private int ticketPrice;
 
-    @Column(name = "reservation_time")
-    @Comment("임시예약시간")
-    private LocalDateTime reservationTime;
-
     @Column(name = "version")
     @Comment("낙관적 락 버전")
     private int version;
@@ -57,7 +53,4 @@ public class Seat extends BaseEntity {
         this.status = status;
     }
 
-    public void updateReservationTime(LocalDateTime updateTime) {
-        this.reservationTime = updateTime;
-    }
 }
