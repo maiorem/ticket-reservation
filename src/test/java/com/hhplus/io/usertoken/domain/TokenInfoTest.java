@@ -1,12 +1,13 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.support.domain.error.CoreException;
-import com.hhplus.io.support.domain.error.ErrorCode;
-import com.hhplus.io.support.domain.error.ErrorType;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.UserToken;
-import com.hhplus.io.usertoken.domain.repository.UserRepository;
-import com.hhplus.io.usertoken.domain.repository.UserTokenRepository;
+import com.hhplus.io.app.usertoken.domain.TokenInfo;
+import com.hhplus.io.app.usertoken.domain.UserInfo;
+import com.hhplus.io.common.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.ErrorType;
+import com.hhplus.io.app.usertoken.domain.entity.User;
+import com.hhplus.io.app.usertoken.domain.entity.UserToken;
+import com.hhplus.io.app.usertoken.domain.repository.UserRepository;
+import com.hhplus.io.app.usertoken.domain.repository.UserTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

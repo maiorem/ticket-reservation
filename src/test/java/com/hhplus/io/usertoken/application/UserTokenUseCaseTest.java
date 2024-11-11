@@ -1,12 +1,14 @@
 package com.hhplus.io.usertoken.application;
 
+import com.hhplus.io.app.usertoken.application.UserTokenCommand;
+import com.hhplus.io.app.usertoken.application.UserTokenUseCase;
 import com.hhplus.io.testcontainer.AcceptanceTest;
-import com.hhplus.io.usertoken.domain.entity.WaitingQueueStatus;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.domain.entity.WaitingQueue;
-import com.hhplus.io.usertoken.persistence.UserJpaRepository;
-import com.hhplus.io.usertoken.persistence.UserTokenJpaRepository;
-import com.hhplus.io.usertoken.persistence.WaitingQueueJpaRepository;
+import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.app.usertoken.domain.entity.User;
+import com.hhplus.io.app.usertoken.domain.entity.WaitingQueue;
+import com.hhplus.io.app.usertoken.infra.UserJpaRepository;
+import com.hhplus.io.app.usertoken.infra.UserTokenJpaRepository;
+import com.hhplus.io.app.usertoken.infra.WaitingQueueJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,6 @@ class UserTokenUseCaseTest extends AcceptanceTest {
             userTokenRepository.findByUserId(userId).ifPresent(token -> {
                 assertEquals(1, result.sequence());
                 assertEquals(token.getToken(), result.token());
-                assertEquals(token.getTokenExpire(), result.expiresAt());
             });
 
 

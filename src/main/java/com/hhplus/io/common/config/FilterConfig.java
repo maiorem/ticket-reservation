@@ -1,7 +1,7 @@
 package com.hhplus.io.common.config;
 
-import com.hhplus.io.support.api.filter.LoggingFilter;
-import com.hhplus.io.support.api.filter.TokenAuthenFilter;
+import com.hhplus.io.common.support.api.filter.LoggingFilter;
+import com.hhplus.io.common.support.api.filter.TokenAuthenFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

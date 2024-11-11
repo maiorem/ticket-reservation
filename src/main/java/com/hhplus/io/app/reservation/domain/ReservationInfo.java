@@ -1,0 +1,44 @@
+package com.hhplus.io.app.reservation.domain;
+
+import com.hhplus.io.common.redis.domain.UserRedisStore;
+import com.hhplus.io.common.redis.domain.repository.CacheRepository;
+import com.hhplus.io.app.reservation.domain.dto.ReservationInfoDTO;
+import com.hhplus.io.app.reservation.domain.entity.Reservation;
+import com.hhplus.io.app.reservation.domain.repository.ReservationRepository;
+import com.hhplus.io.common.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.ErrorType;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import static com.hhplus.io.common.constants.Constants.CacheText.RESERVE_SEAT_KEY_PREFIX;
+
+@Slf4j
+@Component
+public class ReservationInfo {
+
+    private final ReservationRepository reservationRepository;
+    private final CacheRepository cacheRepository;
+
+    public ReservationInfo(ReservationRepository reservationRepository, CacheRepository cacheRepository) {
+        this.reservationRepository = reservationRepository;
+        this.cacheRepository = cacheRepository;
+    }
+
+    public ReservationInfoDTO confirmReservation(Long userId) {
+        String values = cacheRepository.getValues(RESERVE_SEAT_KEY_PREFIX + userId);
+        if (values == null) {
+            throw new CoreException(ErrorType.EXPIRE_TEMP_RESERVATION);
+        }
+        log.info("reservation info : {}", values);
+        UserRedisStore store = UserRedisStore.converFromString(values);
+
+        Reservation builder = Reservation.builder()
+                .userId(userId)
+                .concertId(store.concertId())
+                .concertDateId(store.concertDateId())
+                .build();
+        Reservation savedReserve = reservationRepository.save(builder);
+
+        return ReservationInfoDTO.of(store.token(), store.userId(), store.concertId(), store.concertDateId(), savedReserve.getReservationId(), store.seatList());
+    }
+}

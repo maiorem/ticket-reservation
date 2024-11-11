@@ -1,6 +1,6 @@
 package com.hhplus.io.common.config;
 
-import com.hhplus.io.support.api.interceptor.TokenAuthorInterceptor;
+import com.hhplus.io.common.support.api.interceptor.TokenAuthorInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

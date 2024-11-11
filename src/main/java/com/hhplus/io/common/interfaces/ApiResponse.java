@@ -1,6 +1,6 @@
 package com.hhplus.io.common.interfaces;
 
-import com.hhplus.io.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.CoreException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

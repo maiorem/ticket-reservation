@@ -1,13 +1,15 @@
 package com.hhplus.io.amount.application;
 
+import com.hhplus.io.app.amount.application.AmountUseCase;
+import com.hhplus.io.app.amount.application.SaveAmountCommand;
 import com.hhplus.io.testcontainer.AcceptanceTest;
-import com.hhplus.io.amount.domain.entity.Amount;
-import com.hhplus.io.amount.persistence.AmountJpaRepository;
-import com.hhplus.io.amount.service.AmountService;
-import com.hhplus.io.support.domain.error.CoreException;
-import com.hhplus.io.support.domain.error.ErrorType;
-import com.hhplus.io.usertoken.domain.entity.User;
-import com.hhplus.io.usertoken.persistence.UserJpaRepository;
+import com.hhplus.io.app.amount.domain.entity.Amount;
+import com.hhplus.io.app.amount.infra.AmountJpaRepository;
+import com.hhplus.io.app.amount.domain.service.AmountService;
+import com.hhplus.io.common.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.ErrorType;
+import com.hhplus.io.app.usertoken.domain.entity.User;
+import com.hhplus.io.app.usertoken.infra.UserJpaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
