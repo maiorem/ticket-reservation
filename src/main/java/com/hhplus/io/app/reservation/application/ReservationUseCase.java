@@ -2,23 +2,21 @@ package com.hhplus.io.app.reservation.application;
 
 import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.app.concert.application.SeatUseCaseDTO;
+import com.hhplus.io.app.concert.domain.service.ConcertDateService;
+import com.hhplus.io.app.concert.domain.service.ConcertService;
+import com.hhplus.io.app.concert.domain.service.SeatService;
 import com.hhplus.io.app.concert.domain.entity.ConcertDateStatus;
 import com.hhplus.io.app.concert.domain.entity.SeatStatus;
 import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.entity.Seat;
-import com.hhplus.io.app.concert.domain.service.ConcertDateService;
-import com.hhplus.io.app.concert.domain.service.ConcertService;
-import com.hhplus.io.app.concert.domain.service.SeatService;
+import com.hhplus.io.app.reservation.domain.service.ReservationSeatService;
+import com.hhplus.io.app.reservation.domain.service.ReservationService;
 import com.hhplus.io.app.reservation.domain.dto.ReservationInfoDTO;
 import com.hhplus.io.app.reservation.domain.entity.ReservationSeat;
-import com.hhplus.io.app.reservation.domain.service.ReservationService;
-import com.hhplus.io.app.usertoken.domain.entity.UserToken;
-import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
-import com.hhplus.io.app.usertoken.domain.entity.User;
-import com.hhplus.io.app.usertoken.domain.entity.WaitingQueue;
+import com.hhplus.io.app.usertoken.domain.service.TokenService;
 import com.hhplus.io.app.usertoken.domain.service.UserService;
-import com.hhplus.io.app.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.app.usertoken.domain.entity.User;
 import com.hhplus.io.app.usertoken.domain.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -40,9 +38,9 @@ public class ReservationUseCase {
     private final ConcertService concertService;
     private final ConcertDateService concertDateService;
     private final AmountService amountService;
-    private final UserTokenService userTokenService;
+    private final ReservationSeatService reservationSeatService;
 
-    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService, UserTokenService userTokenService) {
+    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService, ReservationSeatService reservationSeatService) {
         this.reservationService = reservationService;
         this.seatService = seatService;
         this.waitingQueueService = waitingQueueService;
@@ -50,7 +48,7 @@ public class ReservationUseCase {
         this.concertService = concertService;
         this.concertDateService = concertDateService;
         this.amountService = amountService;
-        this.userTokenService = userTokenService;
+        this.reservationSeatService = reservationSeatService;
     }
 
     /**
@@ -101,14 +99,14 @@ public class ReservationUseCase {
         amountService.pay(userId, payment);
 
         //예약 내역 저장
-        ReservationInfoDTO store = reservationService.saveReservation(userId);
+        ReservationInfoDTO store = reservationService.confirmReservation(userId);
 
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경
         for (Long seatId : store.seatList()) {
             seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.CONFIRMED);
             Seat seat = seatService.getSeat(seatId);
-            ReservationSeat reservationSeat = reservationService.saveReservationSeat(userId, store.reservationId(), seatId);
+            ReservationSeat reservationSeat = reservationSeatService.saveSeat(userId, store.reservationId(), seatId);
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(reservationSeat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             seatUseCaseDTOList.add(dto);
         }
@@ -127,12 +125,7 @@ public class ReservationUseCase {
         }
 
         //대기열 만료
-        WaitingQueue queue = waitingQueueService.getWaitingQueueByUser(userId, WaitingQueueStatus.PROCESS);
-        waitingQueueService.updateStatus(queue, WaitingQueueStatus.FINISHED);
-
-        //토큰 만료
-        UserToken userToken = userTokenService.getUserTokenByToken(store.token());
-        userTokenService.expireToken(userToken);
+        waitingQueueService.expireToken(store.token());
 
         return ConfirmReservationCommand.of(
                 user.getUsername(),

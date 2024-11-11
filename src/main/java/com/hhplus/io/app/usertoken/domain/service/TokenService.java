@@ -1,4 +1,4 @@
-package com.hhplus.io.app.usertoken.domain;
+package com.hhplus.io.app.usertoken.domain.service;
 
 import com.hhplus.io.common.support.domain.error.CoreException;
 import com.hhplus.io.common.support.domain.error.ErrorType;
@@ -15,12 +15,12 @@ import java.util.Base64;
 
 @Slf4j
 @Component
-public class TokenInfo {
+public class TokenService {
 
     private final UserTokenRepository userTokenRepository;
     private final UserRepository userRepository;
 
-    public TokenInfo(UserTokenRepository userTokenRepository, UserRepository userRepository) {
+    public TokenService(UserTokenRepository userTokenRepository, UserRepository userRepository) {
         this.userTokenRepository = userTokenRepository;
         this.userRepository = userRepository;
     }

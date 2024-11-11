@@ -1,32 +1,33 @@
 package com.hhplus.io.app.concert.domain.service;
 
-import com.hhplus.io.app.concert.domain.ConcertDateInfo;
-import com.hhplus.io.app.concert.domain.entity.ConcertDateStatus;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
-import org.springframework.stereotype.Service;
+import com.hhplus.io.app.concert.domain.entity.ConcertDateStatus;
+import com.hhplus.io.app.concert.domain.repository.ConcertDateRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 public class ConcertDateService {
 
-    private final ConcertDateInfo concertDateInfo;
+    private final ConcertDateRepository concertDateRepository;
 
-    public ConcertDateService(ConcertDateInfo concertDateInfo) {
-        this.concertDateInfo = concertDateInfo;
+    public ConcertDateService(ConcertDateRepository concertDateRepository) {
+        this.concertDateRepository = concertDateRepository;
     }
 
+
     public List<ConcertDate> getAllDateListByConcert(Long concertId, ConcertDateStatus status) {
-        return concertDateInfo.getAllDateListByConcert(concertId, status);
+        return concertDateRepository.getAllDateListByConcert(concertId, String.valueOf(status));
     }
 
     public ConcertDate getConcertDate(Long concertDateId) {
-        return concertDateInfo.getConcerDate(concertDateId);
+        return concertDateRepository.getConcertDate(concertDateId);
     }
 
-    // TODO 오타고쳐주세요!
-    public int updateAvailableSeats(Long concertDateId, int confirmSeats) {
-        ConcertDate concerDate = concertDateInfo.getConcerDate(concertDateId);
-        return concerDate.updateAvailableSeats(confirmSeats);
+    public int updateAvailableSeats(Long concertDateId, int size) {
+        ConcertDate concertDate = getConcertDate(concertDateId);
+        concertDate.updateAvailableSeats(size);
+        return concertDate.getAvailableSeats();
     }
 }

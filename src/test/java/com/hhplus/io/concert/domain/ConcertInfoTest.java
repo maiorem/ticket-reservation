@@ -1,6 +1,6 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.app.concert.domain.ConcertInfo;
+import com.hhplus.io.app.concert.domain.service.ConcertService;
 import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.repository.ConcertRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,13 +23,13 @@ class ConcertInfoTest {
     @Mock
     private ConcertRepository concertRepository;
     @InjectMocks
-    private ConcertInfo concertInfo;
+    private ConcertService concertService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         concertRepository = mock(ConcertRepository.class);
-        concertInfo = new ConcertInfo(concertRepository);
+        concertService = new ConcertService(concertRepository);
     }
 
     @Test
@@ -46,7 +46,7 @@ class ConcertInfoTest {
         when(concertRepository.getConcertById(concertId)).thenReturn(concert);
 
         //when
-        Concert result = concertInfo.getConcert(concertId);
+        Concert result = concertService.getConcert(concertId);
 
         //then
         assertEquals("조수미 콘서트", result.getConcertName());

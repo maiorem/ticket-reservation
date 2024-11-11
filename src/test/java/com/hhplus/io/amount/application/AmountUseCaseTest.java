@@ -2,10 +2,10 @@ package com.hhplus.io.amount.application;
 
 import com.hhplus.io.app.amount.application.AmountUseCase;
 import com.hhplus.io.app.amount.application.SaveAmountCommand;
+import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.app.amount.domain.entity.Amount;
 import com.hhplus.io.app.amount.infra.AmountJpaRepository;
-import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.common.support.domain.error.CoreException;
 import com.hhplus.io.common.support.domain.error.ErrorType;
 import com.hhplus.io.app.usertoken.domain.entity.User;

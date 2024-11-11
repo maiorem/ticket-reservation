@@ -5,7 +5,7 @@ import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.repository.ConcertDateRepository;
 import com.hhplus.io.app.concert.domain.repository.ConcertRepository;
-import com.hhplus.io.app.reservation.domain.ReservationInfo;
+import com.hhplus.io.app.reservation.domain.service.ReservationService;
 import com.hhplus.io.app.reservation.domain.entity.Reservation;
 import com.hhplus.io.app.reservation.domain.repository.ReservationRepository;
 import com.hhplus.io.app.usertoken.domain.entity.User;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ReservationInfoTest {
+class ReservationServiceTest {
 
     @Mock
     private ReservationRepository reservationRepository;
@@ -37,7 +37,7 @@ class ReservationInfoTest {
     @Mock
     private ConcertDateRepository concertDateRepository;
     @InjectMocks
-    private ReservationInfo reservationInfo;
+    private ReservationService reservationService;
 
     @BeforeEach
     void setUp() {
@@ -61,7 +61,7 @@ class ReservationInfoTest {
         when(concertDateRepository.getConcertDate(concertDateId)).thenReturn(concertDate);
 
         //when
-        Reservation result = reservationInfo.confirmReservation(userId, concertId, concertDateId);
+        Reservation result = reservationService.confirmReservation(userId, concertId, concertDateId);
 
         //then
         assertEquals(user.getUsername(), userRepository.getUser(result.getUserId()).getUsername());

@@ -1,6 +1,6 @@
 package com.hhplus.io.amount.domain;
 
-import com.hhplus.io.app.amount.domain.AmountInfo;
+import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.app.amount.domain.entity.Amount;
 import com.hhplus.io.app.amount.domain.repository.AmountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,13 +22,13 @@ class AmountInfoTest {
     @Mock
     private AmountRepository amountRepository;
     @InjectMocks
-    private AmountInfo amountInfo;
+    private AmountService amountService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         amountRepository = mock(AmountRepository.class);
-        amountInfo = new AmountInfo(amountRepository);
+        amountService = new AmountService(amountRepository);
     }
 
     @Test
@@ -40,7 +40,7 @@ class AmountInfoTest {
         when(amountRepository.getAmountByUser(userId)).thenReturn(amount);
 
         //when
-        Amount result = amountInfo.getAmountByUser(1L);
+        Amount result = amountService.getAmountByUser(1L);
 
         //then
         assertEquals(10000, result.getAmount());
@@ -55,7 +55,7 @@ class AmountInfoTest {
         when(amountRepository.getAmountByUser(userId)).thenReturn(amount);
 
         //when
-        int result = amountInfo.updateAmount(userId, 10000);
+        int result = amountService.updateAmount(userId, 10000);
 
         //then
         assertEquals(20000, result);
@@ -70,7 +70,7 @@ class AmountInfoTest {
         when(amountRepository.getAmountByUser(userId)).thenReturn(amount);
 
         //when
-        amountInfo.payAmount(userId, 5000);
+        amountService.pay(userId, 5000);
 
         //then
         assertEquals(15000, amount.getAmount());

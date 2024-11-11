@@ -1,7 +1,7 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.app.usertoken.domain.TokenInfo;
-import com.hhplus.io.app.usertoken.domain.UserInfo;
+import com.hhplus.io.app.usertoken.domain.service.TokenService;
+import com.hhplus.io.app.usertoken.domain.service.UserService;
 import com.hhplus.io.common.support.domain.error.CoreException;
 import com.hhplus.io.common.support.domain.error.ErrorType;
 import com.hhplus.io.app.usertoken.domain.entity.User;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TokenInfoTest {
+class TokenServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -33,18 +33,18 @@ class TokenInfoTest {
     private UserTokenRepository userTokenRepository;
 
     @InjectMocks
-    private TokenInfo tokenInfo;
+    private TokenService tokenService;
 
     @InjectMocks
-    private UserInfo userInfo;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userTokenRepository = mock(UserTokenRepository.class);
         userRepository = mock(UserRepository.class);
-        tokenInfo = new TokenInfo(userTokenRepository, userRepository);
-        userInfo = new UserInfo(userRepository);
+        tokenService = new TokenService(userTokenRepository, userRepository);
+        userService = new UserService(userRepository);
     }
 
     @Test
@@ -56,7 +56,7 @@ class TokenInfoTest {
         when(userTokenRepository.getToken(userId)).thenReturn(givenToken);
 
         //when
-        UserToken testToken = tokenInfo.getUserToken(userId);
+        UserToken testToken = tokenService.getUserToken(userId);
 
         //then
         assertEquals(givenToken.getToken(), testToken.getToken());
@@ -70,7 +70,7 @@ class TokenInfoTest {
         Long userId = 1L;
 
         //when
-        CoreException exception = assertThrows(CoreException.class, () -> tokenInfo.getUserToken(userId));
+        CoreException exception = assertThrows(CoreException.class, () -> tokenService.getUserToken(userId));
 
         //then
         assertEquals(ErrorType.USER_NOT_FOUND, exception.getErrorType());
@@ -88,7 +88,7 @@ class TokenInfoTest {
         when(userRepository.getUser(userId)).thenReturn(user);
 
         //when
-        UserToken generateToken = tokenInfo.generator(user);
+        UserToken generateToken = tokenService.generator(user);
 
         //then
         assertEquals(userId, generateToken.getUserId());

@@ -1,10 +1,10 @@
 package com.hhplus.io.app.usertoken.application;
 
+import com.hhplus.io.app.usertoken.domain.service.WaitingQueueService;
+import com.hhplus.io.app.usertoken.domain.service.UserService;
 import com.hhplus.io.common.support.domain.error.CoreException;
 import com.hhplus.io.common.support.domain.error.ErrorType;
 import com.hhplus.io.app.usertoken.domain.entity.User;
-import com.hhplus.io.app.usertoken.domain.service.UserService;
-import com.hhplus.io.app.usertoken.domain.service.WaitingQueueService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class UserTokenUseCase {
         String createdToken = waitingQueueService.createQueue(userId);
 
         // 대기열 순서 조회
-        Long sequence = waitingQueueService.getSequence(userId);
+        Long sequence = waitingQueueService.getRank(userId);
 
         return UserTokenCommand.of(user.getUserId(), sequence, createdToken);
     }
@@ -57,7 +57,7 @@ public class UserTokenUseCase {
      */
     public Long getSequence(Long userId) {
         //사용자 현재 대기열 순서 조회
-        return waitingQueueService.getSequence(userId);
+        return waitingQueueService.getRank(userId);
     }
 
     /**

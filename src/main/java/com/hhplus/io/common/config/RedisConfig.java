@@ -1,6 +1,6 @@
 package com.hhplus.io.common.config;
 
-import com.hhplus.io.common.redis.domain.UserRedisStore;
+import com.hhplus.io.common.cache.domain.UserRedisStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

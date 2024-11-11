@@ -1,15 +1,15 @@
 package com.hhplus.io.common.support.utils;
 
 import com.hhplus.io.app.usertoken.domain.entity.User;
-import com.hhplus.io.app.usertoken.domain.service.UserTokenService;
+import com.hhplus.io.app.usertoken.domain.service.TokenService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TokenValidator {
 
-    private final UserTokenService userTokenService;
+    private final TokenService userTokenService;
 
-    public TokenValidator(UserTokenService userTokenService) {
+    public TokenValidator(TokenService userTokenService) {
         this.userTokenService = userTokenService;
     }
 

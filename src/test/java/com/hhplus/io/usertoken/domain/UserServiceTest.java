@@ -1,6 +1,6 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.app.usertoken.domain.UserInfo;
+import com.hhplus.io.app.usertoken.domain.service.UserService;
 import com.hhplus.io.common.support.domain.error.CoreException;
 import com.hhplus.io.common.support.domain.error.ErrorType;
 import com.hhplus.io.app.usertoken.domain.entity.User;
@@ -19,18 +19,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserInfoTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private UserInfo userInfo;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userRepository = mock(UserRepository.class);
-        userInfo = new UserInfo(userRepository);
+        userService = new UserService(userRepository);
     }
 
     @Test
@@ -44,7 +44,7 @@ class UserInfoTest {
         when(userRepository.getUser(userId)).thenReturn(user);
 
         //when
-        User testUser = userInfo.getUser(userId);
+        User testUser = userService.getUser(userId);
 
         //then
         assertEquals(userId, testUser.getUserId());
@@ -57,7 +57,7 @@ class UserInfoTest {
         Long userId = 1L;
 
         //when
-        CoreException exception = assertThrows(CoreException.class, () -> userInfo.getUser(userId));
+        CoreException exception = assertThrows(CoreException.class, () -> userService.getUser(userId));
 
         //then
         assertEquals(ErrorType.USER_NOT_FOUND, exception.getErrorType());
