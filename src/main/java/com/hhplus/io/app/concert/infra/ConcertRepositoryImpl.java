@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hhplus.io.concert.domain.entity.QConcert.concert;
+import static com.hhplus.io.app.concert.domain.entity.QConcert.concert;
 
 @Repository
 public class ConcertRepositoryImpl implements ConcertRepository {
