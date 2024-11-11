@@ -1,7 +1,8 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.concert.domain.entity.Concert;
-import com.hhplus.io.concert.domain.repository.ConcertRepository;
+import com.hhplus.io.app.concert.domain.ConcertInfo;
+import com.hhplus.io.app.concert.domain.entity.Concert;
+import com.hhplus.io.app.concert.domain.repository.ConcertRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

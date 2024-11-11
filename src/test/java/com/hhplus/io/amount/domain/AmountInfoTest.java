@@ -1,7 +1,8 @@
 package com.hhplus.io.amount.domain;
 
-import com.hhplus.io.amount.domain.entity.Amount;
-import com.hhplus.io.amount.domain.repository.AmountRepository;
+import com.hhplus.io.app.amount.domain.AmountInfo;
+import com.hhplus.io.app.amount.domain.entity.Amount;
+import com.hhplus.io.app.amount.domain.repository.AmountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

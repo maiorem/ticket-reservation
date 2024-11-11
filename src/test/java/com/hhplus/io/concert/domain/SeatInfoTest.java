@@ -1,8 +1,9 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.domain.entity.SeatStatus;
-import com.hhplus.io.concert.domain.repository.SeatRepository;
+import com.hhplus.io.app.concert.domain.SeatInfo;
+import com.hhplus.io.app.concert.domain.entity.Seat;
+import com.hhplus.io.app.concert.domain.entity.SeatStatus;
+import com.hhplus.io.app.concert.domain.repository.SeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,11 +13,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

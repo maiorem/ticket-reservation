@@ -1,16 +1,20 @@
 package com.hhplus.io.concert.application;
 
+import com.hhplus.io.app.concert.application.ConcertUseCase;
+import com.hhplus.io.app.concert.application.SeatReserveCommand;
+import com.hhplus.io.app.concert.application.SeatReserveMapper;
+import com.hhplus.io.app.concert.web.request.SeatReservationRequest;
 import com.hhplus.io.testcontainer.AcceptanceTest;
-import com.hhplus.io.concert.domain.entity.SeatStatus;
-import com.hhplus.io.concert.domain.entity.Seat;
-import com.hhplus.io.concert.persistence.SeatJpaRepository;
-import com.hhplus.io.support.domain.error.CoreException;
-import com.hhplus.io.support.domain.error.ErrorType;
+import com.hhplus.io.app.concert.domain.entity.SeatStatus;
+import com.hhplus.io.app.concert.domain.entity.Seat;
+import com.hhplus.io.app.concert.infra.SeatJpaRepository;
+import com.hhplus.io.common.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.ErrorType;
+import com.hhplus.io.app.usertoken.infra.UserJpaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
