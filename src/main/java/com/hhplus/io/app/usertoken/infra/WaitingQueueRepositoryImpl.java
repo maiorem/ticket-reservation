@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.hhplus.io.common.constants.Constants.CacheText.*;
-import static com.hhplus.io.usertoken.domain.entity.QWaitingQueue.waitingQueue;
+import static com.hhplus.io.app.usertoken.domain.entity.QWaitingQueue.waitingQueue;
 
 @Repository
 public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {

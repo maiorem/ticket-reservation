@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.hhplus.io.usertoken.domain.entity.QUser.user;
-import static com.hhplus.io.usertoken.domain.entity.QUserToken.userToken;
+import static com.hhplus.io.app.usertoken.domain.entity.QUser.user;
+import static com.hhplus.io.app.usertoken.domain.entity.QUserToken.userToken;
 
 @Repository
 public class UserTokenRepositoryImpl implements UserTokenRepository {

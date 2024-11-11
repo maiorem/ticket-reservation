@@ -5,6 +5,7 @@ import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.repository.ConcertDateRepository;
 import com.hhplus.io.app.concert.domain.repository.ConcertRepository;
+import com.hhplus.io.app.reservation.domain.dto.ReservationInfo;
 import com.hhplus.io.app.reservation.domain.service.ReservationService;
 import com.hhplus.io.app.reservation.domain.entity.Reservation;
 import com.hhplus.io.app.reservation.domain.repository.ReservationRepository;
@@ -48,7 +49,6 @@ class ReservationServiceTest {
     @DisplayName("예약 내역 저장")
     void confirmReservation() {
         //given
-        Long reservationId = 1L;
         Long userId = 1L;
         Long concertId = 1L;
         Long concertDateId = 1L;
@@ -61,9 +61,9 @@ class ReservationServiceTest {
         when(concertDateRepository.getConcertDate(concertDateId)).thenReturn(concertDate);
 
         //when
-        Reservation result = reservationService.confirmReservation(userId, concertId, concertDateId);
+        ReservationInfo result = reservationService.confirmReservation(userId);
 
         //then
-        assertEquals(user.getUsername(), userRepository.getUser(result.getUserId()).getUsername());
+        assertEquals(user.getUsername(), userRepository.getUser(result.userId()).getUsername());
     }
 }

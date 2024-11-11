@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hhplus.io.concert.domain.entity.QSeat.seat;
+import static com.hhplus.io.app.concert.domain.entity.QSeat.seat;
 
 @Repository
 public class SeatRepositoryImpl implements SeatRepository {
