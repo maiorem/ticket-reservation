@@ -1,4 +1,4 @@
-package com.hhplus.io.common.redis.domain;
+package com.hhplus.io.common.cache.domain;
 
 
 import com.hhplus.io.common.support.utils.JsonUtils;

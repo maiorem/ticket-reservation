@@ -15,7 +15,6 @@ import com.hhplus.io.app.concert.domain.entity.Seat;
 import com.hhplus.io.app.concert.domain.entity.SeatStatus;
 import com.hhplus.io.app.concert.web.request.AvailableSeatRequest;
 import com.hhplus.io.app.concert.web.request.SeatReservationRequest;
-import com.hhplus.io.app.usertoken.domain.service.UserTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
@@ -31,11 +30,9 @@ import java.util.List;
 @RequestMapping("/api/concert")
 public class ConcertController {
 
-    private final UserTokenService userTokenService;
     private final ConcertUseCase concertUseCase;
 
-    public ConcertController(UserTokenService userTokenService, ConcertUseCase concertUseCase) {
-        this.userTokenService = userTokenService;
+    public ConcertController(ConcertUseCase concertUseCase) {
         this.concertUseCase = concertUseCase;
     }
 

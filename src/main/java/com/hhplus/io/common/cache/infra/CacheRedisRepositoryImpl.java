@@ -1,6 +1,6 @@
-package com.hhplus.io.common.redis.persistence;
+package com.hhplus.io.common.cache.infra;
 
-import com.hhplus.io.common.redis.domain.repository.CacheRepository;
+import com.hhplus.io.common.cache.domain.repository.CacheRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import javax.cache.expiry.Duration;
 
 @Repository
-public class CacheRepositoryImpl implements CacheRepository {
+public class CacheRedisRepositoryImpl implements CacheRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public CacheRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
+    public CacheRedisRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

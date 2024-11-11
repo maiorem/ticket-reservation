@@ -1,6 +1,6 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.app.concert.domain.ConcertDateInfo;
+import com.hhplus.io.app.concert.domain.service.ConcertDateService;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.entity.ConcertDateStatus;
 import com.hhplus.io.app.concert.domain.repository.ConcertDateRepository;
@@ -21,18 +21,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ConcertDateInfoTest {
+class ConcertDateServiceTest {
 
     @Mock
     private ConcertDateRepository concertDateRepository;
     @InjectMocks
-    private ConcertDateInfo concertDateInfo;
+    private ConcertDateService concertDateService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         concertDateRepository = mock(ConcertDateRepository.class);
-        concertDateInfo = new ConcertDateInfo(concertDateRepository);
+        concertDateService = new ConcertDateService(concertDateRepository);
     }
 
     @Test
@@ -49,7 +49,7 @@ class ConcertDateInfoTest {
         when(concertDateRepository.getConcertDate(2L)).thenReturn(date2);
         when(concertDateRepository.getConcertDate(3L)).thenReturn(date3);
         //when
-        List<ConcertDate> list = concertDateInfo.getAllDateListByConcert(1L, ConcertDateStatus.AVAILABLE);
+        List<ConcertDate> list = concertDateService.getAllDateListByConcert(1L, ConcertDateStatus.AVAILABLE);
 
         //then
         assertEquals(3, list.size());
@@ -65,7 +65,7 @@ class ConcertDateInfoTest {
         when(concertDateRepository.getConcertDate(1L)).thenReturn(date1);
 
         //when
-        ConcertDate result = concertDateInfo.getConcerDate(id);
+        ConcertDate result = concertDateService.getConcertDate(id);
 
         //then
         assertEquals(date1.getConcertDate(), result.getConcertDate());

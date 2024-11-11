@@ -1,4 +1,4 @@
-package com.hhplus.io.common.redis.domain.repository;
+package com.hhplus.io.common.cache.domain.repository;
 
 import org.springframework.stereotype.Repository;
 

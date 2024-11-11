@@ -1,20 +1,25 @@
 package com.hhplus.io.app.usertoken.domain.service;
 
-import com.hhplus.io.app.usertoken.domain.UserInfo;
+import com.hhplus.io.common.support.domain.error.CoreException;
+import com.hhplus.io.common.support.domain.error.ErrorType;
 import com.hhplus.io.app.usertoken.domain.entity.User;
-import org.springframework.stereotype.Service;
+import com.hhplus.io.app.usertoken.domain.repository.UserRepository;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class UserService {
 
-    private final UserInfo userInfo;
+    private final UserRepository userRepository;
 
-    public UserService(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User getUser(Long userId){
-        return userInfo.getUser(userId);
+    public User getUser(Long userId) {
+        User user = userRepository.getUser(userId);
+        if(user == null){
+            throw new CoreException(ErrorType.USER_NOT_FOUND);
+        }
+        return user;
     }
-
 }

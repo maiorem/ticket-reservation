@@ -1,6 +1,6 @@
 package com.hhplus.io.concert.domain;
 
-import com.hhplus.io.app.concert.domain.SeatInfo;
+import com.hhplus.io.app.concert.domain.service.SeatService;
 import com.hhplus.io.app.concert.domain.entity.Seat;
 import com.hhplus.io.app.concert.domain.entity.SeatStatus;
 import com.hhplus.io.app.concert.domain.repository.SeatRepository;
@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SeatInfoTest {
+class SeatServiceTest {
     @Mock
     private SeatRepository seatRepository;
     @InjectMocks
-    private SeatInfo seatInfo;
+    private SeatService seatService;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +43,7 @@ class SeatInfoTest {
         when(seatRepository.getSeat(3L)).thenReturn(seat3);
 
         //when
-        List<Seat> list = seatInfo.getAllSeatByConcertDate(1L, SeatStatus.AVAILABLE);
+        List<Seat> list = seatService.getAllSeatByConcertDate(1L, SeatStatus.AVAILABLE);
 
         //then
         assertEquals(3, list.size());
@@ -58,7 +58,7 @@ class SeatInfoTest {
         when(seatRepository.getSeat(1L)).thenReturn(seat1);
 
         //when
-        Seat result = seatInfo.getSeat(seatId);
+        Seat result = seatService.getSeat(seatId);
 
         //then
         assertEquals(seat1.getSeatNumber(), result.getSeatNumber());
@@ -73,7 +73,7 @@ class SeatInfoTest {
         Seat seat1 = Seat.builder().concertId(1L).concertDateId(1L).seatId(1L).seatNumber("01").status(String.valueOf(SeatStatus.AVAILABLE)).build();
 
         //when
-        seatInfo.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE);
+        seatService.updateStatusAndReservationTime(seatId, SeatStatus.TEMP_RESERVED, SeatStatus.AVAILABLE);
 
         //then
         assertEquals(String.valueOf(SeatStatus.TEMP_RESERVED), seat1.getStatus());

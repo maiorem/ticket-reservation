@@ -1,6 +1,6 @@
-package com.hhplus.io.app.reservation.domain;
+package com.hhplus.io.app.reservation.domain.service;
 
-import com.hhplus.io.common.redis.domain.repository.CacheRepository;
+import com.hhplus.io.common.cache.domain.repository.CacheRepository;
 import com.hhplus.io.app.reservation.domain.entity.ReservationSeat;
 import com.hhplus.io.app.reservation.domain.repository.ReservationSeatRepository;
 import com.hhplus.io.common.support.domain.error.CoreException;
@@ -9,12 +9,12 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReservationSeatInfo {
+public class ReservationSeatService {
 
     private final ReservationSeatRepository reservationSeatRepository;
     private final CacheRepository cacheRepository;
 
-    public ReservationSeatInfo(ReservationSeatRepository reservationSeatRepository, CacheRepository cacheRepository) {
+    public ReservationSeatService(ReservationSeatRepository reservationSeatRepository, CacheRepository cacheRepository) {
         this.reservationSeatRepository = reservationSeatRepository;
         this.cacheRepository = cacheRepository;
     }

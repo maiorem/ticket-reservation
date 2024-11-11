@@ -1,6 +1,6 @@
 package com.hhplus.io.app.usertoken.infra;
 
-import com.hhplus.io.common.redis.domain.repository.CacheRepository;
+import com.hhplus.io.common.cache.domain.repository.CacheRepository;
 import com.hhplus.io.app.usertoken.domain.repository.WaitingQueueRepository;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueue;

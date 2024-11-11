@@ -1,76 +1,99 @@
 package com.hhplus.io.app.usertoken.domain.service;
 
-import com.hhplus.io.app.usertoken.domain.WaitingQueueInfo;
-import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueue;
-import org.springframework.stereotype.Service;
+import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
+import com.hhplus.io.app.usertoken.domain.repository.WaitingQueueRepository;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@Component
 public class WaitingQueueService {
 
-    private final WaitingQueueInfo waitingQueueInfo;
+    private final WaitingQueueRepository waitingQueueRepository;
 
-    public WaitingQueueService(WaitingQueueInfo waitingQueueInfo) {
-        this.waitingQueueInfo = waitingQueueInfo;
+    public WaitingQueueService(WaitingQueueRepository waitingQueueRepository) {
+        this.waitingQueueRepository = waitingQueueRepository;
     }
 
-    public WaitingQueue getWaitingQueueByUser(Long userId, WaitingQueueStatus status) {
-        return waitingQueueInfo.getQueueByUserAndStatus(userId, status);
+    public WaitingQueue getQueueByUserAndStatus(Long userId, WaitingQueueStatus status) {
+        return waitingQueueRepository.getQueueByUserAndStatus(userId, status);
     }
 
-    public Long countWaitingQueueByStatus(WaitingQueueStatus status) {
-        return waitingQueueInfo.countByQueueStatus(status);
+
+    private List<WaitingQueue> getAllQueueByStatus(WaitingQueueStatus status) {
+        return waitingQueueRepository.getAllQueueByStatus(status);
     }
 
-    public Long getSequence(Long userId) {
-        return waitingQueueInfo.getWaitingQueueSequence(userId);
+    public void updateQueueStatus(WaitingQueue queue, WaitingQueueStatus status) {
+        queue.udpateStatus(String.valueOf(status));
     }
 
     public String createQueue(Long userId) {
-        return waitingQueueInfo.createQueue(userId);
+//        //WAITING 전체 수에서 맨 끝 순서 배정
+//        Long sequence = countByQueueStatus(WaitingQueueStatus.WAITING) + 1;
+//
+//        WaitingQueue builder = WaitingQueue.builder()
+//                            .sequence(sequence)
+//                            .userId(user.getUserId())
+//                            .status(String.valueOf(WaitingQueueStatus.WAITING))
+//                            .build();
+        return waitingQueueRepository.createWaitingQueue(userId);
     }
 
-
-    public void updateStatus(WaitingQueue queue, WaitingQueueStatus status) {
-        waitingQueueInfo.updateQueueStatus(queue, status);
+    public Long countByQueueStatus(WaitingQueueStatus status) {
+        return waitingQueueRepository.countByQueueStatus(status);
     }
 
     public void updateAllWaitingQueue(long updateProcess) {
-        waitingQueueInfo.updateAllWaitingQueue(updateProcess);
+        List<WaitingQueue> queueList = waitingQueueRepository.getAllQueueByStatusLimitUpdateCount(WaitingQueueStatus.WAITING, updateProcess);
+        for (WaitingQueue queue : queueList) {
+            queue.udpateStatus(String.valueOf(WaitingQueueStatus.PROCESS));
+        }
+        getAllQueueByStatus(WaitingQueueStatus.WAITING).forEach(queue -> queue.updateSequence(updateProcess));
+
     }
 
-    public void updateAllQueueStatusByTime(LocalDateTime now, Long plustime, WaitingQueueStatus status) {
-        waitingQueueInfo.updateQueueStatusByTime(now, plustime, status);
+    public void updateQueueStatusByTime(LocalDateTime now, Long plustime, WaitingQueueStatus status) {
+        List<WaitingQueue> queueList = waitingQueueRepository.getAllQueueByStatus(WaitingQueueStatus.WAITING);
+        for (WaitingQueue queue : queueList) {
+            if(now.isAfter(queue.getCreatedAt().plusHours(plustime))) {
+                queue.udpateStatus(String.valueOf(status));
+            }
+        }
+
     }
 
     public void initQueue(Long userId, String token) {
-        waitingQueueInfo.initQueue(userId, token);
+        waitingQueueRepository.deleteWaitingQueue(userId, token);
     }
 
     public String getWaitingQueue(Long userId) {
-        return waitingQueueInfo.getWaitingQueue(userId);
+        return waitingQueueRepository.getWaitingQueue(userId);
+    }
+
+    public Long getRank(Long userId) {
+        return waitingQueueRepository.getWatingQueueSequence(userId);
     }
 
     public List<String> getWaitingQueueList(long maxProcessingVolume) {
-        return waitingQueueInfo.getWaitingQueueList(maxProcessingVolume);
+        return waitingQueueRepository.getWaitingQueueList(maxProcessingVolume);
     }
 
     public void activateAll(List<String> tokenList) {
-        waitingQueueInfo.activateAll(tokenList);
+        waitingQueueRepository.activateAll(tokenList);
     }
 
     public boolean isActive(String token) {
-        return waitingQueueInfo.isActive(token);
+        return waitingQueueRepository.isActive(token);
     }
 
     public void refreshToken(String token) {
-        waitingQueueInfo.refreshToken(token);
+        waitingQueueRepository.refreshTimeout(token);
     }
 
     public void expireToken(String token) {
-        waitingQueueInfo.expireToken(token);
+        waitingQueueRepository.deleteActiveToken(token);
     }
 }

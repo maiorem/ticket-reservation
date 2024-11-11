@@ -1,7 +1,7 @@
 package com.hhplus.io.usertoken.domain;
 
-import com.hhplus.io.app.usertoken.domain.UserInfo;
-import com.hhplus.io.app.usertoken.domain.WaitingQueueInfo;
+import com.hhplus.io.app.usertoken.domain.service.UserService;
+import com.hhplus.io.app.usertoken.domain.service.WaitingQueueService;
 import com.hhplus.io.app.usertoken.domain.entity.User;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueue;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
@@ -21,27 +21,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class WaitingQueueInfoTest {
+class WaitingQueueServiceTest {
 
     @Mock
     private WaitingQueueRepository waitingQueueRepository;
 
     @InjectMocks
-    private WaitingQueueInfo waitingQueueInfo;
+    private WaitingQueueService waitingQueueInfo;
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserInfo userInfo;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         waitingQueueRepository = mock(WaitingQueueRepository.class);
-        waitingQueueInfo = new WaitingQueueInfo(waitingQueueRepository);
+        waitingQueueInfo = new WaitingQueueService(waitingQueueRepository);
         userRepository = mock(UserRepository.class);
-        userInfo = new UserInfo(userRepository);
+        userService = new UserService(userRepository);
     }
 
     @Test
@@ -92,10 +92,10 @@ class WaitingQueueInfoTest {
         when(waitingQueueRepository.getQueueByUserAndStatus(2L, WaitingQueueStatus.WAITING)).thenReturn(testQueue2);
 
         //when
-        WaitingQueue queue = waitingQueueInfo.createQueue(user3);
+        String token = waitingQueueInfo.createQueue(userId);
 
         //then
-        assertEquals(3L, queue.getSequence());
+        assertNotNull(token);
     }
 
     @Test
