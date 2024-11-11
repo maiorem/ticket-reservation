@@ -12,9 +12,8 @@ import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.entity.Seat;
 import com.hhplus.io.app.reservation.domain.service.ReservationSeatService;
 import com.hhplus.io.app.reservation.domain.service.ReservationService;
-import com.hhplus.io.app.reservation.domain.dto.ReservationInfoDTO;
+import com.hhplus.io.app.reservation.domain.dto.ReservationInfo;
 import com.hhplus.io.app.reservation.domain.entity.ReservationSeat;
-import com.hhplus.io.app.usertoken.domain.service.TokenService;
 import com.hhplus.io.app.usertoken.domain.service.UserService;
 import com.hhplus.io.app.usertoken.domain.entity.User;
 import com.hhplus.io.app.usertoken.domain.service.WaitingQueueService;
@@ -99,7 +98,7 @@ public class ReservationUseCase {
         amountService.pay(userId, payment);
 
         //예약 내역 저장
-        ReservationInfoDTO store = reservationService.confirmReservation(userId);
+        ReservationInfo store = reservationService.confirmReservation(userId);
 
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경

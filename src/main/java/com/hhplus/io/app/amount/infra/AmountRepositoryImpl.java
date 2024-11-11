@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.hhplus.io.amount.domain.entity.QAmount.amount1;
+import static com.hhplus.io.app.amount.domain.entity.QAmount.amount1;
 
 @Repository
 public class AmountRepositoryImpl implements AmountRepository {
