@@ -11,5 +11,7 @@ public interface ConcertRepository {
 
     Concert save(Concert concert);
 
-    Page<Concert> getConcertList(Pageable pageable);
+    Page<Concert> getConcertList(Pageable pageable, String searchKey);
+
+    Page<Concert> getConcertListWithCache(Pageable pageable);
 }

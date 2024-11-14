@@ -21,13 +21,13 @@ public class ConcertService {
         return concertRepository.getConcertById(concertId);
     }
 
-    public Page<Concert> getConcertList(Pageable pageable) {
-        return concertRepository.getConcertList(pageable);
+    public Page<Concert> getConcertList(Pageable pageable, String searchKey) {
+        return concertRepository.getConcertList(pageable, searchKey);
     }
 
     @Cacheable(cacheNames = "concertList", value = "concertList", key = "'concertList' + ':' + #pageable.pageNumber", cacheManager = "contentCacheManager")
     public Page<Concert> getConcertListWithCache(Pageable pageable) {
-        return concertRepository.getConcertList(pageable);
+        return concertRepository.getConcertListWithCache(pageable);
     }
 
 }

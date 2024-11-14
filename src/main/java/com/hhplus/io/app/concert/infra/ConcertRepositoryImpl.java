@@ -2,7 +2,9 @@ package com.hhplus.io.app.concert.infra;
 
 import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.repository.ConcertRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,10 +37,31 @@ public class ConcertRepositoryImpl implements ConcertRepository {
         return jpaRepository.save(concert);
     }
 
+
     @Override
-    public Page<Concert> getConcertList(Pageable pageable) {
+    public Page<Concert> getConcertList(Pageable pageable, String searchKey) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if(!StringUtils.isEmpty(searchKey)) builder.and(concert.concertName.contains(searchKey));
+
         List<Concert> result = jpaQueryFactory
                 .selectFrom(concert)
+                .where(builder)
+                .orderBy(concert.concertId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        Long count = jpaQueryFactory
+                .select(concert.count())
+                .from(concert)
+                .fetchOne();
+        return new PageImpl<>(result, pageable, count != null ? count : 0);
+    }
+
+    @Override
+    public Page<Concert> getConcertListWithCache(Pageable pageable) {
+        List<Concert> result = jpaQueryFactory
+                .selectFrom(concert)
+                .orderBy(concert.concertId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

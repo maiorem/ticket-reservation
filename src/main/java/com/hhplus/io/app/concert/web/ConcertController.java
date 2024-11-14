@@ -37,8 +37,8 @@ public class ConcertController {
     }
 
     @GetMapping("/list")
-    public ApiResponse<?> getConcertList(@PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Concert> result = concertUseCase.getConcertList(pageable);
+    public ApiResponse<?> getConcertList(@PageableDefault(size = 6, sort = "concertId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(name = "searchKey") String searchKey) {
+        Page<Concert> result = concertUseCase.getConcertList(pageable, searchKey);
         return ApiResponse.success("data", result);
     }
 
