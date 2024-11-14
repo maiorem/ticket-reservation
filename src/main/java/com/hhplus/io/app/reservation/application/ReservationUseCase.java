@@ -10,6 +10,9 @@ import com.hhplus.io.app.concert.domain.entity.SeatStatus;
 import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.entity.Seat;
+import com.hhplus.io.app.reservation.domain.dto.ConfirmReservationInfo;
+import com.hhplus.io.app.reservation.domain.event.ReservationEvent;
+import com.hhplus.io.app.reservation.domain.event.ReservationEventPublisher;
 import com.hhplus.io.app.reservation.domain.service.ReservationSeatService;
 import com.hhplus.io.app.reservation.domain.service.ReservationService;
 import com.hhplus.io.app.reservation.domain.dto.ReservationInfo;
@@ -38,8 +41,9 @@ public class ReservationUseCase {
     private final ConcertDateService concertDateService;
     private final AmountService amountService;
     private final ReservationSeatService reservationSeatService;
+    private final ReservationEventPublisher reservationEventPublisher;
 
-    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService, ReservationSeatService reservationSeatService) {
+    public ReservationUseCase(ReservationService reservationService, SeatService seatService, WaitingQueueService waitingQueueService, UserService userService, ConcertService concertService, ConcertDateService concertDateService, AmountService amountService, ReservationSeatService reservationSeatService, ReservationEventPublisher reservationEventPublisher) {
         this.reservationService = reservationService;
         this.seatService = seatService;
         this.waitingQueueService = waitingQueueService;
@@ -48,6 +52,7 @@ public class ReservationUseCase {
         this.concertDateService = concertDateService;
         this.amountService = amountService;
         this.reservationSeatService = reservationSeatService;
+        this.reservationEventPublisher = reservationEventPublisher;
     }
 
     /**
@@ -90,7 +95,7 @@ public class ReservationUseCase {
      * 예약확정 내역 저장
      */
     @Transactional
-    public ConfirmReservationCommand confirmReservation(Long userId, int payment) {
+    public ConfirmReservationInfo confirmReservation(Long userId, int payment) {
         //사용자 조회
         User user = userService.getUser(userId);
 
@@ -122,18 +127,19 @@ public class ReservationUseCase {
         if (currentSeats < 1) {
             concertDate.updateStatus(String.valueOf(ConcertDateStatus.FILLED));
         }
+        ConfirmReservationInfo info
+                = ConfirmReservationInfo.of(user.getUsername(),
+                        concert.getConcertName(),
+                        concertDate.getConcertDate(),
+                        LocalDateTime.now(),
+                        people,
+                        payment,
+                        seatUseCaseDTOList);
 
-        //대기열 만료
-        waitingQueueService.expireToken(store.token());
+        //예매 확정 성공 이벤트 처리
+        reservationEventPublisher.publish(ReservationEvent.create(info, store.token()));
 
-        return ConfirmReservationCommand.of(
-                user.getUsername(),
-                concert.getConcertName(),
-                concertDate.getConcertDate(),
-                LocalDateTime.now(),
-                people,
-                payment,
-                seatUseCaseDTOList);
+        return info;
 
     }
 
