@@ -27,8 +27,8 @@ public class ConcertUseCase {
     /**
      * 콘서트 목록 조회 (페이징)
      */
-    public Page<Concert> getConcertList(Pageable pageable) {
-        return concertService.getConcertList(pageable);
+    public Page<Concert> getConcertList(Pageable pageable, String searchKey) {
+        return concertService.getConcertList(pageable, searchKey);
     }
 
     /**
