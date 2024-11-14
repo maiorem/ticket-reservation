@@ -4,7 +4,7 @@ import com.hhplus.io.common.interfaces.ApiResponse;
 import com.hhplus.io.app.concert.application.SeatUseCaseDTO;
 import com.hhplus.io.app.concert.domain.entity.SeatStatus;
 import com.hhplus.io.app.concert.web.response.SeatDTO;
-import com.hhplus.io.app.reservation.application.ConfirmReservationCommand;
+import com.hhplus.io.app.reservation.domain.dto.ConfirmReservationInfo;
 import com.hhplus.io.app.reservation.application.ReservationCommand;
 import com.hhplus.io.app.reservation.application.ReservationUseCase;
 import com.hhplus.io.app.reservation.web.request.ConfirmReservationRequest;
@@ -56,7 +56,7 @@ public class ReservationController {
     @Operation(summary = "예약 확정 (결제)")
     public ApiResponse<?> payment(@RequestBody ConfirmReservationRequest request){
 
-        ConfirmReservationCommand command = reservationUseCase.confirmReservation(
+        ConfirmReservationInfo command = reservationUseCase.confirmReservation(
                 request.userId(),
                 request.payment()
         );
