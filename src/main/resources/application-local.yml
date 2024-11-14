@@ -11,14 +11,14 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 
   sql:
     init:
-      mode: always
+      mode: never
       encoding: utf-8
 
   data:
