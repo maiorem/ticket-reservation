@@ -32,21 +32,20 @@ public class UserTokenUseCase {
      * - 토큰 생성 후 반환
      */
     @Transactional
-    public UserTokenCommand issueUserToken(Long userId) {
+    public UserTokenCommand issueUserToken(Long userId, String token) {
         //사용자 조회
         User user = userService.getUser(userId);
 
         //현재 대기상태 대기열 존재 여부
-        String token = waitingQueueService.getWaitingQueue(userId);
         if (token != null) {
             //대기열 토큰이 이미 존재하면 삭제
-            waitingQueueService.initQueue(userId, token);
+            waitingQueueService.initQueue(token);
         }
         // 대기열 및 토큰 생성
-        String createdToken = waitingQueueService.createQueue(userId);
+        String createdToken = waitingQueueService.createQueue(token);
 
         // 대기열 순서 조회
-        Long sequence = waitingQueueService.getRank(userId);
+        Long sequence = waitingQueueService.getRank(token);
 
         return UserTokenCommand.of(user.getUserId(), sequence, createdToken);
     }
@@ -55,9 +54,9 @@ public class UserTokenUseCase {
      * 사용자 대기열 순서 조회
      * - 사용자 현재 대기 순서 조회
      */
-    public Long getSequence(Long userId) {
+    public Long getSequence(String token) {
         //사용자 현재 대기열 순서 조회
-        return waitingQueueService.getRank(userId);
+        return waitingQueueService.getRank(token);
     }
 
     /**

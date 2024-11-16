@@ -20,8 +20,9 @@ public class UserController {
 
     @PostMapping("/issue/{userId}")
     @Operation(summary = "유저 토큰 발급")
-    public ApiResponse<?> generateToken(@PathVariable(name = "userId") @Schema(description = "유저 ID") Long userId){
-        UserTokenCommand userTokenCommand = userTokenUseCase.issueUserToken(userId);
+    public ApiResponse<?> generateToken(@PathVariable(name = "userId") @Schema(description = "유저 ID") Long userId,
+                                        @RequestHeader(required = false, name = "token") String token){
+        UserTokenCommand userTokenCommand = userTokenUseCase.issueUserToken(userId, token);
         UserTokenResponse response = UserTokenResponse.of(
                 userTokenCommand.userId(),
                 userTokenCommand.token(),
@@ -30,10 +31,10 @@ public class UserController {
         return ApiResponse.success("data", response);
     }
 
-    @PostMapping("/api/sequence/{userId}")
+    @PostMapping("/api/sequence")
     @Operation(summary = "유저 대기 순서 조회")
-    public ApiResponse<?> getSequenceByQueue(@PathVariable(name = "userId") @Schema(description = "유저 ID") Long userId){
-        Long response = userTokenUseCase.getSequence(userId);
+    public ApiResponse<?> getSequenceByQueue(@RequestHeader(required = false, name = "token") String token){
+        Long response = userTokenUseCase.getSequence(token);
         return ApiResponse.success("data", response);
     }
 

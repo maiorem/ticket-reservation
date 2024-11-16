@@ -80,6 +80,7 @@ class WaitingQueueServiceTest {
     void createQueue() {
         //given
         Long userId = 3L;
+        String token = "aaaa";
         User user1 = User.builder().userId(1L).username("홍길동").build();
         User user2 = User.builder().userId(2L).username("임꺽정").build();
         User user3 = User.builder().userId(userId).username("홍세영").build();
@@ -92,10 +93,10 @@ class WaitingQueueServiceTest {
         when(waitingQueueRepository.getQueueByUserAndStatus(2L, WaitingQueueStatus.WAITING)).thenReturn(testQueue2);
 
         //when
-        String token = waitingQueueInfo.createQueue(userId);
+        String queue = waitingQueueInfo.createQueue(token);
 
         //then
-        assertNotNull(token);
+        assertNotNull(queue);
     }
 
     @Test
