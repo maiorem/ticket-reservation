@@ -1,8 +1,8 @@
 FROM gradle:8.8.0-jdk17 AS builder
 
-COPY ../.. /usr/src
+COPY ../../.. /usr/src
 WORKDIR /usr/src
-RUN --mount=type=cache,target=/root/.gradle gradle clean build -xtest
+RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build -xtest
 
 FROM amazoncorretto:17-alpine
 

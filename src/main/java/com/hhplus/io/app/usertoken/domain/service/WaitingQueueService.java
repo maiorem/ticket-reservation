@@ -30,7 +30,7 @@ public class WaitingQueueService {
         queue.udpateStatus(String.valueOf(status));
     }
 
-    public String createQueue(Long userId) {
+    public String createQueue(String token) {
 //        //WAITING 전체 수에서 맨 끝 순서 배정
 //        Long sequence = countByQueueStatus(WaitingQueueStatus.WAITING) + 1;
 //
@@ -39,7 +39,7 @@ public class WaitingQueueService {
 //                            .userId(user.getUserId())
 //                            .status(String.valueOf(WaitingQueueStatus.WAITING))
 //                            .build();
-        return waitingQueueRepository.createWaitingQueue(userId);
+        return waitingQueueRepository.createWaitingQueue(token);
     }
 
     public Long countByQueueStatus(WaitingQueueStatus status) {
@@ -65,16 +65,16 @@ public class WaitingQueueService {
 
     }
 
-    public void initQueue(Long userId, String token) {
-        waitingQueueRepository.deleteWaitingQueue(userId, token);
+    public void initQueue(String token) {
+        waitingQueueRepository.deleteWaitingQueue(token);
     }
 
-    public String getWaitingQueue(Long userId) {
-        return waitingQueueRepository.getWaitingQueue(userId);
+    public String getWaitingQueue(String token) {
+        return waitingQueueRepository.getWaitingQueue(token);
     }
 
-    public Long getRank(Long userId) {
-        return waitingQueueRepository.getWatingQueueSequence(userId);
+    public Long getRank(String token) {
+        return waitingQueueRepository.getWatingQueueRank(token);
     }
 
     public List<String> getWaitingQueueList(long maxProcessingVolume) {

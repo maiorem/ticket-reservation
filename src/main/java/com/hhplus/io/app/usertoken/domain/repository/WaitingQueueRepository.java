@@ -19,15 +19,15 @@ public interface WaitingQueueRepository {
 
     List<WaitingQueue> getAllQueueByStatusLimitUpdateCount(WaitingQueueStatus waitingQueueStatus, long updateProcess);
 
-    String createWaitingQueue(Long userId);
+    String createWaitingQueue(String token);
 
-    Long getWatingQueueSequence(Long userId);
+    Long getWatingQueueRank(String token);
 
-    String getWaitingQueue(Long userId);
+    String getWaitingQueue(String token);
 
     List<String> getWaitingQueueList(Long range);
 
-    void deleteWaitingQueue(Long userId, String token);
+    void deleteWaitingQueue(String token);
 
     void createActiveQueue(String token);
 

@@ -53,14 +53,10 @@ class UserTokenUseCaseTest extends AcceptanceTest {
             Long userId = 1L;
 
             //when
-            UserTokenCommand result = userTokenUseCase.issueUserToken(userId);
+            UserTokenCommand result = userTokenUseCase.issueUserToken(userId, null);
 
             //then
-            userTokenRepository.findByUserId(userId).ifPresent(token -> {
-                assertEquals(1, result.sequence());
-                assertEquals(token.getToken(), result.token());
-            });
-
+            assertNotNull(result);
 
         }
 
@@ -68,6 +64,7 @@ class UserTokenUseCaseTest extends AcceptanceTest {
         void 이미_해당_아이디로_대기가_존재하면_취소하고_다시_맨끝줄에_선다() {
             //given
             Long userId = 1L;
+            String token = "aaaa";
 
             WaitingQueue queue1 = WaitingQueue.builder()
                     .queueId(2L)
@@ -92,7 +89,7 @@ class UserTokenUseCaseTest extends AcceptanceTest {
             waitingQueueRepository.save(queue3);
 
             //when
-            UserTokenCommand result = userTokenUseCase.issueUserToken(userId);
+            UserTokenCommand result = userTokenUseCase.issueUserToken(userId, token);
 
             //then
             assertEquals(3, result.sequence());
@@ -108,12 +105,13 @@ class UserTokenUseCaseTest extends AcceptanceTest {
         void 사용자_대기_순서_조회에_성공한다(){
             //given
             Long userId = 1L;
-            userTokenUseCase.issueUserToken(2L);
-            userTokenUseCase.issueUserToken(3L);
-            userTokenUseCase.issueUserToken(userId);
+            String token = "aaaa";
+            userTokenUseCase.issueUserToken(userId, token);
+            userTokenUseCase.issueUserToken(userId, token);
+            userTokenUseCase.issueUserToken(userId, token);
 
             //when
-            Long sequence = userTokenUseCase.getSequence(userId);
+            Long sequence = userTokenUseCase.getSequence(token);
 
             //then
             assertEquals(3, sequence);

@@ -71,30 +71,28 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
     }
 
     @Override
-    public String createWaitingQueue(Long userId) {
+    public String createWaitingQueue(String token) {
         long sequence = System.nanoTime();
-        String token = UUID.randomUUID().toString();
-        Boolean isCreate = zsetOperations.add(WAITING_QUEUE_KEY_PREFIX + userId, token, sequence);
+        Boolean isCreate = zsetOperations.add(WAITING_QUEUE_KEY, token, sequence);
         return Boolean.TRUE.equals(isCreate) ? token : null;
     }
 
 
     @Override
-    public String getWaitingQueue(Long userId) {
-        return cacheRepository.getValues(WAITING_QUEUE_KEY_PREFIX+userId);
+    public String getWaitingQueue(String token) {
+        return Objects.requireNonNull(zsetOperations.range(WAITING_QUEUE_KEY, 0, 0)).toString();
     }
 
     @Override
-    public Long getWatingQueueSequence(Long userId) {
-        String token = cacheRepository.getValues(WAITING_QUEUE_KEY_PREFIX + userId);
-        return zsetOperations.rank(WAITING_QUEUE_KEY_PREFIX+userId, token);
+    public Long getWatingQueueRank(String token) {
+        return zsetOperations.rank(WAITING_QUEUE_KEY, token);
     }
 
 
     @Override
     public List<String> getWaitingQueueList(Long range) {
         List<String> list = new ArrayList<>();
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = zsetOperations.popMin(Objects.requireNonNull(redisTemplate.keys(WAITING_QUEUE_KEY_PREFIX + "*")).toString(), range);
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = zsetOperations.popMin(WAITING_QUEUE_KEY, range);
         if (typedTuples != null) {
             for (ZSetOperations.TypedTuple<String> typedTuple : typedTuples) {
                 list.add(typedTuple.getValue());
@@ -104,9 +102,8 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
     }
 
     @Override
-    public void deleteWaitingQueue(Long userId, String token) {
-        String key = WAITING_QUEUE_KEY_PREFIX + userId;
-        setOperations.remove(key, token);
+    public void deleteWaitingQueue(String token) {
+        zsetOperations.remove(WAITING_QUEUE_KEY, token);
     }
 
     @Override
@@ -140,14 +137,16 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     @Override
     public void activateAll(List<String> tokenList) {
-        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            tokenList.forEach(token -> {
-                String key = ACTIVE_QUEUE_KEY_PREFIX + token;
-                connection.setCommands().sAdd(key.getBytes(), token.getBytes());
-                connection.commands().expire(key.getBytes(), 300);
+        if (tokenList != null) {
+            redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+                tokenList.forEach(token -> {
+                    String key = ACTIVE_QUEUE_KEY_PREFIX + token;
+                    connection.setCommands().sAdd(key.getBytes(), token.getBytes());
+                    connection.commands().expire(key.getBytes(), 300);
+                });
+                return null;
             });
-            return null;
-        });
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package com.hhplus.io.reservation.application;
 
-import com.hhplus.io.app.reservation.application.ConfirmReservationCommand;
+import com.hhplus.io.app.reservation.domain.dto.ConfirmReservationInfo;
 import com.hhplus.io.app.reservation.application.ReservationUseCase;
 import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.app.amount.infra.AmountJpaRepository;
@@ -60,7 +60,7 @@ class ReservationIntegrationTest  extends AcceptanceTest {
             int payment = 10000;
 
             //when
-            ConfirmReservationCommand result = reservationUseCase.confirmReservation(userId, payment);
+            ConfirmReservationInfo result = reservationUseCase.confirmReservation(userId, payment);
 
             //then
             Optional<User> user = userRepository.findByUserId(userId);
