@@ -10,8 +10,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -33,13 +35,22 @@ public abstract class AcceptanceTest {
     protected static MySQLContainer mySqlContainer;
     @Container
     protected static GenericContainer redisContainer;
+    @Container
+    protected static KafkaContainer kafkaContainer;
+
 
     @DynamicPropertySource
     private static void configureProperties(final DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySqlContainer::getJdbcUrl);
         registry.add("spring.datasource.username", () -> ROOT);
         registry.add("spring.datasource.password", () -> ROOT_PASSWORD);
+
+        registry.add("spring.data.redis.host", redisContainer::getHost);
+        registry.add("spring.data.redis.port", () -> 6379);
+
+        registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
     }
+
 
     static {
         mySqlContainer = new MySQLContainer("mysql:8")
@@ -47,9 +58,12 @@ public abstract class AcceptanceTest {
                 .withUsername(ROOT)
                 .withPassword(ROOT_PASSWORD);
         mySqlContainer.start();
-        redisContainer = new GenericContainer("redis:6.0.6");
-        redisContainer.withExposedPorts(6379);
+
+        redisContainer = new GenericContainer("redis:latest");
         redisContainer.start();
+
+        kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+        kafkaContainer.start();
     }
 
     @BeforeEach
