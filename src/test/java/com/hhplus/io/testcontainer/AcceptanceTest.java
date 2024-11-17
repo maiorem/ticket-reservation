@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
@@ -29,21 +30,26 @@ public abstract class AcceptanceTest {
     private DBInitializer dataInitializer;
 
     @Container
-    protected static MySQLContainer container;
+    protected static MySQLContainer mySqlContainer;
+    @Container
+    protected static GenericContainer redisContainer;
 
     @DynamicPropertySource
     private static void configureProperties(final DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.url", mySqlContainer::getJdbcUrl);
         registry.add("spring.datasource.username", () -> ROOT);
         registry.add("spring.datasource.password", () -> ROOT_PASSWORD);
     }
 
     static {
-        container = new MySQLContainer("mysql:8")
+        mySqlContainer = new MySQLContainer("mysql:8")
                 .withDatabaseName("test")
                 .withUsername(ROOT)
                 .withPassword(ROOT_PASSWORD);
-        container.start();
+        mySqlContainer.start();
+        redisContainer = new GenericContainer("redis:6.0.6");
+        redisContainer.withExposedPorts(6379);
+        redisContainer.start();
     }
 
     @BeforeEach
