@@ -1,7 +1,7 @@
 package com.hhplus.io.concert.application;
 
 import com.hhplus.io.app.concert.application.ConcertUseCase;
-import com.hhplus.io.app.concert.application.SeatReserveCommand;
+import com.hhplus.io.app.concert.application.SeatReserveInfo;
 import com.hhplus.io.app.concert.application.SeatReserveMapper;
 import com.hhplus.io.app.concert.web.request.SeatReservationRequest;
 import com.hhplus.io.testcontainer.AcceptanceTest;
@@ -66,7 +66,9 @@ class ConcertIntegrationTest extends AcceptanceTest{
             List<Long> seatList = List.of(1L, 2L, 3L);
 
             //when
-            SeatReserveCommand result = concertUseCase.tempReserveSeat(seatList);
+            SeatReservationRequest request = SeatReservationRequest.of(1L, 1L, 1L, seatList);
+            SeatReserveMapper mapper = SeatReserveMapper.convert(token, request);
+            SeatReserveInfo result = concertUseCase.tempReserveSeat(mapper);
 
             //then
             seatRepository.findBySeatId(1L).ifPresent(seat -> {
@@ -112,7 +114,7 @@ class ConcertIntegrationTest extends AcceptanceTest{
                 executorService.submit(() -> {
                     try {
                         latch.await();
-                        SeatReserveCommand result = concertUseCase.tempReserveSeat(seatIdList);
+                        SeatReserveInfo result = concertUseCase.tempReserveSeat(mapper);
                         successCount.incrementAndGet();
                         System.out.println("success result : " + result.toString());
                     } catch (Exception e) {

@@ -1,6 +1,6 @@
 package com.hhplus.io.app.amount.web;
 
-import com.hhplus.io.app.amount.application.SaveAmountCommand;
+import com.hhplus.io.app.amount.application.SaveAmountInfo;
 import com.hhplus.io.app.amount.web.response.RetrieveChargeAmountResponse;
 import com.hhplus.io.common.interfaces.ApiResponse;
 import com.hhplus.io.app.amount.application.AmountUseCase;
@@ -31,8 +31,8 @@ public class AmountController {
     @PatchMapping("/save")
     @Operation(summary = "잔액 충전")
     public ApiResponse<?> saveBalance(@RequestBody SaveAmountRequest request){
-        SaveAmountCommand command = amountUseCase.saveAmount(request.userId(), request.saveAmount());
-        SaveAmountResponse response = SaveAmountResponse.of(command.userId(), command.amount());
+        SaveAmountInfo info = amountUseCase.saveAmount(request.userId(), request.saveAmount());
+        SaveAmountResponse response = SaveAmountResponse.of(info.userId(), info.amount());
         return ApiResponse.success("data", response);
     }
 

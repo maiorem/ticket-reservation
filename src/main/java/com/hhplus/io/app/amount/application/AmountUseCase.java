@@ -31,9 +31,9 @@ public class AmountUseCase {
      * 잔액 충전
      */
     @Transactional
-    public SaveAmountCommand saveAmount(Long userId, int updateAmount){
+    public SaveAmountInfo saveAmount(Long userId, int updateAmount){
         int newAmount = amountService.updateAmount(userId, updateAmount);
-        return SaveAmountCommand.of(userId, newAmount);
+        return SaveAmountInfo.of(userId, newAmount);
 
     }
 

@@ -32,7 +32,7 @@ public class UserTokenUseCase {
      * - 토큰 생성 후 반환
      */
     @Transactional
-    public UserTokenCommand issueUserToken(Long userId, String token) {
+    public UserTokenInfo issueUserToken(Long userId, String token) {
         //사용자 조회
         User user = userService.getUser(userId);
 
@@ -47,7 +47,7 @@ public class UserTokenUseCase {
         // 대기열 순서 조회
         Long sequence = waitingQueueService.getRank(token);
 
-        return UserTokenCommand.of(user.getUserId(), sequence, createdToken);
+        return UserTokenInfo.of(user.getUserId(), sequence, createdToken);
     }
 
     /**

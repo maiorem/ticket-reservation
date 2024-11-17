@@ -1,6 +1,6 @@
 package com.hhplus.io.usertoken.application;
 
-import com.hhplus.io.app.usertoken.application.UserTokenCommand;
+import com.hhplus.io.app.usertoken.application.UserTokenInfo;
 import com.hhplus.io.app.usertoken.application.UserTokenUseCase;
 import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.app.usertoken.domain.entity.WaitingQueueStatus;
@@ -53,7 +53,7 @@ class UserTokenUseCaseTest extends AcceptanceTest {
             Long userId = 1L;
 
             //when
-            UserTokenCommand result = userTokenUseCase.issueUserToken(userId, null);
+            UserTokenInfo result = userTokenUseCase.issueUserToken(userId, null);
 
             //then
             assertNotNull(result);
@@ -89,7 +89,7 @@ class UserTokenUseCaseTest extends AcceptanceTest {
             waitingQueueRepository.save(queue3);
 
             //when
-            UserTokenCommand result = userTokenUseCase.issueUserToken(userId, token);
+            UserTokenInfo result = userTokenUseCase.issueUserToken(userId, token);
 
             //then
             assertEquals(3, result.sequence());

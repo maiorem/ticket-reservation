@@ -49,7 +49,7 @@ public class ConcertUseCase {
      * 좌석 예약 (임시 선택)
      * - 결제까지 제한시간 5분.
      */
-    public SeatReserveCommand tempReserveSeat(SeatReserveMapper mapper) {
+    public SeatReserveInfo tempReserveSeat(SeatReserveMapper mapper) {
 
         seatService.tempReserveSeat(mapper.token(), mapper.userId(), mapper.concertId(), mapper.concertDateId(), mapper.seatList());
 
@@ -60,7 +60,7 @@ public class ConcertUseCase {
             SeatUseCaseDTO dto = SeatUseCaseDTO.of(seat.getSeatId(), seat.getSeatNumber(), SeatStatus.valueOf(seat.getStatus()), seat.getTicketPrice());
             list.add(dto);
         }
-        return SeatReserveCommand.of(list);
+        return SeatReserveInfo.of(list);
     }
 
 
