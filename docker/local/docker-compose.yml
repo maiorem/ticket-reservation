@@ -17,7 +17,7 @@ services:
   mysql:
     image: mysql:8.0
     ports:
-      - "3307:3306"
+      - "3308:3306"
     environment:
       - MYSQL_DATABASE=concert
       - MYSQL_ROOT_PASSWORD=hhplus
@@ -43,5 +43,31 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
 
-volumes:
-  mysql-data:
+  zookeeper_1:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper_1
+    container_name: zookeeper_1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka_1:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka_1
+    container_name: kafka_1
+    depends_on:
+      - zookeeper_1
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 101
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper_1:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
