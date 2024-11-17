@@ -2,7 +2,7 @@ package com.hhplus.io.app.reservation.domain.service;
 
 import com.hhplus.io.common.cache.domain.UserRedisStore;
 import com.hhplus.io.common.cache.domain.repository.CacheRepository;
-import com.hhplus.io.app.reservation.domain.dto.ReservationInfo;
+import com.hhplus.io.app.reservation.domain.dto.ReservationStore;
 import com.hhplus.io.app.reservation.domain.entity.Reservation;
 import com.hhplus.io.app.reservation.domain.repository.ReservationRepository;
 import com.hhplus.io.common.support.domain.error.CoreException;
@@ -24,7 +24,7 @@ public class ReservationService {
         this.cacheRepository = cacheRepository;
     }
 
-    public ReservationInfo confirmReservation(Long userId) {
+    public ReservationStore confirmReservation(Long userId) {
         String values = cacheRepository.getValues(RESERVE_SEAT_KEY_PREFIX + userId);
         if (values == null) {
             throw new CoreException(ErrorType.EXPIRE_TEMP_RESERVATION);
@@ -39,6 +39,6 @@ public class ReservationService {
                 .build();
         Reservation savedReserve = reservationRepository.save(builder);
 
-        return ReservationInfo.of(store.token(), store.userId(), store.concertId(), store.concertDateId(), savedReserve.getReservationId(), store.seatList());
+        return ReservationStore.of(store.token(), store.userId(), store.concertId(), store.concertDateId(), savedReserve.getReservationId(), store.seatList());
     }
 }

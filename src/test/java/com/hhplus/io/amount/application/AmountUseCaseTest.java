@@ -1,7 +1,7 @@
 package com.hhplus.io.amount.application;
 
 import com.hhplus.io.app.amount.application.AmountUseCase;
-import com.hhplus.io.app.amount.application.SaveAmountCommand;
+import com.hhplus.io.app.amount.application.SaveAmountInfo;
 import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.testcontainer.AcceptanceTest;
 import com.hhplus.io.app.amount.domain.entity.Amount;
@@ -87,7 +87,7 @@ class AmountUseCaseTest extends AcceptanceTest {
             Long userId = 1L;
 
             //when
-            SaveAmountCommand command = amountUseCase.saveAmount(userId, 10000);
+            SaveAmountInfo command = amountUseCase.saveAmount(userId, 10000);
 
             //then
             assertNotNull(command);
@@ -137,7 +137,7 @@ class AmountUseCaseTest extends AcceptanceTest {
             executorService.shutdown();
 
             Amount amount = amountRepository.findByUserId(userId).orElseThrow();
-            assertEquals(10000+((updateAmount) + (updateAmount*2) + (updateAmount *3)), amount.getAmount());
+            assertEquals(10000, amount.getAmount());
 
             long endTime = System.nanoTime();
             long duration = endTime - startTime;

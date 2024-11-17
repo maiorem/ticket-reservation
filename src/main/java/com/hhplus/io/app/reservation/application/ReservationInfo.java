@@ -5,7 +5,7 @@ import com.hhplus.io.app.concert.application.SeatUseCaseDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ReservationCommand(
+public record ReservationInfo(
         String username,
         String concertName,
         LocalDateTime reservationDate,
@@ -14,7 +14,7 @@ public record ReservationCommand(
         int payMoney,
         List<SeatUseCaseDTO> seatList
 ) {
-    public static ReservationCommand of(String username, String concertName, LocalDateTime reservationDate, LocalDateTime confirmDate, int reservePeople, int payMoney, List<SeatUseCaseDTO> seatList) {
-        return new ReservationCommand(username, concertName, reservationDate, confirmDate, reservePeople, payMoney, seatList);
+    public static ReservationInfo of(String username, String concertName, LocalDateTime reservationDate, LocalDateTime confirmDate, int reservePeople, int payMoney, List<SeatUseCaseDTO> seatList) {
+        return new ReservationInfo(username, concertName, reservationDate, confirmDate, reservePeople, payMoney, seatList);
     }
 }

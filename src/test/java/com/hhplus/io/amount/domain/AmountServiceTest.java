@@ -3,6 +3,8 @@ package com.hhplus.io.amount.domain;
 import com.hhplus.io.app.amount.domain.service.AmountService;
 import com.hhplus.io.app.amount.domain.entity.Amount;
 import com.hhplus.io.app.amount.domain.repository.AmountRepository;
+import com.hhplus.io.app.usertoken.domain.entity.User;
+import com.hhplus.io.app.usertoken.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,18 +19,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AmountInfoTest {
+class AmountServiceTest {
 
     @Mock
     private AmountRepository amountRepository;
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private AmountService amountService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        amountRepository = mock(AmountRepository.class);
-        amountService = new AmountService(amountRepository);
     }
 
     @Test
@@ -51,8 +53,10 @@ class AmountInfoTest {
     void updateAmount() {
         //given
         Long userId = 1L;
+        User user = User.builder().userId(userId).username("홍세영").build();
         Amount amount = Amount.builder().amountId(1L).userId(userId).amount(10000).build();
-        when(amountRepository.getAmountByUser(userId)).thenReturn(amount);
+        when(userRepository.getUser(userId)).thenReturn(user);
+        when(amountRepository.getAmountByUser(user.getUserId())).thenReturn(amount);
 
         //when
         int result = amountService.updateAmount(userId, 10000);

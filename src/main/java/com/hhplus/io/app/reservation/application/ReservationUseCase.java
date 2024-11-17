@@ -11,11 +11,11 @@ import com.hhplus.io.app.concert.domain.entity.Concert;
 import com.hhplus.io.app.concert.domain.entity.ConcertDate;
 import com.hhplus.io.app.concert.domain.entity.Seat;
 import com.hhplus.io.app.reservation.domain.dto.ConfirmReservationInfo;
+import com.hhplus.io.app.reservation.domain.dto.ReservationStore;
 import com.hhplus.io.app.reservation.domain.event.ReservationEvent;
 import com.hhplus.io.app.reservation.domain.event.ReservationEventPublisher;
 import com.hhplus.io.app.reservation.domain.service.ReservationSeatService;
 import com.hhplus.io.app.reservation.domain.service.ReservationService;
-import com.hhplus.io.app.reservation.domain.dto.ReservationInfo;
 import com.hhplus.io.app.reservation.domain.entity.ReservationSeat;
 import com.hhplus.io.app.usertoken.domain.service.UserService;
 import com.hhplus.io.app.usertoken.domain.entity.User;
@@ -59,7 +59,7 @@ public class ReservationUseCase {
      * 예약 결제 정보 미리보기
      * - 콘서트, 예약 날짜, 예약 인원, 예약 좌석(list), 결제금액
      */
-    public ReservationCommand readReservation(Long userId, Long concertId, Long concertDateId, int people, List<Long> seatList) {
+    public ReservationInfo readReservation(Long userId, Long concertId, Long concertDateId, int people, List<Long> seatList) {
         //사용자 조회
         User user = userService.getUser(userId);
 
@@ -81,7 +81,7 @@ public class ReservationUseCase {
             list.add(dto);
         }
 
-        return ReservationCommand.of(user.getUsername(),
+        return ReservationInfo.of(user.getUsername(),
                 concert.getConcertName(),
                 concertDate.getConcertDate(),
                 LocalDateTime.now(),
@@ -103,7 +103,7 @@ public class ReservationUseCase {
         amountService.pay(userId, payment);
 
         //예약 내역 저장
-        ReservationInfo store = reservationService.confirmReservation(userId);
+        ReservationStore store = reservationService.confirmReservation(userId);
 
         List<SeatUseCaseDTO> seatUseCaseDTOList = new ArrayList<>();
         //좌석 예약확정 및 상태 변경

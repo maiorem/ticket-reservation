@@ -6,7 +6,7 @@ import com.hhplus.io.app.concert.web.response.AvailableSeatResponse;
 import com.hhplus.io.app.concert.web.response.SeatDTO;
 import com.hhplus.io.common.interfaces.ApiResponse;
 import com.hhplus.io.app.concert.application.ConcertUseCase;
-import com.hhplus.io.app.concert.application.SeatReserveCommand;
+import com.hhplus.io.app.concert.application.SeatReserveInfo;
 import com.hhplus.io.app.concert.application.SeatReserveMapper;
 import com.hhplus.io.app.concert.application.SeatUseCaseDTO;
 import com.hhplus.io.app.concert.domain.entity.Concert;
@@ -81,9 +81,9 @@ public class ConcertController {
     @PostMapping("/seat/apply")
     @Operation(summary = "좌석 예약 요청")
     public ApiResponse<?> reservation(@RequestHeader("token") String token, @RequestBody SeatReservationRequest request){
-        SeatReserveCommand seatReserveCommand = concertUseCase.tempReserveSeat(SeatReserveMapper.convert(token, request));
+        SeatReserveInfo seatReserveInfo = concertUseCase.tempReserveSeat(SeatReserveMapper.convert(token, request));
         List<SeatDTO> list = new ArrayList<>();
-        for (SeatUseCaseDTO seatUseCaseDTO : seatReserveCommand.seatList()) {
+        for (SeatUseCaseDTO seatUseCaseDTO : seatReserveInfo.seatList()) {
             SeatDTO dto = SeatDTO.of(seatUseCaseDTO.seatId(), seatUseCaseDTO.seatNumber(), SeatStatus.TEMP_RESERVED, seatUseCaseDTO.ticketPrice());
             list.add(dto);
         }
