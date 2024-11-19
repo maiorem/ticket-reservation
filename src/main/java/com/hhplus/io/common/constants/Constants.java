@@ -9,4 +9,9 @@ public class Constants {
         public static final String ACTIVE_QUEUE_KEY_PREFIX = "activeQueue:";
     }
 
+    public static class KafkaTopics {
+        public static final String TEMP_RESERVE_TOPIC = "temp-reserve-topic";
+        public static final String PAYMENT_TOPIC = "payment-topic";
+    }
+
 }

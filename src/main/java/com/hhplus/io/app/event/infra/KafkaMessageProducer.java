@@ -1,21 +1,22 @@
-package com.hhplus.io.app.eventBroker.domain;
+package com.hhplus.io.app.event.infra;
 
+import com.hhplus.io.common.support.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaProducerService {
+public class KafkaMessageProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate) {
+    public KafkaMessageProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendEvent(String topic, String key, String payload) {
-        kafkaTemplate.send(topic, key, payload).whenComplete((result, exception) -> {
+    public void send(String topic, String key, Object message) {
+        kafkaTemplate.send(topic, key, JsonUtils.toJsonString(message)).whenComplete((result, exception) -> {
             if (exception == null) {
                 // 성공 처리
                 log.info("Message sent to Kafka:Topic:{}, Partition:{}, Offset:{}"

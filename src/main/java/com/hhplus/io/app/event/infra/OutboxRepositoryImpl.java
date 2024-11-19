@@ -1,7 +1,7 @@
-package com.hhplus.io.app.outbox.infra;
+package com.hhplus.io.app.event.infra;
 
-import com.hhplus.io.app.outbox.domain.entity.Outbox;
-import com.hhplus.io.app.outbox.domain.repository.OutboxRepository;
+import com.hhplus.io.app.event.domain.entity.Outbox;
+import com.hhplus.io.app.event.domain.repository.OutboxRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +23,10 @@ public class OutboxRepositoryImpl implements OutboxRepository {
     @Override
     public Outbox save(Outbox event) {
         return jpaRepository.save(event);
+    }
+
+    @Override
+    public Outbox findByAggregateId(String key) {
+        return jpaRepository.findByAggregateId(key).orElse(null);
     }
 }
