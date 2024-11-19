@@ -23,8 +23,12 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static <T> T fromJsonString(String jsonString, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(jsonString, clazz);
+    public static <T> T fromJsonString(String jsonString, Class<T> clazz)  {
+        try {
+            return objectMapper.readValue(jsonString, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -35,8 +39,12 @@ public class JsonUtils {
      * @return 객체를 변환한 JSON 문자열
      * @throws JsonProcessingException JSON 처리 예외
      */
-    public static <T> String toJsonString(T object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    public static <T> String toJsonString(T object)  {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -46,8 +54,12 @@ public class JsonUtils {
      * @return Map을 변환한 JSON 문자열
      * @throws JsonProcessingException JSON 처리 예외
      */
-    public static String mapToJsonString(Map<String, Object> map) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(map);
+    public static String mapToJsonString(Map<String, Object> map){
+        try {
+            return objectMapper.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -69,9 +81,13 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 Map 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static Map<String, Object> jsonStringToMap(String jsonString) throws IOException {
-        return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
-        });
+    public static Map<String, Object> jsonStringToMap(String jsonString) {
+        try {
+            return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -83,10 +99,14 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 List<T> 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static <T> List<T> jsonStringToList(String jsonString, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(
-                jsonString,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+    public static <T> List<T> jsonStringToList(String jsonString, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(
+                    jsonString,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
