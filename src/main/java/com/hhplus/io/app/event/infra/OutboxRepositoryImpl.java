@@ -17,7 +17,7 @@ public class OutboxRepositoryImpl implements OutboxRepository {
 
     @Override
     public List<Outbox> findPendingEvents() {
-        return jpaRepository.findPendingEvents();
+        return jpaRepository.findAllByIsPublished(false);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class OutboxRepositoryImpl implements OutboxRepository {
     }
 
     @Override
-    public Outbox findByAggregateId(String key) {
-        return jpaRepository.findByAggregateId(key).orElse(null);
+    public Outbox findByEventKey(String key) {
+        return jpaRepository.findByEventKey(key).orElse(null);
     }
 }

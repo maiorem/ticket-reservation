@@ -32,6 +32,6 @@ public class OutboxService {
     }
 
     public Outbox findByKey(String key) {
-        return outboxRepository.findByAggregateId(key);
+        return outboxRepository.findByEventKey(key);
     }
 }

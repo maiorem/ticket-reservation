@@ -12,5 +12,5 @@ public interface OutboxRepository {
 
     Outbox save(Outbox event);
 
-    Outbox findByAggregateId(String key);
+    Outbox findByEventKey(String key);
 }
