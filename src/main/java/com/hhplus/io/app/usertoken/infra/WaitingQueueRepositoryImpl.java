@@ -116,7 +116,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
     @Override
     public Boolean isActive(String token){
         String key = ACTIVE_QUEUE_KEY_PREFIX + token;
-        return Objects.requireNonNull(setOperations.members(key)).isEmpty();
+        return !Objects.requireNonNull(setOperations.members(key)).isEmpty();
     }
 
     public void refreshTimeout(String token) {

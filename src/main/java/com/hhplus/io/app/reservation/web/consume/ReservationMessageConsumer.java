@@ -27,6 +27,7 @@ public class ReservationMessageConsumer {
     public void outboxPulished(ConsumerRecord<String, String> consumerRecord) {
         Outbox outbox = outboxService.findByKey(consumerRecord.key());
         outbox.published();
+        outboxService.save(outbox);
     }
 
     @KafkaListener(topics = Constants.KafkaTopics.PAYMENT_TOPIC, groupId = "payment-data")
