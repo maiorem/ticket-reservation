@@ -1,5 +1,5 @@
 package com.hhplus.io.app.event.domain.entity;
 
-public enum AggregateType {
+public enum DomainType {
     TEMP_RESERVE, PAYMENT
 }

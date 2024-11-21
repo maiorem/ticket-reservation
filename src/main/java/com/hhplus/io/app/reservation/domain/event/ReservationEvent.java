@@ -5,7 +5,7 @@ import com.hhplus.io.common.support.utils.JsonUtils;
 
 import java.util.UUID;
 
-public record ReservationEvent(ConfirmReservationInfo info, String token, String aggregateId) {
+public record ReservationEvent(ConfirmReservationInfo info, String token, String key) {
     public static ReservationEvent create(ConfirmReservationInfo info, String token) {
         return new ReservationEvent(info, token, UUID.randomUUID().toString());
     }

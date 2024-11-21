@@ -1,6 +1,7 @@
 package com.hhplus.io.app.reservation.domain.event;
 
-import com.hhplus.io.app.event.domain.entity.AggregateType;
+import com.hhplus.io.app.event.domain.entity.DomainType;
+import com.hhplus.io.app.event.domain.entity.EventType;
 import com.hhplus.io.app.event.domain.entity.Outbox;
 import com.hhplus.io.app.event.domain.service.OutboxService;
 import com.hhplus.io.app.event.infra.KafkaMessageProducer;
@@ -24,13 +25,13 @@ public class ReservationListner {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void save(ReservationEvent event) {
-        outboxService.save(Outbox.create(AggregateType.PAYMENT, event.aggregateId(), JsonUtils.toJsonString(event)));
+        outboxService.save(Outbox.create(DomainType.PAYMENT, EventType.PAYMENT_SUCCESS, event.key(), JsonUtils.toJsonString(event)));
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void reservationProduce(ReservationEvent event) {
-        kafkaMessageProducer.send(Constants.KafkaTopics.PAYMENT_TOPIC, event.aggregateId(), JsonUtils.toJsonString(event));
+        kafkaMessageProducer.send(Constants.KafkaTopics.PAYMENT_TOPIC, event.key(), JsonUtils.toJsonString(event));
     }
 
 }

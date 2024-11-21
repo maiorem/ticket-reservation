@@ -39,4 +39,4 @@ services:
     environment:
       - DYNAMIC_CONFIG_ENABLED=true
       - KAFKA_CLUSTERS_0_NAME=local_kafka_cluster
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:19092
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:9092

@@ -20,11 +20,11 @@ public class Outbox extends BaseEntity {
     @Column(name = "outbox_id")
     private Long outboxId;
 
-    @Column(name = "aggregate_type")
-    private String aggregateType;
+    @Column(name = "domain_type")
+    private String domainType;
 
-    @Column(name = "aggregate_id")
-    private String aggregateId;
+    @Column(name = "event_key")
+    private String eventKey;
 
     @Column(name = "event_type")
     private String eventType;
@@ -36,10 +36,11 @@ public class Outbox extends BaseEntity {
     @Builder.Default()
     private boolean isPublished = false;
 
-    public static Outbox create(AggregateType aggregateType, String key, String message) {
+    public static Outbox create(DomainType domainType, EventType eventType, String key, String message) {
         return Outbox.builder()
-                .aggregateType(aggregateType.toString())
-                .aggregateId(key)
+                .domainType(domainType.toString())
+                .eventType(eventType.toString())
+                .eventKey(key)
                 .message(message)
                 .isPublished(false)
                 .build();
