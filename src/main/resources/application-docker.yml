@@ -28,6 +28,8 @@ spring:
       host: host.docker.internal
   cache:
     type: redis
+  kafka:
+    bootstrap-servers: host.docker.internal:9092
 
 logging:
   level:

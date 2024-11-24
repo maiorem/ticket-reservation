@@ -67,12 +67,18 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers:1.20.3'
     testImplementation 'org.testcontainers:junit-jupiter:1.20.3'
     testImplementation 'org.testcontainers:mysql:1.20.3'
+    testImplementation "com.redis.testcontainers:testcontainers-redis-junit:1.6.4"
+    testImplementation "org.testcontainers:kafka:1.20.1"
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // redisson
     implementation 'org.redisson:redisson-spring-boot-starter:3.37.0'
+
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
 }
 
 tasks.named('test') {

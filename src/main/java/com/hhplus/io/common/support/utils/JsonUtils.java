@@ -3,7 +3,9 @@ package com.hhplus.io.common.support.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +14,9 @@ import java.util.stream.Collectors;
 
 public class JsonUtils {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     /**
      * JSON 문자열을 객체로 변환
@@ -23,8 +27,12 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static <T> T fromJsonString(String jsonString, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(jsonString, clazz);
+    public static <T> T fromJsonString(String jsonString, Class<T> clazz)  {
+        try {
+            return objectMapper.readValue(jsonString, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -35,8 +43,12 @@ public class JsonUtils {
      * @return 객체를 변환한 JSON 문자열
      * @throws JsonProcessingException JSON 처리 예외
      */
-    public static <T> String toJsonString(T object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    public static <T> String toJsonString(T object)  {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -46,8 +58,12 @@ public class JsonUtils {
      * @return Map을 변환한 JSON 문자열
      * @throws JsonProcessingException JSON 처리 예외
      */
-    public static String mapToJsonString(Map<String, Object> map) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(map);
+    public static String mapToJsonString(Map<String, Object> map){
+        try {
+            return objectMapper.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -69,9 +85,13 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 Map 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static Map<String, Object> jsonStringToMap(String jsonString) throws IOException {
-        return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
-        });
+    public static Map<String, Object> jsonStringToMap(String jsonString) {
+        try {
+            return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -83,10 +103,14 @@ public class JsonUtils {
      * @return JSON 문자열을 변환한 List<T> 객체
      * @throws IOException JSON 처리를 위한 IO 예외
      */
-    public static <T> List<T> jsonStringToList(String jsonString, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(
-                jsonString,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+    public static <T> List<T> jsonStringToList(String jsonString, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(
+                    jsonString,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
