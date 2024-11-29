@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -42,6 +43,7 @@ public class UserTokenUseCase {
             waitingQueueService.initQueue(token);
         }
         // 대기열 및 토큰 생성
+        token = UUID.randomUUID().toString();
         String createdToken = waitingQueueService.createQueue(token);
 
         // 대기열 순서 조회

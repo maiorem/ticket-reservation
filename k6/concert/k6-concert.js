@@ -1,16 +1,14 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { sleep, check } from 'k6';
 import { options, BASE_URL } from '../common/test.js';
 
-export { options };
+export { options }; // 사전에 생성된 토큰을 입력
 
 export default function () {
-    const concertsResponse = http.get(`${BASE_URL}/api/concert/list`, {
-        headers: { 'token': `token` },
-    });
+    const concertsResponse = http.get(`${BASE_URL}/concert/list`);
 
     check(concertsResponse, {
-        'concerts status was 200': (r) => r.status === 200,
+        'concerts status was 200': (r) => r.status === 200
     });
 
     sleep(1);

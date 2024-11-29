@@ -27,4 +27,4 @@ export const options = {
     },
 };
 
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = 'http://host.docker.internal:8081';

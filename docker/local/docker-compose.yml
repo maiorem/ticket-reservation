@@ -1,10 +1,18 @@
 version: '3.8'
 
 services:
+  service:
+    image: nginx
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
+
   app:
     image: concert:latest
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/concert
       - SPRING_DATASOURCE_USERNAME=root
